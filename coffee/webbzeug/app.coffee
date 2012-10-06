@@ -195,8 +195,31 @@ window.Webbzeug.App = class App
               action.setParameter _key, newVal
               _value.text newVal
 
-              self.buildTree()
               self.renderAll()
+          )()
+
+        when 'color'
+          li = $('<li>').appendTo settingsUl
+          label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo li
+
+          color = action.getParameter(key) or info.default
+
+          input = $('<div>').addClass('colorpicker-control').css(backgroundColor: color).appendTo li
+
+          (=>
+            _key   = key
+            _input = input
+            _input.ColorPicker 
+              color: color
+              onChange: (hsb, hex, rgb) ->
+                color = "rgb(#{rgb.r}, #{rgb.g}, #{rgb.b})"
+
+                _input.css
+                  backgroundColor: color
+
+                action.setParameter _key, color
+
+                self.renderAll()
           )()
 
   deleteTree: ->
@@ -241,12 +264,19 @@ window.Webbzeug.App = class App
     @buildTree()
 
     watchedAction = @actions[@watchedActionIndex]
+
+    unless watchedAction?
+      return false
+    
     context = @render watchedAction
 
     imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
     @context.putImageData imageData, 0, 0
 
   render: (action) ->
+    unless action?
+      return false
+
     children = action.children
 
     contexts = []

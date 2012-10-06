@@ -5,8 +5,8 @@ window.Webbzeug.Actions.Rectangle = class RectangleAction extends Webbzeug.Actio
     {
       x: { name: 'X', type: 'number', min: 0, max: 255, default: 0 },
       y:  { name: 'Y', type: 'number', min: 0, max: 255, default: 0 },
-      width:  { name: 'Width', type: 'number', min: 0, max: 255, default: 10 },
-      height:  { name: 'Height', type: 'number', min: 0, max: 255, default: 10 }
+      width:  { name: 'Width', type: 'number', min: 0, max: 255, default: 50 },
+      height:  { name: 'Height', type: 'number', min: 0, max: 255, default: 50 }
       color: { name: 'Color', type: 'color', default: 'rgba(0,0,0,0)' }
     }
 
@@ -26,7 +26,7 @@ window.Webbzeug.Actions.Rectangle = class RectangleAction extends Webbzeug.Actio
       imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
       @context.putImageData imageData, 0, 0
 
-    @context.fillStyle = 'white'
+    @context.fillStyle = @getParameter('color')
     @context.fillRect x, y, w, h
  
     return @context

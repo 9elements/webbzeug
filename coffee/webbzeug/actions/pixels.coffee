@@ -23,6 +23,6 @@ window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
       imageData.data[index] = rand
       imageData.data[index + 1] = rand
       imageData.data[index + 2] = rand
-      imageData.data[index + 3] = rand
+      imageData.data[index + 3] = 255
     @context.putImageData imageData, 0, 0 
     return @context

@@ -26,26 +26,26 @@
           type: 'number',
           min: 0,
           max: 255,
-          "default": 0
+          "default": 128
         },
         y: {
           name: 'Y',
           type: 'number',
           min: 0,
           max: 255,
-          "default": 0
+          "default": 128
         },
         radiusX: {
           name: 'Radius X',
           type: 'number',
           min: 0,
           max: 255,
-          "default": 10
+          "default": 50
         },
         color: {
           name: 'Color',
           type: 'color',
-          "default": 'rgba(0,0,0,0)'
+          "default": 'rgba(255,0,0,1)'
         }
       };
     };
@@ -62,11 +62,9 @@
         console.log(imageData.data);
       }
       this.context.beginPath();
-      this.context.arc(100, 100, 100, 100, 2 * Math.PI, false);
-      this.context.stroke();
-      this.context.strokeStyle = 'rgba(255,40,20,0.7)';
+      this.context.arc(this.getParameter('x'), this.getParameter('y'), this.getParameter('radiusX'), 0, 2 * Math.PI, false);
       this.context.closePath();
-      this.context.fillStyle = 'blue';
+      this.context.fillStyle = this.getParameter('color');
       this.context.fill();
       return this.context;
     };

@@ -40,14 +40,14 @@
           type: 'number',
           min: 0,
           max: 255,
-          "default": 10
+          "default": 50
         },
         height: {
           name: 'Height',
           type: 'number',
           min: 0,
           max: 255,
-          "default": 10
+          "default": 50
         },
         color: {
           name: 'Color',
@@ -71,7 +71,7 @@
         imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
         this.context.putImageData(imageData, 0, 0);
       }
-      this.context.fillStyle = 'white';
+      this.context.fillStyle = this.getParameter('color');
       this.context.fillRect(x, y, w, h);
       return this.context;
     };

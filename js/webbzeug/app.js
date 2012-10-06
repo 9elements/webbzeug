@@ -165,7 +165,7 @@
     };
 
     App.prototype.showParameters = function(e, action) {
-      var attributes, availableParameters, info, input, key, label, li, self, settingsUl, settingsWindow, value, _results,
+      var attributes, availableParameters, color, info, input, key, label, li, self, settingsUl, settingsWindow, value, _results,
         _this = this;
       self = this;
       settingsWindow = $('.workspace-wrapper .parameters');
@@ -209,8 +209,31 @@
                 newVal = _input.val();
                 action.setParameter(_key, newVal);
                 _value.text(newVal);
-                self.buildTree();
                 return self.renderAll();
+              });
+            })());
+            break;
+          case 'color':
+            li = $('<li>').appendTo(settingsUl);
+            label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo(li);
+            color = action.getParameter(key) || info["default"];
+            input = $('<div>').addClass('colorpicker-control').css({
+              backgroundColor: color
+            }).appendTo(li);
+            _results.push((function() {
+              var _input, _key;
+              _key = key;
+              _input = input;
+              return _input.ColorPicker({
+                color: color,
+                onChange: function(hsb, hex, rgb) {
+                  color = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")";
+                  _input.css({
+                    backgroundColor: color
+                  });
+                  action.setParameter(_key, color);
+                  return self.renderAll();
+                }
               });
             })());
             break;
@@ -283,6 +306,9 @@
       var context, imageData, watchedAction;
       this.buildTree();
       watchedAction = this.actions[this.watchedActionIndex];
+      if (watchedAction == null) {
+        return false;
+      }
       context = this.render(watchedAction);
       imageData = context.getImageData(0, 0, this.getWidth(), this.getHeight());
       return this.context.putImageData(imageData, 0, 0);
@@ -290,6 +316,9 @@
 
     App.prototype.render = function(action) {
       var child, children, context, contexts, _i, _len;
+      if (action == null) {
+        return false;
+      }
       children = action.children;
       contexts = [];
       for (_i = 0, _len = children.length; _i < _len; _i++) {
