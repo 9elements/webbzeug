@@ -6,4 +6,4 @@ $ ->
     width: $('#canvas').width()
     height: $('#canvas').height()
 
-  new Webbzeug.App $('#canvas').get(0)
+  window.app = new Webbzeug.App $('#canvas').get(0)

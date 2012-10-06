@@ -13,7 +13,7 @@
       width: $('#canvas').width(),
       height: $('#canvas').height()
     });
-    return new Kata.Controller($('#canvas').get(0), 100);
+    return window.app = new Webbzeug.App($('#canvas').get(0));
   });
 
 }).call(this);

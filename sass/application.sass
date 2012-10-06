@@ -2,9 +2,56 @@ body
   background-color: #333
   width: 100%
 
-#canvas
-  display: block
-  width: 600px
-  height: 400px
-  margin: 200px auto
-  background-color: black
+.app-wrapper
+  width: 1200px
+  margin: 50px auto
+
+  #canvas
+    display: block
+    width: 320px
+    height: 240px
+    background-color: black
+    float: right
+
+  .workspace-wrapper
+    .action
+      color: white
+      font: normal 12px Verdana
+      border: 1px solid white
+      padding: 5px
+      border-radius: 2px
+
+      width: 100px
+
+      &.generative
+        background: blue
+      &.processive
+        background: red
+
+    .navigation
+      padding-top: 10px
+      li
+        display: inline-block
+        color: white
+        font: normal 12px Verdana
+        padding: 5px
+        border-radius: 2px
+        border: 1px solid white
+        float: left
+        margin: 3px
+        cursor: pointer
+
+        &:hover, &.active
+          background-color: rgba(white, 0.2)
+
+    .workspace
+      background: rgba(black, 0.2)
+      width: 850px
+      height: 500px
+
+      overflow: scroll
+
+      border: 1px solid rgba(white, 0.3)
+
+      .action
+        position: absolute
