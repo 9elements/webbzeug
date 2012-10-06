@@ -5,7 +5,7 @@ window.Webbzeug.Actions.Flat = class FlatAction extends Webbzeug.Action
     super()
 
     # How to copy the image data from one context to another
-    # imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
+    # imageData = context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
     # @context.putImageData imageData, 0, 0
 
     @context.fillStyle = 'red'

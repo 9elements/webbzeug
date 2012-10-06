@@ -19,6 +19,23 @@
       return InvertAction.__super__.constructor.apply(this, arguments);
     }
 
+    InvertAction.prototype.render = function(contexts) {
+      var i, imageData, _i, _ref2;
+      InvertAction.__super__.render.call(this);
+      if (contexts.length === 0) {
+        console.log("Dude an inverter needs an input");
+        return;
+      }
+      imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      for (i = _i = 0, _ref2 = imageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+        if ((i % 4) !== 3) {
+          imageData.data[i] = 255 - imageData.data[i];
+        }
+      }
+      this.context.putImageData(imageData, 0, 0);
+      return this.context;
+    };
+
     return InvertAction;
 
   })(Webbzeug.Action);
