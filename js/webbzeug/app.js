@@ -23,7 +23,9 @@
       this.width = this.context.canvas.width;
       this.height = this.context.canvas.height;
       this.handleNavigation();
-      this.handleWorkspaceClick();
+      this.handleWorkspaceKeyboard();
+      this.watchedActionIndex = null;
+      this.selectedActionIndex = null;
     }
 
     App.prototype.handleNavigation = function() {
@@ -31,6 +33,7 @@
       self = this;
       return $('.navigation li').click(function(e) {
         e.preventDefault();
+        self.handleWorkspaceClick();
         $(this).parent().find('li').removeClass('active');
         $(this).addClass('active');
         self.selectedActionId = $(this).attr('data-id');
@@ -57,7 +60,7 @@
       });
       $('.workspace').mousemove(function(e) {
         var offsetX, offsetY;
-        if (_this.selectedElement && _this.selectedActionId) {
+        if (_this.selectedElement) {
           offsetX = $('.workspace').offset().left;
           offsetY = $('.workspace').offset().top;
           return _this.selectedElement.css({
@@ -67,19 +70,73 @@
         }
       });
       return $('.workspace').mousedown(function(e) {
-        var action, x, y;
-        if (_this.selectedElement && _this.selectedActionId) {
-          x = _this.selectedElement.position().left / _this.gridWidth;
-          y = _this.selectedElement.position().top / _this.gridHeight;
-          console.log(_this.selectedActionId);
-          action = new _this.classMap[_this.selectedActionId](x, y, _this.incrementalIndex);
-          _this.incrementalIndex++;
-          _this.actions.push(action);
-          _this.render();
+        var action, element, x, y;
+        $('.workspace').off('mouseenter mousemove mousedown');
+        if (_this.selectedElement) {
+          x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
+          y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
+          if (_this.selectedActionId) {
+            action = new _this.classMap[_this.selectedActionId](x, y, _this.incrementalIndex);
+            _this.selectedElement.attr({
+              'data-index': _this.incrementalIndex
+            });
+            _this.incrementalIndex++;
+            _this.actions.push(action);
+            element = _this.selectedElement;
+            _this.handleElementClick(element);
+            _this.selectedElement.click(function() {
+              return _this.handleElementClick(element);
+            });
+            _this.handleElementDrag(element);
+          }
           _this.selectedElement = null;
           return _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
         }
       });
+    };
+
+    App.prototype.handleElementDrag = function(element) {
+      var _this = this;
+      return $(element).mousedown(function(e) {
+        var editingElement;
+        editingElement = element;
+        $('.workspace').mousemove(function(e) {
+          var offsetX, offsetY;
+          offsetX = $('.workspace').offset().left;
+          offsetY = $('.workspace').offset().top;
+          return editingElement.css({
+            left: Math.floor((e.pageX - offsetX) / _this.gridWidth) * _this.gridWidth,
+            top: Math.floor((e.pageY - offsetY) / _this.gridHeight) * _this.gridHeight
+          });
+        });
+        return $(document).mouseup(function(e) {
+          var action;
+          $('.workspace').off('mousemove');
+          action = _this.actions[editingElement.attr('data-index')];
+          action.x = Math.round(editingElement.position().left / _this.gridWidth);
+          return action.y = Math.round(editingElement.position().top / _this.gridHeight);
+        });
+      });
+    };
+
+    App.prototype.handleWorkspaceKeyboard = function() {
+      var _this = this;
+      return $(document).keydown(function(e) {
+        if (e.keyCode === 32) {
+          e.preventDefault();
+          if (_this.selectedActionIndex) {
+            $('.workspace .action').removeClass('watched');
+            $('.workspace .action[data-index=' + _this.selectedActionIndex + ']').addClass('watched');
+            return _this.watchedActionIndex = _this.selectedActionIndex;
+          }
+        }
+      });
+    };
+
+    App.prototype.handleElementClick = function(element) {
+      this.selectedActionIndex = element.attr('data-index');
+      $('.workspace .action').removeClass('selected');
+      return $(element).addClass('selected');
     };
 
     App.prototype.render = function() {

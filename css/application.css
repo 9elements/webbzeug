@@ -41,12 +41,18 @@ body {
   .app-wrapper .left-wrapper .workspace-wrapper {
     width: 850px;
     height: 500px;
-    overflow: scroll; }
+    overflow: scroll;
+    border: 1px solid rgba(255, 255, 255, 0.3); }
     .app-wrapper .left-wrapper .workspace-wrapper .workspace {
       background: rgba(0, 0, 0, 0.2);
       width: 1500px;
       height: 1500px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
       position: relative; }
       .app-wrapper .left-wrapper .workspace-wrapper .workspace .action {
         position: absolute; }
+        .app-wrapper .left-wrapper .workspace-wrapper .workspace .action.selected {
+          box-shadow: white 0 0 0 3px inset; }
+        .app-wrapper .left-wrapper .workspace-wrapper .workspace .action.watched {
+          background-image: url("/images/icon-watched.png");
+          background-position: right center;
+          background-repeat: no-repeat; }

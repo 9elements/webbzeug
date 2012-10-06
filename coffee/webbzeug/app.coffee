@@ -14,7 +14,10 @@ window.Webbzeug.App = class App
     @height = @context.canvas.height
 
     @handleNavigation()
-    @handleWorkspaceClick()
+    @handleWorkspaceKeyboard()
+
+    @watchedActionIndex  = null
+    @selectedActionIndex = null
 
     # every 1000 / 60, =>
     #   @render()
@@ -23,6 +26,8 @@ window.Webbzeug.App = class App
     self = this
     $('.navigation li').click (e) ->
       e.preventDefault()
+
+      self.handleWorkspaceClick()
 
       $(this).parent().find('li').removeClass('active')
       $(this).addClass('active')
@@ -49,7 +54,7 @@ window.Webbzeug.App = class App
         @selectedElement = el
 
     $('.workspace').mousemove (e) =>
-      if @selectedElement and @selectedActionId
+      if @selectedElement
         offsetX = $('.workspace').offset().left
         offsetY = $('.workspace').offset().top
 
@@ -58,25 +63,68 @@ window.Webbzeug.App = class App
           top:  Math.floor((e.pageY - offsetY) / @gridHeight) * @gridHeight
 
     $('.workspace').mousedown (e) =>
-      if @selectedElement and @selectedActionId
+      $('.workspace').off('mouseenter mousemove mousedown')
+      if @selectedElement
+        x = Math.round(@selectedElement.position().left / @gridWidth)
+        y = Math.round(@selectedElement.position().top  / @gridHeight)
 
-        x = @selectedElement.position().left / @gridWidth
-        y = @selectedElement.position().top  / @gridHeight
-        
-        console.log @selectedActionId
-        action = new @classMap[@selectedActionId] x, y, @incrementalIndex
-        @incrementalIndex++
+        if @selectedActionId
+          action = new @classMap[@selectedActionId] x, y, @incrementalIndex
 
-        @actions.push action
+          @selectedElement.attr 'data-index': @incrementalIndex
+          @incrementalIndex++
 
-        @render()
+          @actions.push action
+
+          element = @selectedElement
+          @handleElementClick element
+          @selectedElement.click =>
+            @handleElementClick element
+
+          @handleElementDrag element
 
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
 
+  handleElementDrag: (element) ->
+    $(element).mousedown (e) =>
+      editingElement = element
+
+      $('.workspace').mousemove (e) =>
+        offsetX = $('.workspace').offset().left
+        offsetY = $('.workspace').offset().top
+
+        editingElement.css
+          left: Math.floor((e.pageX - offsetX) / @gridWidth) * @gridWidth
+          top:  Math.floor((e.pageY - offsetY) / @gridHeight) * @gridHeight
+
+      $(document).mouseup (e) =>
+        $('.workspace').off('mousemove')
+
+        action = @actions[editingElement.attr('data-index')]
+        action.x = Math.round(editingElement.position().left / @gridWidth)
+        action.y = Math.round(editingElement.position().top  / @gridHeight)
+
+  handleWorkspaceKeyboard: ->
+    $(document).keydown (e) =>
+      if e.keyCode is 32
+        e.preventDefault()
+        if @selectedActionIndex
+          $('.workspace .action').removeClass('watched')
+          $('.workspace .action[data-index=' + @selectedActionIndex + ']').addClass('watched')
+
+          @watchedActionIndex = @selectedActionIndex
+
+
+  handleElementClick: (element) ->
+    @selectedActionIndex = element.attr('data-index')
+
+    $('.workspace .action').removeClass('selected')
+    $(element).addClass('selected')
+
+
 
   render: ->
-
     console.log "Existing actions:"
     for action in @actions
       action.render()
