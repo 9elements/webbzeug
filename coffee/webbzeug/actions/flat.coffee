@@ -1,6 +1,10 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Flat = class FlatAction extends Webbzeug.Action
+  availableParameters: ->
+    {
+      color: { name: 'Color', type: 'color', default: 'rgba(255,0,0,1)' }
+    }
   render: (contexts) ->
     super()
 
@@ -8,7 +12,7 @@ window.Webbzeug.Actions.Flat = class FlatAction extends Webbzeug.Action
     # imageData = context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
     # @context.putImageData imageData, 0, 0
 
-    @context.fillStyle = 'red'
+    @context.fillStyle = @getParameter('color')
     @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
 
     # Pixel manipulation

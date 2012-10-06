@@ -52,7 +52,7 @@
         color: {
           name: 'Color',
           type: 'color',
-          "default": 'rgba(0,0,0,0)'
+          "default": 'rgba(255,255,255,1)'
         }
       };
     };

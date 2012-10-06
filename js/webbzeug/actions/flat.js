@@ -19,9 +19,19 @@
       return FlatAction.__super__.constructor.apply(this, arguments);
     }
 
+    FlatAction.prototype.availableParameters = function() {
+      return {
+        color: {
+          name: 'Color',
+          type: 'color',
+          "default": 'rgba(255,0,0,1)'
+        }
+      };
+    };
+
     FlatAction.prototype.render = function(contexts) {
       FlatAction.__super__.render.call(this);
-      this.context.fillStyle = 'red';
+      this.context.fillStyle = this.getParameter('color');
       this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
       return this.context;
     };

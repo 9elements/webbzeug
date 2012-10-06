@@ -7,7 +7,7 @@ window.Webbzeug.Actions.Rectangle = class RectangleAction extends Webbzeug.Actio
       y:  { name: 'Y', type: 'number', min: 0, max: 255, default: 0 },
       width:  { name: 'Width', type: 'number', min: 0, max: 255, default: 50 },
       height:  { name: 'Height', type: 'number', min: 0, max: 255, default: 50 }
-      color: { name: 'Color', type: 'color', default: 'rgba(0,0,0,0)' }
+      color: { name: 'Color', type: 'color', default: 'rgba(255,255,255,1)' }
     }
 
   render: (contexts) ->
