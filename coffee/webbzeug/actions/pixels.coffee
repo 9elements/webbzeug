@@ -29,7 +29,7 @@ window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
   availableParameters: ->
     {
-      seed: { name: 'Seed', type: 'number', min: 0, max: 999999999, default: Math.round(Math.random() * 999999999) },
+      seed: { name: 'Seed', type: 'number', min: 0, max: 255, default: Math.round(Math.random() * 255) },
     }
 
   render: (contexts) ->
