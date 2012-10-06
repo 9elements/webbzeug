@@ -139,7 +139,6 @@
         }
       });
       return $(document).keydown(function(e) {
-        var context, imageData, watchedAction;
         if (e.keyCode === 16) {
           _this.shiftPressed = true;
         }
@@ -149,11 +148,7 @@
             $('.workspace .action').removeClass('watched');
             $('.workspace .action[data-index=' + _this.selectedActionIndex + ']').addClass('watched');
             _this.watchedActionIndex = _this.selectedActionIndex;
-            _this.buildTree();
-            watchedAction = _this.actions[_this.watchedActionIndex];
-            context = _this.render(watchedAction);
-            imageData = context.getImageData(0, 0, _this.getWidth(), _this.getHeight());
-            return _this.context.putImageData(imageData, 0, 0);
+            return _this.renderAll();
           }
         }
       });
@@ -170,8 +165,9 @@
     };
 
     App.prototype.showParameters = function(e, action) {
-      var attributes, availableParameters, info, input, key, label, li, settingsUl, settingsWindow, value, _results,
+      var attributes, availableParameters, info, input, key, label, li, self, settingsUl, settingsWindow, value, _results,
         _this = this;
+      self = this;
       settingsWindow = $('.workspace-wrapper .parameters');
       settingsWindow.show().css({
         left: (action.x + action.width + 1) * this.gridWidth + $('.workspace-wrapper').offset().left,
@@ -212,7 +208,9 @@
                 var newVal;
                 newVal = _input.val();
                 action.setParameter(_key, newVal);
-                return _value.text(newVal);
+                _value.text(newVal);
+                self.buildTree();
+                return self.renderAll();
               });
             })());
             break;
@@ -279,6 +277,15 @@
         }
       }
       return action.children = children;
+    };
+
+    App.prototype.renderAll = function() {
+      var context, imageData, watchedAction;
+      this.buildTree();
+      watchedAction = this.actions[this.watchedActionIndex];
+      context = this.render(watchedAction);
+      imageData = context.getImageData(0, 0, this.getWidth(), this.getHeight());
+      return this.context.putImageData(imageData, 0, 0);
     };
 
     App.prototype.render = function(action) {

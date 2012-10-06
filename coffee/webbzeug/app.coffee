@@ -136,13 +136,7 @@ window.Webbzeug.App = class App
 
           @watchedActionIndex = @selectedActionIndex
 
-          @buildTree()
-
-          watchedAction = @actions[@watchedActionIndex]
-          context = @render watchedAction
-
-          imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
-          @context.putImageData imageData, 0, 0
+          @renderAll()
 
 
   handleElementClick: (e, element) ->
@@ -155,6 +149,8 @@ window.Webbzeug.App = class App
       @showParameters e, @actions[@selectedActionIndex]
 
   showParameters: (e, action) ->
+    self = this
+
     settingsWindow = $('.workspace-wrapper .parameters')
 
     settingsWindow.show().css
@@ -198,6 +194,9 @@ window.Webbzeug.App = class App
               newVal = _input.val()
               action.setParameter _key, newVal
               _value.text newVal
+
+              self.buildTree()
+              self.renderAll()
           )()
 
   deleteTree: ->
@@ -237,6 +236,15 @@ window.Webbzeug.App = class App
           @findChildrenRecursively possibleChildAction
 
     action.children = children
+
+  renderAll: ->
+    @buildTree()
+
+    watchedAction = @actions[@watchedActionIndex]
+    context = @render watchedAction
+
+    imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
+    @context.putImageData imageData, 0, 0
 
   render: (action) ->
     children = action.children

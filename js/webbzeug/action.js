@@ -25,36 +25,7 @@
     }
 
     Action.prototype.availableParameters = function() {
-      return {
-        x: {
-          name: 'X',
-          type: 'number',
-          min: 0,
-          max: 255,
-          "default": 0
-        },
-        y: {
-          name: 'Y',
-          type: 'number',
-          min: 0,
-          max: 255,
-          "default": 0
-        },
-        width: {
-          name: 'Width',
-          type: 'number',
-          min: 0,
-          max: 255,
-          "default": 10
-        },
-        height: {
-          name: 'Height',
-          type: 'number',
-          min: 0,
-          max: 255,
-          "default": 10
-        }
-      };
+      return {};
     };
 
     Action.prototype.render = function(contexts) {

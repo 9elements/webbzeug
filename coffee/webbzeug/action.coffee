@@ -8,13 +8,7 @@ window.Webbzeug.Action = class Action
     for parameter, info of @availableParameters()
       @parameters[parameter] = info.default
 
-  availableParameters: ->
-    {
-      x: { name: 'X', type: 'number', min: 0, max: 255, default: 0 },
-      y:  { name: 'Y', type: 'number', min: 0, max: 255, default: 0 },
-      width:  { name: 'Width', type: 'number', min: 0, max: 255, default: 10 },
-      height:  { name: 'Height', type: 'number', min: 0, max: 255, default: 10 }
-    }
+  availableParameters: -> {}
 
   render: (contexts) ->
     console.log "rendering...", @index, ":", @constructor.name, "x", @x, "y", @y

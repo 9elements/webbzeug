@@ -19,6 +19,37 @@
       return CircleAction.__super__.constructor.apply(this, arguments);
     }
 
+    CircleAction.prototype.availableParameters = function() {
+      return {
+        x: {
+          name: 'X',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 0
+        },
+        y: {
+          name: 'Y',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 0
+        },
+        radiusX: {
+          name: 'Radius X',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 10
+        },
+        color: {
+          name: 'Color',
+          type: 'color',
+          "default": 'rgba(0,0,0,0)'
+        }
+      };
+    };
+
     CircleAction.prototype.render = function(contexts) {
       var imageData;
       CircleAction.__super__.render.call(this);

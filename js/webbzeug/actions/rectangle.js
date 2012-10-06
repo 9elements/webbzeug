@@ -19,9 +19,51 @@
       return RectangleAction.__super__.constructor.apply(this, arguments);
     }
 
+    RectangleAction.prototype.availableParameters = function() {
+      return {
+        x: {
+          name: 'X',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 0
+        },
+        y: {
+          name: 'Y',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 0
+        },
+        width: {
+          name: 'Width',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 10
+        },
+        height: {
+          name: 'Height',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 10
+        },
+        color: {
+          name: 'Color',
+          type: 'color',
+          "default": 'rgba(0,0,0,0)'
+        }
+      };
+    };
+
     RectangleAction.prototype.render = function(contexts) {
-      var imageData;
+      var h, imageData, w, x, y;
       RectangleAction.__super__.render.call(this);
+      x = this.getParameter('x');
+      y = this.getParameter('y');
+      w = this.getParameter('width');
+      h = this.getParameter('height');
       if (contexts.length === 0) {
         this.context.fillStyle = 'black';
         this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
@@ -30,7 +72,7 @@
         this.context.putImageData(imageData, 0, 0);
       }
       this.context.fillStyle = 'white';
-      this.context.fillRect(0, 0, 100, 100);
+      this.context.fillRect(x, y, w, h);
       return this.context;
     };
 

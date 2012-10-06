@@ -1,6 +1,14 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
+  availableParameters: ->
+    {
+      x: { name: 'X', type: 'number', min: 0, max: 255, default: 0 },
+      y:  { name: 'Y', type: 'number', min: 0, max: 255, default: 0 },
+      radiusX:  { name: 'Radius X', type: 'number', min: 0, max: 255, default: 10 },
+      color: { name: 'Color', type: 'color', default: 'rgba(0,0,0,0)' }
+    }
+  
   render: (contexts) ->
     super()
     # no children ? -> clear context, otherwise copy what has been rendered so far
