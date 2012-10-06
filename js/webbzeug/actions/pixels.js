@@ -19,6 +19,23 @@
       return PixelsAction.__super__.constructor.apply(this, arguments);
     }
 
+    PixelsAction.prototype.render = function(contexts) {
+      var i, imageData, index, rand, _i, _ref2;
+      PixelsAction.__super__.render.call(this);
+      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      for (i = _i = 0, _ref2 = imageData.data.length / 4; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+        rand = Math.random();
+        rand = rand * 255;
+        index = i << 2;
+        imageData.data[index] = rand;
+        imageData.data[index + 1] = rand;
+        imageData.data[index + 2] = rand;
+        imageData.data[index + 3] = rand;
+      }
+      this.context.putImageData(imageData, 0, 0);
+      return this.context;
+    };
+
     return PixelsAction;
 
   })(Webbzeug.Action);
