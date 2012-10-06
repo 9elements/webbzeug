@@ -203,12 +203,18 @@
             };
             input = $('<input>').attr(attributes).appendTo(li);
             value = $('<div>').addClass('value').text(attributes.value).appendTo(li);
-            _results.push(input.change(function() {
-              var newVal;
-              newVal = parseInt(input.val());
-              action.setParameter(key, newVal);
-              return value.text(newVal);
-            }));
+            _results.push((function() {
+              var _input, _key, _value;
+              _input = input;
+              _key = key;
+              _value = value;
+              return _input.change(function() {
+                var newVal;
+                newVal = _input.val();
+                action.setParameter(_key, newVal);
+                return _value.text(newVal);
+              });
+            })());
             break;
           default:
             _results.push(void 0);
