@@ -145,7 +145,7 @@ window.Webbzeug.App = class App
     watchedAction = @actions[@watchedActionIndex]
     @findChildrenRecursively watchedAction
 
-    console.log watchedAction
+    # console.log watchedAction
 
   findChildrenRecursively: (action) ->
     children = []
@@ -153,7 +153,7 @@ window.Webbzeug.App = class App
       if possibleChildAction is action
         continue
 
-      console.log possibleChildAction.x, action.x + action.width, "///", action.x + action.width, possibleChildAction.x
+      # console.log possibleChildAction.x, action.x + action.width, "///", action.x + action.width, possibleChildAction.x
       if possibleChildAction.y is action.y - 1
         if !(possibleChildAction.x >= action.x + action.width or possibleChildAction.x + possibleChildAction.width <= action.x)
           children.push possibleChildAction

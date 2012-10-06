@@ -17,6 +17,7 @@ body {
     border: 1px solid white;
     padding: 5px;
     border-radius: 2px;
+    cursor: pointer;
     width: 100px; }
     .app-wrapper .left-wrapper .action.generative {
       background: blue; }
@@ -48,6 +49,12 @@ body {
       width: 1500px;
       height: 1500px;
       position: relative; }
+      .app-wrapper .left-wrapper .workspace-wrapper .workspace * {
+        -moz-user-select: -moz-none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none; }
       .app-wrapper .left-wrapper .workspace-wrapper .workspace .action {
         position: absolute; }
         .app-wrapper .left-wrapper .workspace-wrapper .workspace .action.selected {

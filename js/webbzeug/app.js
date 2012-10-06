@@ -167,8 +167,7 @@
       }
       this.deleteTree();
       watchedAction = this.actions[this.watchedActionIndex];
-      this.findChildrenRecursively(watchedAction);
-      return console.log(watchedAction);
+      return this.findChildrenRecursively(watchedAction);
     };
 
     App.prototype.findChildrenRecursively = function(action) {
@@ -180,7 +179,6 @@
         if (possibleChildAction === action) {
           continue;
         }
-        console.log(possibleChildAction.x, action.x + action.width, "///", action.x + action.width, possibleChildAction.x);
         if (possibleChildAction.y === action.y - 1) {
           if (!(possibleChildAction.x >= action.x + action.width || possibleChildAction.x + possibleChildAction.width <= action.x)) {
             children.push(possibleChildAction);
