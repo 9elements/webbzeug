@@ -21,7 +21,7 @@
 
     function App(canvas) {
       this.canvas = canvas;
-      this.context = this.canvas.getContext('experimental-webgl');
+      this.context = this.canvas.getContext('2d');
       this.incrementalIndex = 0;
       this.actions = [];
       this.width = this.context.canvas.width;
@@ -80,7 +80,7 @@
           x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
           if (_this.selectedActionId) {
-            action = new _this.classMap[_this.selectedActionId](x, y, _this.incrementalIndex);
+            action = new _this.classMap[_this.selectedActionId](_this, x, y, _this.incrementalIndex);
             _this.selectedElement.attr({
               'data-index': _this.incrementalIndex
             });
@@ -126,13 +126,19 @@
     App.prototype.handleWorkspaceKeyboard = function() {
       var _this = this;
       return $(document).keydown(function(e) {
+        var context, imageData, watchedAction;
         if (e.keyCode === 32) {
           e.preventDefault();
           if (_this.selectedActionIndex) {
             $('.workspace .action').removeClass('watched');
             $('.workspace .action[data-index=' + _this.selectedActionIndex + ']').addClass('watched');
             _this.watchedActionIndex = _this.selectedActionIndex;
-            return _this.buildTree();
+            _this.buildTree();
+            watchedAction = _this.actions[_this.watchedActionIndex];
+            context = _this.render(watchedAction);
+            imageData = context.getImageData(0, 0, _this.getWidth(), _this.getHeight());
+            console.log(imageData);
+            return _this.context.putImageData(imageData, 0, 0);
           }
         }
       });
@@ -153,6 +159,19 @@
         _results.push(action.deleteChildren());
       }
       return _results;
+    };
+
+    /*
+        Helper functions for actions
+    */
+
+
+    App.prototype.getWidth = function() {
+      return this.canvas.width;
+    };
+
+    App.prototype.getHeight = function() {
+      return this.canvas.height;
     };
 
     /*
@@ -189,16 +208,15 @@
       return action.children = children;
     };
 
-    App.prototype.render = function() {
-      var action, _i, _len, _ref1, _results;
-      console.log("Existing actions:");
-      _ref1 = this.actions;
-      _results = [];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        action = _ref1[_i];
-        _results.push(action.render());
+    App.prototype.render = function(action) {
+      var child, children, context, _i, _len;
+      children = action.children;
+      for (_i = 0, _len = children.length; _i < _len; _i++) {
+        child = children[_i];
+        this.render(child);
       }
-      return _results;
+      context = action.render();
+      return context;
     };
 
     return App;

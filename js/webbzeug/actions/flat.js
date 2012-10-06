@@ -19,6 +19,18 @@
       return FlatAction.__super__.constructor.apply(this, arguments);
     }
 
+    FlatAction.prototype.render = function() {
+      var imageData;
+      FlatAction.__super__.render.call(this);
+      this.context.fillStyle = 'red';
+      this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
+      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      imageData.data[1] = 255;
+      imageData.data[2] = 255;
+      this.context.putImageData(imageData, 0, 0);
+      return this.context;
+    };
+
     return FlatAction;
 
   })(Webbzeug.Action);

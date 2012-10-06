@@ -10,7 +10,7 @@ window.Webbzeug.App = class App
     flat: Webbzeug.Actions.Flat
 
   constructor: (@canvas) ->
-    @context = @canvas.getContext 'experimental-webgl'
+    @context = @canvas.getContext '2d'
 
     @incrementalIndex = 0
     @actions = []
@@ -74,7 +74,7 @@ window.Webbzeug.App = class App
         y = Math.round(@selectedElement.position().top  / @gridHeight)
 
         if @selectedActionId
-          action = new @classMap[@selectedActionId] x, y, @incrementalIndex
+          action = new @classMap[@selectedActionId] this, x, y, @incrementalIndex
 
           @selectedElement.attr 'data-index': @incrementalIndex
           @incrementalIndex++
@@ -122,6 +122,14 @@ window.Webbzeug.App = class App
 
           @buildTree()
 
+          watchedAction = @actions[@watchedActionIndex]
+          context = @render watchedAction
+
+          imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
+
+          console.log imageData
+          @context.putImageData imageData, 0, 0
+
 
   handleElementClick: (element) ->
     @selectedActionIndex = element.attr('data-index')
@@ -132,6 +140,13 @@ window.Webbzeug.App = class App
   deleteTree: ->
     for action in @actions
       action.deleteChildren()
+  
+  ###
+    Helper functions for actions
+  ###
+  getWidth: -> @canvas.width
+  getHeight: -> @canvas.height
+
 
   ###
     Tree building / handling
@@ -144,8 +159,6 @@ window.Webbzeug.App = class App
 
     watchedAction = @actions[@watchedActionIndex]
     @findChildrenRecursively watchedAction
-
-    # console.log watchedAction
 
   findChildrenRecursively: (action) ->
     children = []
@@ -162,7 +175,10 @@ window.Webbzeug.App = class App
 
     action.children = children
 
-  render: ->
-    console.log "Existing actions:"
-    for action in @actions
-      action.render()
+  render: (action) ->
+    children = action.children
+    for child in children
+      @render child
+
+    context = action.render()
+    return context

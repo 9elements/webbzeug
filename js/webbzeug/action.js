@@ -9,7 +9,8 @@
 
     Action.prototype.width = 3;
 
-    function Action(x, y, index) {
+    function Action(app, x, y, index) {
+      this.app = app;
       this.x = x;
       this.y = y;
       this.index = index;
@@ -21,7 +22,11 @@
     };
 
     Action.prototype.render = function() {
-      return console.log(this.index, ":", this.constructor.name, "x", this.x, "y", this.y);
+      console.log("rendering...", this.index, ":", this.constructor.name, "x", this.x, "y", this.y);
+      this.canvas = $('<canvas>').get(0);
+      this.canvas.width = this.app.getWidth();
+      this.canvas.height = this.app.getHeight();
+      return this.context = this.canvas.getContext('2d');
     };
 
     Action.prototype.deleteChildren = function() {
