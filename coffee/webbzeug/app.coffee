@@ -4,6 +4,11 @@ window.Webbzeug.App = class App
   gridWidth:  112 / 3
   classMap: 
     rectangle: Webbzeug.Actions.Rectangle
+    circle: Webbzeug.Actions.Circle
+    fractal: Webbzeug.Actions.Fractal
+    pixels: Webbzeug.Actions.Pixels
+    flat: Webbzeug.Actions.Flat
+
   constructor: (@canvas) ->
     @context = @canvas.getContext 'experimental-webgl'
 
@@ -115,6 +120,8 @@ window.Webbzeug.App = class App
 
           @watchedActionIndex = @selectedActionIndex
 
+          @buildTree()
+
 
   handleElementClick: (element) ->
     @selectedActionIndex = element.attr('data-index')
@@ -122,7 +129,38 @@ window.Webbzeug.App = class App
     $('.workspace .action').removeClass('selected')
     $(element).addClass('selected')
 
+  deleteTree: ->
+    for action in @actions
+      action.deleteChildren()
 
+  ###
+    Tree building / handling
+  ###
+  buildTree: ->
+    unless @watchedActionIndex
+      return
+
+    @deleteTree()
+
+    watchedAction = @actions[@watchedActionIndex]
+    @findChildrenRecursively watchedAction
+
+    console.log watchedAction
+
+  findChildrenRecursively: (action) ->
+    children = []
+    for possibleChildAction in @actions
+      if possibleChildAction is action
+        continue
+
+      console.log possibleChildAction.x, action.x + action.width, "///", action.x + action.width, possibleChildAction.x
+      if possibleChildAction.y is action.y - 1
+        if !(possibleChildAction.x >= action.x + action.width or possibleChildAction.x + possibleChildAction.width <= action.x)
+          children.push possibleChildAction
+
+          @findChildrenRecursively possibleChildAction
+
+    action.children = children
 
   render: ->
     console.log "Existing actions:"

@@ -13,7 +13,7 @@
       this.x = x;
       this.y = y;
       this.index = index;
-      return;
+      this.children = [];
     }
 
     Action.prototype.availableOptions = function() {
@@ -22,6 +22,14 @@
 
     Action.prototype.render = function() {
       return console.log(this.index, ":", this.constructor.name, "x", this.x, "y", this.y);
+    };
+
+    Action.prototype.deleteChildren = function() {
+      return this.children = [];
+    };
+
+    Action.prototype.addChild = function(child) {
+      return this.children.push(child);
     };
 
     return Action;

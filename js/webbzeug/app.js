@@ -12,7 +12,11 @@
     App.prototype.gridWidth = 112 / 3;
 
     App.prototype.classMap = {
-      rectangle: Webbzeug.Actions.Rectangle
+      rectangle: Webbzeug.Actions.Rectangle,
+      circle: Webbzeug.Actions.Circle,
+      fractal: Webbzeug.Actions.Fractal,
+      pixels: Webbzeug.Actions.Pixels,
+      flat: Webbzeug.Actions.Flat
     };
 
     function App(canvas) {
@@ -127,7 +131,8 @@
           if (_this.selectedActionIndex) {
             $('.workspace .action').removeClass('watched');
             $('.workspace .action[data-index=' + _this.selectedActionIndex + ']').addClass('watched');
-            return _this.watchedActionIndex = _this.selectedActionIndex;
+            _this.watchedActionIndex = _this.selectedActionIndex;
+            return _this.buildTree();
           }
         }
       });
@@ -137,6 +142,53 @@
       this.selectedActionIndex = element.attr('data-index');
       $('.workspace .action').removeClass('selected');
       return $(element).addClass('selected');
+    };
+
+    App.prototype.deleteTree = function() {
+      var action, _i, _len, _ref1, _results;
+      _ref1 = this.actions;
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        action = _ref1[_i];
+        _results.push(action.deleteChildren());
+      }
+      return _results;
+    };
+
+    /*
+        Tree building / handling
+    */
+
+
+    App.prototype.buildTree = function() {
+      var watchedAction;
+      if (!this.watchedActionIndex) {
+        return;
+      }
+      this.deleteTree();
+      watchedAction = this.actions[this.watchedActionIndex];
+      this.findChildrenRecursively(watchedAction);
+      return console.log(watchedAction);
+    };
+
+    App.prototype.findChildrenRecursively = function(action) {
+      var children, possibleChildAction, _i, _len, _ref1;
+      children = [];
+      _ref1 = this.actions;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        possibleChildAction = _ref1[_i];
+        if (possibleChildAction === action) {
+          continue;
+        }
+        console.log(possibleChildAction.x, action.x + action.width, "///", action.x + action.width, possibleChildAction.x);
+        if (possibleChildAction.y === action.y - 1) {
+          if (!(possibleChildAction.x >= action.x + action.width || possibleChildAction.x + possibleChildAction.width <= action.x)) {
+            children.push(possibleChildAction);
+            this.findChildrenRecursively(possibleChildAction);
+          }
+        }
+      }
+      return action.children = children;
     };
 
     App.prototype.render = function() {
