@@ -19,6 +19,27 @@
       return CircleAction.__super__.constructor.apply(this, arguments);
     }
 
+    CircleAction.prototype.render = function(contexts) {
+      var imageData;
+      CircleAction.__super__.render.call(this);
+      if (contexts.length === 0) {
+        this.context.fillStyle = 'black';
+        this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
+      } else {
+        imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+        this.context.putImageData(imageData, 0, 0);
+        console.log(imageData.data);
+      }
+      this.context.beginPath();
+      this.context.arc(100, 100, 100, 100, 2 * Math.PI, false);
+      this.context.stroke();
+      this.context.strokeStyle = 'rgba(255,40,20,0.7)';
+      this.context.closePath();
+      this.context.fillStyle = 'blue';
+      this.context.fill();
+      return this.context;
+    };
+
     return CircleAction;
 
   })(Webbzeug.Action);

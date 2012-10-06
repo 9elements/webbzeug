@@ -19,6 +19,21 @@
       return RectangleAction.__super__.constructor.apply(this, arguments);
     }
 
+    RectangleAction.prototype.render = function(contexts) {
+      var imageData;
+      RectangleAction.__super__.render.call(this);
+      if (contexts.length === 0) {
+        this.context.fillStyle = 'black';
+        this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
+      } else {
+        imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+        this.context.putImageData(imageData, 0, 0);
+      }
+      this.context.fillStyle = 'white';
+      this.context.fillRect(0, 0, 100, 100);
+      return this.context;
+    };
+
     return RectangleAction;
 
   })(Webbzeug.Action);
