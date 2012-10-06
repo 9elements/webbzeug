@@ -25,6 +25,7 @@ body {
       background: red; }
   .app-wrapper .left-wrapper .navigation {
     padding-top: 10px;
+    width: 750px;
     overflow: hidden;
     *zoom: 1; }
     .app-wrapper .left-wrapper .navigation li {

@@ -9,6 +9,14 @@ window.Webbzeug.App = class App
     pixels: Webbzeug.Actions.Pixels
     flat: Webbzeug.Actions.Flat
 
+    combine: Webbzeug.Actions.Combine
+    invert: Webbzeug.Actions.Invert
+    contbri: Webbzeug.Actions.ContrastBrightness
+    blur: Webbzeug.Actions.Blur
+    rotozoom: Webbzeug.Actions.RotoZoom
+    light: Webbzeug.Actions.Light
+    mirror: Webbzeug.Actions.Mirror
+
   constructor: (@canvas) ->
     @context = @canvas.getContext '2d'
 

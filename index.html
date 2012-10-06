@@ -24,6 +24,25 @@
                     <li class="action generative" data-type="generative" data-id="pixels">Pixels</li>
                     <li class="action generative" data-type="generative" data-id="flat">Flat</li>
                 </ul>
+                <!--
+    - Combine
+  - Invert
+  - Contrast / Brightness
+  - Blur
+  - Rotozoom
+  (- Color)
+  - Light
+  - Mirroring
+                -->
+                <ul class="navigation">
+                    <li class="action processive" data-type="processive" data-id="combine">Combine</li>
+                    <li class="action processive" data-type="processive" data-id="invert">Invert</li>
+                    <li class="action processive" data-type="processive" data-id="contbri">Cont / Bri</li>
+                    <li class="action processive" data-type="processive" data-id="blur">Blur</li>
+                    <li class="action processive" data-type="processive" data-id="rotozoom">Rotozoom</li>
+                    <li class="action processive" data-type="processive" data-id="light">Light</li>
+                    <li class="action processive" data-type="processive" data-id="mirror">Mirror</li>
+                </ul>
                 <div class="workspace-wrapper">
                     <div class="workspace"></div>
                 </div>
@@ -35,11 +54,23 @@
         <script src="js/plugins.js"></script>
         
         <script src="js/webbzeug/action.js"></script>
+
+        <!-- Generative -->
         <script src="js/webbzeug/actions/rectangle.js"></script>
         <script src="js/webbzeug/actions/circle.js"></script>
         <script src="js/webbzeug/actions/fractal.js"></script>
         <script src="js/webbzeug/actions/pixels.js"></script>
         <script src="js/webbzeug/actions/flat.js"></script>
+
+        <!-- Processive -->
+        <script src="js/webbzeug/actions/combine.js"></script>
+        <script src="js/webbzeug/actions/invert.js"></script>
+        <script src="js/webbzeug/actions/contbri.js"></script>
+        <script src="js/webbzeug/actions/blur.js"></script>
+        <script src="js/webbzeug/actions/rotozoom.js"></script>
+        <script src="js/webbzeug/actions/light.js"></script>
+        <script src="js/webbzeug/actions/mirror.js"></script>
+
         <script src="js/webbzeug/app.js"></script>
         <script src="js/application.js"></script>
     </body>
