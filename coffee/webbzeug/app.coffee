@@ -190,10 +190,15 @@ window.Webbzeug.App = class App
 
           value = $('<div>').addClass('value').text(attributes.value).appendTo li
 
-          input.change =>
-            newVal = parseInt(input.val())
-            action.setParameter key, newVal
-            value.text newVal
+          (=>
+            _input = input
+            _key   = key
+            _value = value
+            _input.change ->
+              newVal = _input.val()
+              action.setParameter _key, newVal
+              _value.text newVal
+          )()
 
   deleteTree: ->
     for action in @actions

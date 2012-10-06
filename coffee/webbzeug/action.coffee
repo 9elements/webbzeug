@@ -4,6 +4,10 @@ window.Webbzeug.Action = class Action
   constructor: (@app, @x, @y, @index) ->
     @children = []
 
+    @parameters = {}
+    for parameter, info of @availableParameters()
+      @parameters[parameter] = info.default
+
   availableParameters: ->
     {
       x: { name: 'X', type: 'number', min: 0, max: 255, default: 0 },
@@ -26,5 +30,5 @@ window.Webbzeug.Action = class Action
   deleteChildren:   -> @children = []
   addChild: (child) -> @children.push child
 
-  getParameter: (parameter) -> null
-  setParameter: (parameter, value) -> null
+  getParameter: (parameter) -> @parameters[parameter]
+  setParameter: (parameter, value) -> @parameters[parameter] = value

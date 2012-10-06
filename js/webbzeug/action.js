@@ -10,11 +10,18 @@
     Action.prototype.width = 3;
 
     function Action(app, x, y, index) {
+      var info, parameter, _ref1;
       this.app = app;
       this.x = x;
       this.y = y;
       this.index = index;
       this.children = [];
+      this.parameters = {};
+      _ref1 = this.availableParameters();
+      for (parameter in _ref1) {
+        info = _ref1[parameter];
+        this.parameters[parameter] = info["default"];
+      }
     }
 
     Action.prototype.availableParameters = function() {
@@ -67,11 +74,11 @@
     };
 
     Action.prototype.getParameter = function(parameter) {
-      return null;
+      return this.parameters[parameter];
     };
 
     Action.prototype.setParameter = function(parameter, value) {
-      return null;
+      return this.parameters[parameter] = value;
     };
 
     return Action;
