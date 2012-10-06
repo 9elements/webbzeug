@@ -92,9 +92,9 @@ window.Webbzeug.App = class App
           @actions.push action
 
           element = @selectedElement
-          @handleElementClick element
-          @selectedElement.click =>
-            @handleElementClick element
+          @handleElementClick null, element
+          @selectedElement.click (e) =>
+            @handleElementClick e, element
 
           @handleElementDrag element
 
@@ -145,23 +145,55 @@ window.Webbzeug.App = class App
           @context.putImageData imageData, 0, 0
 
 
-  handleElementClick: (element) ->
+  handleElementClick: (e, element) ->
     unless @shiftPressed
       @selectedActionIndex = element.attr('data-index')
 
       $('.workspace .action').removeClass('selected')
       $(element).addClass('selected')
     else
-      @showAttributes @actions[@selectedActionIndex]
+      @showParameters e, @actions[@selectedActionIndex]
 
-  showAttributes: (action) ->
-    settingsDiv = $('.workspace .settings')
-    settingsDiv.empty()
+  showParameters: (e, action) ->
+    settingsWindow = $('.workspace-wrapper .parameters')
+
+    settingsWindow.show().css
+      left: (action.x + action.width + 1) * @gridWidth + $('.workspace-wrapper').offset().left
+      top: (action.y + 1) * @gridHeight + $('.workspace-wrapper').offset().top
+
+    settingsWindow.click (e) => e.stopPropagation()
+
+    e.stopPropagation()
+    $(document).click (e) ->
+      settingsWindow.hide()
+      $(document).off 'click'
+
+    settingsUl = settingsWindow.find('ul')
+    settingsUl.empty()
 
     # Build settings
-    availableAttributes = action.availableAttributes()
+    availableParameters = action.availableParameters()
 
-    console.log availableAttributes
+    for key, info of availableParameters
+      switch info.type
+        when 'number'
+          li = $('<li>').appendTo settingsUl
+          label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo li
+
+          attributes = 
+            type: 'range'
+            min: info.min or 0
+            max: info.max or 9999
+            value: action.getParameter(key) or info.default
+
+          input = $('<input>').attr(attributes).appendTo li
+
+          value = $('<div>').addClass('value').text(attributes.value).appendTo li
+
+          input.change =>
+            newVal = parseInt(input.val())
+            action.setParameter key, newVal
+            value.text newVal
 
   deleteTree: ->
     for action in @actions

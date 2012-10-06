@@ -1,5 +1,8 @@
 @import "compass/utilities/general/clearfix"
 @import "compass/css3/box-shadow"
+@import "compass/reset"
+
++global-reset()
 
 body
   background-color: #333
@@ -81,3 +84,40 @@ body
             background-image: url('/images/icon-watched.png')
             background-position: right center
             background-repeat: no-repeat
+
+      .parameters
+        position: absolute
+
+        top: 0
+        left: 0
+
+        display: none
+
+        width: 250px
+        height: 300px
+
+        background: white
+        border-radius: 5px
+
+        box-shadow: rgba(black, 0.2) 0 0 0 3px inset
+
+        overflow-y: scroll
+
+        padding: 10px
+
+        font: normal 11px Verdana
+
+        ul
+          li
+            list-style: none
+            margin-bottom: 4px
+            +clearfix()
+            .label
+              width: 50px
+              float: left
+            input[type=number], input[type=text]
+              float: right
+              width: 70px
+            .value
+              float: right
+              width: 30px

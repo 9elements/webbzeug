@@ -6,10 +6,10 @@ window.Webbzeug.Action = class Action
 
   availableParameters: ->
     {
-      x: Integer,
-      y: Integer,
-      width: Integer,
-      height: Integer
+      x: { name: 'X', type: 'number', min: 0, max: 255, default: 0 },
+      y:  { name: 'Y', type: 'number', min: 0, max: 255, default: 0 },
+      width:  { name: 'Width', type: 'number', min: 0, max: 255, default: 10 },
+      height:  { name: 'Height', type: 'number', min: 0, max: 255, default: 10 }
     }
 
   render: (contexts) ->
@@ -25,3 +25,6 @@ window.Webbzeug.Action = class Action
   # Children
   deleteChildren:   -> @children = []
   addChild: (child) -> @children.push child
+
+  getParameter: (parameter) -> null
+  setParameter: (parameter, value) -> null

@@ -95,9 +95,9 @@
             _this.incrementalIndex++;
             _this.actions.push(action);
             element = _this.selectedElement;
-            _this.handleElementClick(element);
-            _this.selectedElement.click(function() {
-              return _this.handleElementClick(element);
+            _this.handleElementClick(null, element);
+            _this.selectedElement.click(function(e) {
+              return _this.handleElementClick(e, element);
             });
             _this.handleElementDrag(element);
           }
@@ -159,22 +159,62 @@
       });
     };
 
-    App.prototype.handleElementClick = function(element) {
+    App.prototype.handleElementClick = function(e, element) {
       if (!this.shiftPressed) {
         this.selectedActionIndex = element.attr('data-index');
         $('.workspace .action').removeClass('selected');
         return $(element).addClass('selected');
       } else {
-        return this.showAttributes(this.actions[this.selectedActionIndex]);
+        return this.showParameters(e, this.actions[this.selectedActionIndex]);
       }
     };
 
-    App.prototype.showAttributes = function(action) {
-      var availableAttributes, settingsDiv;
-      settingsDiv = $('.workspace .settings');
-      settingsDiv.empty();
-      availableAttributes = action.availableAttributes();
-      return console.log(availableAttributes);
+    App.prototype.showParameters = function(e, action) {
+      var attributes, availableParameters, info, input, key, label, li, settingsUl, settingsWindow, value, _results,
+        _this = this;
+      settingsWindow = $('.workspace-wrapper .parameters');
+      settingsWindow.show().css({
+        left: (action.x + action.width + 1) * this.gridWidth + $('.workspace-wrapper').offset().left,
+        top: (action.y + 1) * this.gridHeight + $('.workspace-wrapper').offset().top
+      });
+      settingsWindow.click(function(e) {
+        return e.stopPropagation();
+      });
+      e.stopPropagation();
+      $(document).click(function(e) {
+        settingsWindow.hide();
+        return $(document).off('click');
+      });
+      settingsUl = settingsWindow.find('ul');
+      settingsUl.empty();
+      availableParameters = action.availableParameters();
+      _results = [];
+      for (key in availableParameters) {
+        info = availableParameters[key];
+        switch (info.type) {
+          case 'number':
+            li = $('<li>').appendTo(settingsUl);
+            label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo(li);
+            attributes = {
+              type: 'range',
+              min: info.min || 0,
+              max: info.max || 9999,
+              value: action.getParameter(key) || info["default"]
+            };
+            input = $('<input>').attr(attributes).appendTo(li);
+            value = $('<div>').addClass('value').text(attributes.value).appendTo(li);
+            _results.push(input.change(function() {
+              var newVal;
+              newVal = parseInt(input.val());
+              action.setParameter(key, newVal);
+              return value.text(newVal);
+            }));
+            break;
+          default:
+            _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     App.prototype.deleteTree = function() {

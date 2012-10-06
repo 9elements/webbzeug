@@ -19,10 +19,34 @@
 
     Action.prototype.availableParameters = function() {
       return {
-        x: Integer,
-        y: Integer,
-        width: Integer,
-        height: Integer
+        x: {
+          name: 'X',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 0
+        },
+        y: {
+          name: 'Y',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 0
+        },
+        width: {
+          name: 'Width',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 10
+        },
+        height: {
+          name: 'Height',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 10
+        }
       };
     };
 
@@ -40,6 +64,14 @@
 
     Action.prototype.addChild = function(child) {
       return this.children.push(child);
+    };
+
+    Action.prototype.getParameter = function(parameter) {
+      return null;
+    };
+
+    Action.prototype.setParameter = function(parameter, value) {
+      return null;
     };
 
     return Action;
