@@ -4,7 +4,14 @@ window.Webbzeug.Action = class Action
   constructor: (@app, @x, @y, @index) ->
     @children = []
 
-  availableOptions: -> {}
+  availableParameters: ->
+    {
+      x: Integer,
+      y: Integer,
+      width: Integer,
+      height: Integer
+    }
+
   render: (contexts) ->
     console.log "rendering...", @index, ":", @constructor.name, "x", @x, "y", @y
 

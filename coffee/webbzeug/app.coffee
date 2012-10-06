@@ -20,6 +20,8 @@ window.Webbzeug.App = class App
   constructor: (@canvas) ->
     @context = @canvas.getContext '2d'
 
+    @shiftPressed = false
+
     @incrementalIndex = 0
     @actions = []
 
@@ -119,7 +121,13 @@ window.Webbzeug.App = class App
         action.y = Math.round(editingElement.position().top  / @gridHeight)
 
   handleWorkspaceKeyboard: ->
+    $(document).keyup (e) =>
+      if e.keyCode is 16
+        @shiftPressed = false
+
     $(document).keydown (e) =>
+      if e.keyCode is 16
+        @shiftPressed = true
       if e.keyCode is 32
         e.preventDefault()
         if @selectedActionIndex
@@ -138,10 +146,22 @@ window.Webbzeug.App = class App
 
 
   handleElementClick: (element) ->
-    @selectedActionIndex = element.attr('data-index')
+    unless @shiftPressed
+      @selectedActionIndex = element.attr('data-index')
 
-    $('.workspace .action').removeClass('selected')
-    $(element).addClass('selected')
+      $('.workspace .action').removeClass('selected')
+      $(element).addClass('selected')
+    else
+      @showAttributes @actions[@selectedActionIndex]
+
+  showAttributes: (action) ->
+    settingsDiv = $('.workspace .settings')
+    settingsDiv.empty()
+
+    # Build settings
+    availableAttributes = action.availableAttributes()
+
+    console.log availableAttributes
 
   deleteTree: ->
     for action in @actions

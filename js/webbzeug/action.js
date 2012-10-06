@@ -17,8 +17,13 @@
       this.children = [];
     }
 
-    Action.prototype.availableOptions = function() {
-      return {};
+    Action.prototype.availableParameters = function() {
+      return {
+        x: Integer,
+        y: Integer,
+        width: Integer,
+        height: Integer
+      };
     };
 
     Action.prototype.render = function(contexts) {

@@ -29,6 +29,7 @@
     function App(canvas) {
       this.canvas = canvas;
       this.context = this.canvas.getContext('2d');
+      this.shiftPressed = false;
       this.incrementalIndex = 0;
       this.actions = [];
       this.width = this.context.canvas.width;
@@ -132,8 +133,16 @@
 
     App.prototype.handleWorkspaceKeyboard = function() {
       var _this = this;
+      $(document).keyup(function(e) {
+        if (e.keyCode === 16) {
+          return _this.shiftPressed = false;
+        }
+      });
       return $(document).keydown(function(e) {
         var context, imageData, watchedAction;
+        if (e.keyCode === 16) {
+          _this.shiftPressed = true;
+        }
         if (e.keyCode === 32) {
           e.preventDefault();
           if (_this.selectedActionIndex) {
@@ -151,9 +160,21 @@
     };
 
     App.prototype.handleElementClick = function(element) {
-      this.selectedActionIndex = element.attr('data-index');
-      $('.workspace .action').removeClass('selected');
-      return $(element).addClass('selected');
+      if (!this.shiftPressed) {
+        this.selectedActionIndex = element.attr('data-index');
+        $('.workspace .action').removeClass('selected');
+        return $(element).addClass('selected');
+      } else {
+        return this.showAttributes(this.actions[this.selectedActionIndex]);
+      }
+    };
+
+    App.prototype.showAttributes = function(action) {
+      var availableAttributes, settingsDiv;
+      settingsDiv = $('.workspace .settings');
+      settingsDiv.empty();
+      availableAttributes = action.availableAttributes();
+      return console.log(availableAttributes);
     };
 
     App.prototype.deleteTree = function() {
