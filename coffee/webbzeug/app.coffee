@@ -2,8 +2,13 @@ window.Webbzeug ?= {}
 window.Webbzeug.App = class App
   gridHeight: 27
   gridWidth:  112 / 3
+  classMap: 
+    rectangle: Webbzeug.Actions.Rectangle
   constructor: (@canvas) ->
     @context = @canvas.getContext 'experimental-webgl'
+
+    @incrementalIndex = 0
+    @actions = []
 
     @width = @context.canvas.width
     @height = @context.canvas.height
@@ -44,21 +49,34 @@ window.Webbzeug.App = class App
         @selectedElement = el
 
     $('.workspace').mousemove (e) =>
-      if @selectedElement
+      if @selectedElement and @selectedActionId
+        offsetX = $('.workspace').offset().left
+        offsetY = $('.workspace').offset().top
+
         @selectedElement.css
-          left: Math.floor(e.pageX / @gridWidth) * @gridWidth
-          top:  Math.floor(e.pageY / @gridHeight) * @gridHeight
+          left: Math.floor((e.pageX - offsetX) / @gridWidth) * @gridWidth
+          top:  Math.floor((e.pageY - offsetY) / @gridHeight) * @gridHeight
 
     $('.workspace').mousedown (e) =>
-      if @selectedElement
-        @selectedElement.css
-          left: Math.floor(e.pageX / @gridWidth) * @gridWidth
-          top:  Math.floor(e.pageY / @gridHeight) * @gridHeight
+      if @selectedElement and @selectedActionId
+
+        x = @selectedElement.position().left / @gridWidth
+        y = @selectedElement.position().top  / @gridHeight
+        
+        console.log @selectedActionId
+        action = new @classMap[@selectedActionId] x, y, @incrementalIndex
+        @incrementalIndex++
+
+        @actions.push action
+
+        @render()
 
         @selectedElement = null
+        @selectedActionId = @selectedActionType = @selectedActionName = null
 
 
   render: ->
 
-    @context.fillStyle = 'rgba(255,255,255,1)'
-    @context.fillRect(Math.random() * @width, Math.random() * @height, 10, 10)
+    console.log "Existing actions:"
+    for action in @actions
+      action.render()

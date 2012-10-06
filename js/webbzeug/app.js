@@ -11,9 +11,15 @@
 
     App.prototype.gridWidth = 112 / 3;
 
+    App.prototype.classMap = {
+      rectangle: Webbzeug.Actions.Rectangle
+    };
+
     function App(canvas) {
       this.canvas = canvas;
       this.context = this.canvas.getContext('experimental-webgl');
+      this.incrementalIndex = 0;
+      this.actions = [];
       this.width = this.context.canvas.width;
       this.height = this.context.canvas.height;
       this.handleNavigation();
@@ -50,27 +56,42 @@
         }
       });
       $('.workspace').mousemove(function(e) {
-        if (_this.selectedElement) {
+        var offsetX, offsetY;
+        if (_this.selectedElement && _this.selectedActionId) {
+          offsetX = $('.workspace').offset().left;
+          offsetY = $('.workspace').offset().top;
           return _this.selectedElement.css({
-            left: Math.floor(e.pageX / _this.gridWidth) * _this.gridWidth,
-            top: Math.floor(e.pageY / _this.gridHeight) * _this.gridHeight
+            left: Math.floor((e.pageX - offsetX) / _this.gridWidth) * _this.gridWidth,
+            top: Math.floor((e.pageY - offsetY) / _this.gridHeight) * _this.gridHeight
           });
         }
       });
       return $('.workspace').mousedown(function(e) {
-        if (_this.selectedElement) {
-          _this.selectedElement.css({
-            left: Math.floor(e.pageX / _this.gridWidth) * _this.gridWidth,
-            top: Math.floor(e.pageY / _this.gridHeight) * _this.gridHeight
-          });
-          return _this.selectedElement = null;
+        var action, x, y;
+        if (_this.selectedElement && _this.selectedActionId) {
+          x = _this.selectedElement.position().left / _this.gridWidth;
+          y = _this.selectedElement.position().top / _this.gridHeight;
+          console.log(_this.selectedActionId);
+          action = new _this.classMap[_this.selectedActionId](x, y, _this.incrementalIndex);
+          _this.incrementalIndex++;
+          _this.actions.push(action);
+          _this.render();
+          _this.selectedElement = null;
+          return _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
         }
       });
     };
 
     App.prototype.render = function() {
-      this.context.fillStyle = 'rgba(255,255,255,1)';
-      return this.context.fillRect(Math.random() * this.width, Math.random() * this.height, 10, 10);
+      var action, _i, _len, _ref1, _results;
+      console.log("Existing actions:");
+      _ref1 = this.actions;
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        action = _ref1[_i];
+        _results.push(action.render());
+      }
+      return _results;
     };
 
     return App;

@@ -16,7 +16,7 @@
     <body>
         <div class="app-wrapper">
             <canvas id="canvas"></canvas>
-            <div class="workspace-wrapper">
+            <div class="left-wrapper">
                 <ul class="navigation">
                     <li class="action generative" data-type="generative" data-id="rectangle">Rectangle</li>
                     <li class="action generative" data-type="generative" data-id="circle">Circle</li>
@@ -24,7 +24,9 @@
                     <li class="action generative" data-type="generative" data-id="pixels">Pixels</li>
                     <li class="action generative" data-type="generative" data-id="flat">Flat</li>
                 </ul>
-                <div class="workspace"></div>
+                <div class="workspace-wrapper">
+                    <div class="workspace"></div>
+                </div>
             </div>
         </div>
 
@@ -32,6 +34,8 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
         
+        <script src="js/webbzeug/action.js"></script>
+        <script src="js/webbzeug/actions/rectangle.js"></script>
         <script src="js/webbzeug/app.js"></script>
         <script src="js/application.js"></script>
     </body>

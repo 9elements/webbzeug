@@ -1,3 +1,5 @@
+@import "compass/utilities/general/clearfix"
+
 body
   background-color: #333
   width: 100%
@@ -13,7 +15,8 @@ body
     background-color: black
     float: right
 
-  .workspace-wrapper
+  .left-wrapper
+
     .action
       color: white
       font: normal 12px Verdana
@@ -30,6 +33,7 @@ body
 
     .navigation
       padding-top: 10px
+      +clearfix
       li
         display: inline-block
         color: white
@@ -44,14 +48,17 @@ body
         &:hover, &.active
           background-color: rgba(white, 0.2)
 
-    .workspace
-      background: rgba(black, 0.2)
+    .workspace-wrapper
       width: 850px
       height: 500px
-
       overflow: scroll
+      .workspace
+        background: rgba(black, 0.2)
+        width: 1500px
+        height: 1500px
 
-      border: 1px solid rgba(white, 0.3)
+        border: 1px solid rgba(white, 0.3)
 
-      .action
-        position: absolute
+        position: relative
+        .action
+          position: absolute
