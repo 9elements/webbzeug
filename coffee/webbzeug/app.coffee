@@ -126,8 +126,6 @@ window.Webbzeug.App = class App
           context = @render watchedAction
 
           imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
-
-          console.log imageData
           @context.putImageData imageData, 0, 0
 
 
@@ -177,8 +175,11 @@ window.Webbzeug.App = class App
 
   render: (action) ->
     children = action.children
-    for child in children
-      @render child
 
-    context = action.render()
+    contexts = []
+    for child in children
+      context = @render child
+      contexts.push context
+
+    context = action.render(contexts)
     return context

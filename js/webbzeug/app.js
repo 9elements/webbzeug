@@ -137,7 +137,6 @@
             watchedAction = _this.actions[_this.watchedActionIndex];
             context = _this.render(watchedAction);
             imageData = context.getImageData(0, 0, _this.getWidth(), _this.getHeight());
-            console.log(imageData);
             return _this.context.putImageData(imageData, 0, 0);
           }
         }
@@ -209,13 +208,15 @@
     };
 
     App.prototype.render = function(action) {
-      var child, children, context, _i, _len;
+      var child, children, context, contexts, _i, _len;
       children = action.children;
+      contexts = [];
       for (_i = 0, _len = children.length; _i < _len; _i++) {
         child = children[_i];
-        this.render(child);
+        context = this.render(child);
+        contexts.push(context);
       }
-      context = action.render();
+      context = action.render(contexts);
       return context;
     };
 

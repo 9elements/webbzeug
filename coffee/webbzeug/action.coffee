@@ -5,7 +5,7 @@ window.Webbzeug.Action = class Action
     @children = []
 
   availableOptions: -> {}
-  render: ->
+  render: (contexts) ->
     console.log "rendering...", @index, ":", @constructor.name, "x", @x, "y", @y
 
     @canvas = $('<canvas>').get(0)
