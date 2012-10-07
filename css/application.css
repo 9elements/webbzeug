@@ -117,6 +117,8 @@ body {
       background: blue; }
     .app-wrapper .left-wrapper .action.processive {
       background: red; }
+    .app-wrapper .left-wrapper .action.memory {
+      background: darkgreen; }
   .app-wrapper .left-wrapper .navigation {
     padding-top: 10px;
     width: 750px;

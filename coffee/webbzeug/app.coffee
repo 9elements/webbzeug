@@ -17,6 +17,9 @@ window.Webbzeug.App = class App
     light: Webbzeug.Actions.Light
     mirror: Webbzeug.Actions.Mirror
 
+    load: Webbzeug.Actions.Load
+    save: Webbzeug.Actions.Save
+
   constructor: (@canvas) ->
     @context = @canvas.getContext '2d'
 
@@ -33,6 +36,8 @@ window.Webbzeug.App = class App
 
     @watchedActionIndex  = null
     @selectedActionIndex = null
+
+    @memory = []
 
     # every 1000 / 60, =>
     #   @render()

@@ -23,7 +23,9 @@
       blur: Webbzeug.Actions.Blur,
       rotozoom: Webbzeug.Actions.RotoZoom,
       light: Webbzeug.Actions.Light,
-      mirror: Webbzeug.Actions.Mirror
+      mirror: Webbzeug.Actions.Mirror,
+      load: Webbzeug.Actions.Load,
+      save: Webbzeug.Actions.Save
     };
 
     function App(canvas) {
@@ -38,6 +40,7 @@
       this.handleWorkspaceKeyboard();
       this.watchedActionIndex = null;
       this.selectedActionIndex = null;
+      this.memory = [];
     }
 
     App.prototype.handleNavigation = function() {
