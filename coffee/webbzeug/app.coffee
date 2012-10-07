@@ -165,6 +165,13 @@ window.Webbzeug.App = class App
 
     @handleElementDrag element
 
+    element.on 'mouseenter', =>
+      if action.renderTime
+        $('.debug').text action.constructor.name + ' rendered in ' + action.renderTime + 'ms'
+    element.on 'mouseleave', =>
+      if @renderTime
+        $('.debug').text 'Texture rendered in ' + @renderTime + 'ms'
+
     return action
 
   # When workspace is clicked, create new element
@@ -269,8 +276,8 @@ window.Webbzeug.App = class App
     settingsWindow = $('.workspace-wrapper .parameters')
 
     settingsWindow.show().css
-      left: (action.x + action.width + 1) * @gridWidth + $('.workspace-wrapper').offset().left
-      top: (action.y + 1) * @gridHeight + $('.workspace-wrapper').offset().top
+      left: (action.x + action.width + 1) * @gridWidth #+ $('.workspace-wrapper').offset().left
+      top: (action.y + 1) * @gridHeight #+ $('.workspace-wrapper').offset().top
 
     settingsWindow.click (e) => e.stopPropagation()
 
@@ -402,9 +409,13 @@ window.Webbzeug.App = class App
     unless watchedAction?
       return false
 
+    startTime = +new Date()
     if context = @render watchedAction
       imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
       @context.putImageData imageData, 0, 0
+    @renderTime = (+new Date() - startTime)
+
+    $('.debug').text 'Texture rendered in ' + @renderTime + 'ms'
 
   render: (action) ->
     unless action?
@@ -417,5 +428,7 @@ window.Webbzeug.App = class App
       context = @render child
       contexts.push context
 
+    startTime = +new Date()
     context = action.render(contexts)
+    action.renderTime = (+new Date()) - startTime
     return context

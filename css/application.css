@@ -155,10 +155,18 @@ body {
       cursor: pointer; }
       .app-wrapper .left-wrapper .navigation li:hover, .app-wrapper .left-wrapper .navigation li.active {
         background-color: rgba(255, 255, 255, 0.2); }
+  .app-wrapper .left-wrapper .debug {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: red;
+    font: normal 10px Verdana;
+    padding: 3px; }
   .app-wrapper .left-wrapper .workspace-wrapper {
     width: 850px;
     height: 500px;
     overflow: scroll;
+    position: absolute;
     border: 1px solid rgba(255, 255, 255, 0.3); }
     .app-wrapper .left-wrapper .workspace-wrapper .workspace {
       background: rgba(0, 0, 0, 0.2);

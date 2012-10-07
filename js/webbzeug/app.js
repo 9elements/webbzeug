@@ -186,6 +186,16 @@
         return _this.handleElementClick(e, element);
       });
       this.handleElementDrag(element);
+      element.on('mouseenter', function() {
+        if (action.renderTime) {
+          return $('.debug').text(action.constructor.name + ' rendered in ' + action.renderTime + 'ms');
+        }
+      });
+      element.on('mouseleave', function() {
+        if (_this.renderTime) {
+          return $('.debug').text('Texture rendered in ' + _this.renderTime + 'ms');
+        }
+      });
       return action;
     };
 
@@ -305,8 +315,8 @@
       self = this;
       settingsWindow = $('.workspace-wrapper .parameters');
       settingsWindow.show().css({
-        left: (action.x + action.width + 1) * this.gridWidth + $('.workspace-wrapper').offset().left,
-        top: (action.y + 1) * this.gridHeight + $('.workspace-wrapper').offset().top
+        left: (action.x + action.width + 1) * this.gridWidth,
+        top: (action.y + 1) * this.gridHeight
       });
       settingsWindow.click(function(e) {
         return e.stopPropagation();
@@ -462,20 +472,23 @@
     };
 
     App.prototype.renderAll = function() {
-      var context, imageData, watchedAction;
+      var context, imageData, startTime, watchedAction;
       this.buildTree();
       watchedAction = this.actions[this.watchedActionIndex];
       if (watchedAction == null) {
         return false;
       }
+      startTime = +new Date();
       if (context = this.render(watchedAction)) {
         imageData = context.getImageData(0, 0, this.getWidth(), this.getHeight());
-        return this.context.putImageData(imageData, 0, 0);
+        this.context.putImageData(imageData, 0, 0);
       }
+      this.renderTime = +new Date() - startTime;
+      return $('.debug').text('Texture rendered in ' + this.renderTime + 'ms');
     };
 
     App.prototype.render = function(action) {
-      var child, children, context, contexts, _i, _len;
+      var child, children, context, contexts, startTime, _i, _len;
       if (action == null) {
         return false;
       }
@@ -486,7 +499,9 @@
         context = this.render(child);
         contexts.push(context);
       }
+      startTime = +new Date();
       context = action.render(contexts);
+      action.renderTime = (+new Date()) - startTime;
       return context;
     };
 
