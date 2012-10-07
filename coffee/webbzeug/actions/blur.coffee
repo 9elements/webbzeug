@@ -4,11 +4,12 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
   type: 'blur'
   availableParameters: ->
     {
-      strength: { name: 'Strength', type: 'number', default: 1, min: 1 , max: 10 }
+      strength: { name: 'Strength', type: 'number', default: 1, min: 1 , max: 30 }
       type: { name: 'Type', type: 'enum', values: { linear: 'Linear', gauss: 'Gauss', median: 'Median' }, default: 'linear' }
     }
 
   linearBlur: (contexts) ->
+    console.log "linear"
     if contexts.length == 0
       console.log "Dude an blur needs an input"
       return
@@ -72,9 +73,10 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
           outputData.data[index + 3] = 255
 
       @context.putImageData outputData, 0, 0 
-    return @context 
+     
 
   gaussBlur: (contexts) ->
+    console.log "Gauss"
     if contexts.length == 0
       console.log "Dude an blur needs an input"
       return
@@ -89,28 +91,56 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
         imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()      
       outputData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
       rowLength = @app.getWidth() << 2
-      for y in [1...@app.getHeight() - 1]
-        for x in [1...@app.getWidth() - 1]
+      for y in [0...@app.getHeight()]
+        for x in [0...@app.getWidth()]
           index = (x << 2) + y * (@app.getWidth() << 2)
           for i in [0...3]  
+            pixelCount = 16
             # unrolled for performance 
-            value = imageData.data[index + i - rowLength]
-            value += imageData.data[index + i - 4 - rowLength]
-            value += imageData.data[index + i + 4 - rowLength]
+            value = imageData.data[index + i]  << 2 # our pixel itself is our starting point
 
-            value += imageData.data[index + i]
-            value += imageData.data[index + i - 4]
-            value += imageData.data[index + i + 4]
+            # upper row
+            if y != 0 
+              value += (imageData.data[index + i - rowLength] << 1)
+              if x != 0
+                value += imageData.data[index + i - 4 - rowLength]
+              else 
+                pixelCount -= 1
+              if x < (@app.getWidth() - 1)        
+                value += imageData.data[index + i + 4 - rowLength]
+              else 
+                pixelCount -= 1
+            else 
+              pixelCount -=4
+            # mid row
+            if x != 0
+              value += (imageData.data[index + i - 4] << 1)
+            else 
+              pixelCount -= 2
+            if x < (@app.getWidth() - 1)        
+              value += (imageData.data[index + i + 4] << 1)
+            else
+              pixelCount -= 2
 
-            value += imageData.data[index + i +  rowLength]
-            value += imageData.data[index + i - 4 + rowLength]
-            value += imageData.data[index + i + 4 + rowLength]
-            outputData.data[index + i] = value / 9
+            # bottom row
+            if y < (@app.getHeight() - 1)
+              value += (imageData.data[index + i +  rowLength] << 1)
+              if x != 0
+                value += imageData.data[index + i - 4 + rowLength]
+              else 
+                pixelCount -= 1
+              if x < (@app.getWidth() - 1)       
+                value += imageData.data[index + i + 4 + rowLength]
+              else 
+                pixelCount -= 1
+            else 
+              pixelCount -= 4
+            outputData.data[index + i] = value / pixelCount
 
           outputData.data[index + 3] = 255
 
       @context.putImageData outputData, 0, 0 
-    return @context 
+     
 
   render: (contexts) ->
     super()
@@ -118,7 +148,7 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
       when 'linear'
         @linearBlur contexts
       when 'gauss'
-        @linearBlur contexts
+        @gaussBlur contexts
       when 'median'
         @linearBlur contexts
     return @context
