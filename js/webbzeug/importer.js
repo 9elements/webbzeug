@@ -7,7 +7,7 @@
 
   window.Webbzeug.Importer = Importer = (function() {
 
-    Importer.prototype.debug = false;
+    Importer.prototype.debug = true;
 
     function Importer(app) {
       this.app = app;
@@ -19,7 +19,7 @@
       splitData = data.split('base64,');
       b64encodedData = splitData[1];
       this.data = Base64.decode(b64encodedData);
-      console.log(this.data);
+      this.debugPrint(this.data);
       this.actions = [];
       identifier = this.readBytes(2);
       if (identifier !== 'WZ') {
@@ -65,8 +65,8 @@
       if (this.debug) {
         console.log("Action index", index, "x", x, "y", y, "width", width);
       }
-      el = this.app.newActionElement(x * this.app.gridWidth, y * this.app.gridHeight, this.app.classMap[type].name, this.app.classMap[type].type);
-      action = this.app.applyActionToElement(type, x, y, index, el);
+      el = this.app.newActionElement(x * this.app.gridWidth, y * this.app.gridHeight, this.app.classMap[type].name, width, this.app.classMap[type].type);
+      action = this.app.applyActionToElement(type, x, y, width, index, el);
       parameterKey = null;
       parameterVal = null;
       _results = [];
@@ -95,6 +95,10 @@
         stringLength = this.readInt();
         val = this.readBytes(stringLength);
       }
+      if (valueType === '\xfd') {
+        stringLength = this.readInt();
+        val = parseFloat(this.readBytes(stringLength, false));
+      }
       if (valueType === '\xfc') {
         stringLength = this.readInt();
         val = JSON.parse(this.readBytes(stringLength));
@@ -109,11 +113,16 @@
       return int;
     };
 
-    Importer.prototype.readBytes = function(count) {
+    Importer.prototype.readBytes = function(count, translate) {
       var bytes;
+      if (translate == null) {
+        translate = true;
+      }
       bytes = this.data.slice(0, count);
       this.data = this.data.slice(count);
-      bytes = Webbzeug.Utilities.bytesToString(bytes);
+      if (translate) {
+        bytes = Webbzeug.Utilities.bytesToString(bytes);
+      }
       return bytes;
     };
 

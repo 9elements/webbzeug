@@ -37,12 +37,16 @@ window.Webbzeug.Exporter = class Exporter
     return "data:application/octet-stream;base64," + Base64.encode(@output)
 
   writeData: (data) ->
+    console.log "WRITIN DATA", data
     if typeof data is 'number' and parseInt(data) == data
-      console.log "writing int", data
       @output += '\xfa'
       @output += chr(data & 0xff)
+    if typeof data is 'number' and !!(data % 1)
+      data = data.toString()
+      @output += '\xfd'
+      @output += chr(data.length & 0xff)
+      @output += data
     if typeof data is 'string'
-      console.log "writing string", data
       @output += '\xfb'
       @output += chr(data.length & 0xff)
       @output += data

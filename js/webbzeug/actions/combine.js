@@ -27,11 +27,14 @@
           name: 'Type',
           type: 'enum',
           values: {
+            darken: 'Darken',
+            lighten: 'Lighten',
             multiply: 'Multiply',
             add: 'Add',
-            substract: 'Substract'
+            substract: 'Substract',
+            divide: 'Divide'
           },
-          "default": 'addition'
+          "default": 'add'
         }
       };
     };
@@ -48,6 +51,12 @@
       for (i = _i = 1, _ref2 = contexts.length; 1 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 1 <= _ref2 ? ++_i : --_i) {
         applyingContext = contexts[i];
         switch (this.getParameter('type')) {
+          case 'darken':
+            this.darken(applyingContext);
+            break;
+          case 'lighten':
+            this.lighten(applyingContext);
+            break;
           case 'multiply':
             this.multiply(applyingContext);
             break;
@@ -56,9 +65,36 @@
             break;
           case 'substract':
             this.substract(applyingContext);
+            break;
+          case 'divide':
+            this.divide(applyingContext);
         }
       }
       return this.context;
+    };
+
+    CombineAction.prototype.darken = function(applyingContext) {
+      var applyingImageData, i, imageData, j, _i, _j, _ref2;
+      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      for (i = _i = 0, _ref2 = applyingImageData.data.length; _i < _ref2; i = _i += 4) {
+        for (j = _j = 0; _j < 3; j = ++_j) {
+          imageData.data[i + j] = Math.min(imageData.data[i + j], applyingImageData.data[i + j]);
+        }
+      }
+      return this.context.putImageData(imageData, 0, 0);
+    };
+
+    CombineAction.prototype.lighten = function(applyingContext) {
+      var applyingImageData, i, imageData, j, _i, _j, _ref2;
+      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      for (i = _i = 0, _ref2 = applyingImageData.data.length; _i < _ref2; i = _i += 4) {
+        for (j = _j = 0; _j < 3; j = ++_j) {
+          imageData.data[i + j] = Math.max(imageData.data[i + j], applyingImageData.data[i + j]);
+        }
+      }
+      return this.context.putImageData(imageData, 0, 0);
     };
 
     CombineAction.prototype.multiply = function(applyingContext) {
@@ -88,6 +124,18 @@
       for (i = _i = 0, _ref2 = applyingImageData.data.length; _i < _ref2; i = _i += 4) {
         for (j = _j = 0; _j < 3; j = ++_j) {
           imageData.data[i + j] = imageData.data[i + j] - applyingImageData.data[i + j];
+        }
+      }
+      return this.context.putImageData(imageData, 0, 0);
+    };
+
+    CombineAction.prototype.divide = function(applyingContext) {
+      var applyingImageData, i, imageData, _i, _ref2;
+      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      for (i = _i = 0, _ref2 = applyingImageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+        if (imageData.data[i] > 0) {
+          imageData.data[i] = Math.round(applyingImageData.data[i] / imageData.data[i]);
         }
       }
       return this.context.putImageData(imageData, 0, 0);

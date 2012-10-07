@@ -39,6 +39,11 @@
         type: 'generative',
         "class": Webbzeug.Actions.Flat
       },
+      normal: {
+        name: 'Normal',
+        type: 'normal',
+        "class": Webbzeug.Actions.Normal
+      },
       combine: {
         name: 'Combine',
         type: 'processive',
@@ -161,22 +166,23 @@
       });
     };
 
-    App.prototype.newActionElement = function(x, y, actionName, actionType) {
+    App.prototype.newActionElement = function(x, y, actionName, width, actionType) {
       var dragger, el;
       el = $('<div>').addClass('action');
       el.text(actionName).addClass(actionType).css({
         left: x,
-        top: y
+        top: y,
+        width: width * this.gridWidth - 12
       });
       dragger = $('<div>').addClass('dragger').appendTo(el);
       $('.workspace').append(el);
       return el;
     };
 
-    App.prototype.applyActionToElement = function(actionId, x, y, index, element) {
+    App.prototype.applyActionToElement = function(actionId, x, y, width, index, element) {
       var action,
         _this = this;
-      action = new this.classMap[actionId]["class"](this, x, y, index);
+      action = new this.classMap[actionId]["class"](this, x, y, width, index);
       element.attr({
         'data-index': index
       });
@@ -186,6 +192,16 @@
         return _this.handleElementClick(e, element);
       });
       this.handleElementDrag(element);
+      element.on('mouseenter', function() {
+        if (action.renderTime) {
+          return $('.debug').text(action.constructor.name + ' rendered in ' + action.renderTime + 'ms');
+        }
+      });
+      element.on('mouseleave', function() {
+        if (_this.renderTime) {
+          return $('.debug').text('Texture rendered in ' + _this.renderTime + 'ms');
+        }
+      });
       return action;
     };
 
@@ -194,7 +210,7 @@
       $('.workspace').mouseenter(function(e) {
         var el;
         if (!_this.selectedElement && _this.selectedActionId) {
-          el = _this.newActionElement(e.pageX, e.pageY, _this.selectedActionName, _this.selectedActionType);
+          el = _this.newActionElement(e.pageX, e.pageY, _this.selectedActionName, 3, _this.selectedActionType);
           return _this.selectedElement = el;
         }
       });
@@ -216,7 +232,7 @@
           x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
           if (_this.selectedActionId) {
-            _this.applyActionToElement(_this.selectedActionId, x, y, _this.incrementalIndex, _this.selectedElement);
+            _this.applyActionToElement(_this.selectedActionId, x, y, 3, _this.incrementalIndex, _this.selectedElement);
             _this.incrementalIndex++;
           }
           _this.selectedElement = null;
@@ -305,8 +321,8 @@
       self = this;
       settingsWindow = $('.workspace-wrapper .parameters');
       settingsWindow.show().css({
-        left: (action.x + action.width + 1) * this.gridWidth + $('.workspace-wrapper').offset().left,
-        top: (action.y + 1) * this.gridHeight + $('.workspace-wrapper').offset().top
+        left: (action.x + action.width + 1) * this.gridWidth,
+        top: (action.y + 1) * this.gridHeight
       });
       settingsWindow.click(function(e) {
         return e.stopPropagation();
@@ -366,7 +382,12 @@
               return _input.change(function() {
                 var newVal;
                 newVal = _input.val();
-                action.setParameter(_key, parseInt(newVal));
+                if (!!(newVal % 1)) {
+                  newVal = parseFloat(newVal);
+                } else {
+                  newVal = parseInt(newVal);
+                }
+                action.setParameter(_key, newVal);
                 _value.text(newVal);
                 return self.renderAll();
               });
@@ -462,20 +483,23 @@
     };
 
     App.prototype.renderAll = function() {
-      var context, imageData, watchedAction;
+      var context, imageData, startTime, watchedAction;
       this.buildTree();
       watchedAction = this.actions[this.watchedActionIndex];
       if (watchedAction == null) {
         return false;
       }
+      startTime = +new Date();
       if (context = this.render(watchedAction)) {
         imageData = context.getImageData(0, 0, this.getWidth(), this.getHeight());
-        return this.context.putImageData(imageData, 0, 0);
+        this.context.putImageData(imageData, 0, 0);
       }
+      this.renderTime = +new Date() - startTime;
+      return $('.debug').text('Texture rendered in ' + this.renderTime + 'ms');
     };
 
     App.prototype.render = function(action) {
-      var child, children, context, contexts, _i, _len;
+      var child, children, context, contexts, startTime, _i, _len;
       if (action == null) {
         return false;
       }
@@ -486,7 +510,9 @@
         context = this.render(child);
         contexts.push(context);
       }
+      startTime = +new Date();
       context = action.render(contexts);
+      action.renderTime = (+new Date()) - startTime;
       return context;
     };
 

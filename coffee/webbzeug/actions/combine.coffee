@@ -4,7 +4,14 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
   type: 'combine'
   availableParameters: ->
     {
-      type: { name: 'Type', type: 'enum', values: { multiply: 'Multiply', add: 'Add', substract: 'Substract' }, default: 'addition' }
+      type: { name: 'Type', type: 'enum', values: { 
+        darken: 'Darken',
+        lighten: 'Lighten',
+        multiply: 'Multiply', 
+        add: 'Add', 
+        substract: 'Substract',
+        divide: 'Divide'
+      }, default: 'add' }
     }
 
   render: (contexts) ->
@@ -23,14 +30,42 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
       applyingContext = contexts[i]
 
       switch @getParameter('type')
+        when 'darken'
+          @darken applyingContext
+        when 'lighten'
+          @lighten applyingContext
         when 'multiply'
           @multiply applyingContext
         when 'add'
           @add applyingContext
         when 'substract'
           @substract applyingContext
+        when 'divide'
+          @divide applyingContext
 
     return @context
+
+  # Darken
+  darken: (applyingContext) ->
+    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+
+    for i in [0...applyingImageData.data.length] by 4
+      for j in [0...3]
+        imageData.data[i + j] = Math.min(imageData.data[i + j], applyingImageData.data[i + j])
+
+    @context.putImageData imageData, 0, 0
+
+  # Lighten
+  lighten: (applyingContext) ->
+    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+
+    for i in [0...applyingImageData.data.length] by 4
+      for j in [0...3]
+        imageData.data[i + j] = Math.max(imageData.data[i + j], applyingImageData.data[i + j])
+
+    @context.putImageData imageData, 0, 0
 
   # Multiplication
   multiply: (applyingContext) ->
@@ -60,5 +95,16 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
     for i in [0...applyingImageData.data.length] by 4
       for j in [0...3]
         imageData.data[i + j] = imageData.data[i + j] - applyingImageData.data[i + j]
+
+    @context.putImageData imageData, 0, 0
+
+  # Division
+  divide: (applyingContext) ->
+    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+
+    for i in [0...applyingImageData.data.length]
+      if imageData.data[i] > 0
+        imageData.data[i] = Math.round(applyingImageData.data[i] / imageData.data[i])
 
     @context.putImageData imageData, 0, 0

@@ -24,6 +24,10 @@ window.Webbzeug.App = class App
       name: 'Flat'
       type: 'generative'
       class: Webbzeug.Actions.Flat
+    normal:
+      name: 'Normal'
+      type: 'normal'
+      class: Webbzeug.Actions.Normal
 
     combine: 
       name: 'Combine'
@@ -140,20 +144,21 @@ window.Webbzeug.App = class App
       self.selectedActionName = $(this).text()
       self.selectedActionType = $(this).attr('data-type')
 
-  newActionElement: (x, y, actionName, actionType) ->
+  newActionElement: (x, y, actionName, width, actionType) ->
     el = $('<div>').addClass('action')
 
     el.text(actionName).addClass(actionType).css
       left: x
       top: y
+      width: width * @gridWidth - 12
 
     dragger = $('<div>').addClass('dragger').appendTo el
     $('.workspace').append el
 
     return el
 
-  applyActionToElement: (actionId, x, y, index, element) ->
-    action = new @classMap[actionId].class this, x, y, index
+  applyActionToElement: (actionId, x, y, width, index, element) ->
+    action = new @classMap[actionId].class this, x, y, width, index
 
     element.attr 'data-index': index
 
@@ -165,13 +170,20 @@ window.Webbzeug.App = class App
 
     @handleElementDrag element
 
+    element.on 'mouseenter', =>
+      if action.renderTime
+        $('.debug').text action.constructor.name + ' rendered in ' + action.renderTime + 'ms'
+    element.on 'mouseleave', =>
+      if @renderTime
+        $('.debug').text 'Texture rendered in ' + @renderTime + 'ms'
+
     return action
 
   # When workspace is clicked, create new element
   handleWorkspaceClick: ->
     $('.workspace').mouseenter (e) =>
       if not @selectedElement and @selectedActionId
-        el = @newActionElement e.pageX, e.pageY, @selectedActionName, @selectedActionType
+        el = @newActionElement e.pageX, e.pageY, @selectedActionName, 3, @selectedActionType
 
         @selectedElement = el
 
@@ -191,7 +203,7 @@ window.Webbzeug.App = class App
         y = Math.round(@selectedElement.position().top  / @gridHeight)
 
         if @selectedActionId
-          @applyActionToElement @selectedActionId, x, y, @incrementalIndex, @selectedElement
+          @applyActionToElement @selectedActionId, x, y, 3, @incrementalIndex, @selectedElement
 
           @incrementalIndex++
 
@@ -269,8 +281,8 @@ window.Webbzeug.App = class App
     settingsWindow = $('.workspace-wrapper .parameters')
 
     settingsWindow.show().css
-      left: (action.x + action.width + 1) * @gridWidth + $('.workspace-wrapper').offset().left
-      top: (action.y + 1) * @gridHeight + $('.workspace-wrapper').offset().top
+      left: (action.x + action.width + 1) * @gridWidth #+ $('.workspace-wrapper').offset().left
+      top: (action.y + 1) * @gridHeight #+ $('.workspace-wrapper').offset().top
 
     settingsWindow.click (e) => e.stopPropagation()
 
@@ -326,7 +338,13 @@ window.Webbzeug.App = class App
             _value = value
             _input.change ->
               newVal = _input.val()
-              action.setParameter _key, parseInt(newVal)
+
+              if !!(newVal % 1)
+                newVal = parseFloat(newVal)
+              else
+                newVal = parseInt(newVal)
+
+              action.setParameter _key, newVal
               _value.text newVal
 
               self.renderAll()
@@ -402,9 +420,13 @@ window.Webbzeug.App = class App
     unless watchedAction?
       return false
 
+    startTime = +new Date()
     if context = @render watchedAction
       imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
       @context.putImageData imageData, 0, 0
+    @renderTime = (+new Date() - startTime)
+
+    $('.debug').text 'Texture rendered in ' + @renderTime + 'ms'
 
   render: (action) ->
     unless action?
@@ -417,5 +439,7 @@ window.Webbzeug.App = class App
       context = @render child
       contexts.push context
 
+    startTime = +new Date()
     context = action.render(contexts)
+    action.renderTime = (+new Date()) - startTime
     return context
