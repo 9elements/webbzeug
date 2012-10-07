@@ -38,9 +38,11 @@ window.Webbzeug.Exporter = class Exporter
 
   writeData: (data) ->
     if typeof data is 'number' and parseInt(data) == data
+      console.log "writing int", data
       @output += '\xfa'
       @output += chr(data & 0xff)
     if typeof data is 'string'
+      console.log "writing string", data
       @output += '\xfb'
       @output += chr(data.length & 0xff)
       @output += data

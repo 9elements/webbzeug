@@ -7,6 +7,8 @@ window.Webbzeug.Importer = class Importer
     b64encodedData = splitData[1]
     @data          = Base64.decode b64encodedData
 
+    console.log @data
+
     @actions = []
 
     # Read file identifier

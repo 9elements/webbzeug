@@ -366,7 +366,7 @@
               return _input.change(function() {
                 var newVal;
                 newVal = _input.val();
-                action.setParameter(_key, newVal);
+                action.setParameter(_key, parseInt(newVal));
                 _value.text(newVal);
                 return self.renderAll();
               });
@@ -468,9 +468,10 @@
       if (watchedAction == null) {
         return false;
       }
-      context = this.render(watchedAction);
-      imageData = context.getImageData(0, 0, this.getWidth(), this.getHeight());
-      return this.context.putImageData(imageData, 0, 0);
+      if (context = this.render(watchedAction)) {
+        imageData = context.getImageData(0, 0, this.getWidth(), this.getHeight());
+        return this.context.putImageData(imageData, 0, 0);
+      }
     };
 
     App.prototype.render = function(action) {

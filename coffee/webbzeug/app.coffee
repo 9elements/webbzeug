@@ -326,7 +326,7 @@ window.Webbzeug.App = class App
             _value = value
             _input.change ->
               newVal = _input.val()
-              action.setParameter _key, newVal
+              action.setParameter _key, parseInt(newVal)
               _value.text newVal
 
               self.renderAll()
@@ -402,10 +402,9 @@ window.Webbzeug.App = class App
     unless watchedAction?
       return false
 
-    context = @render watchedAction
-
-    imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
-    @context.putImageData imageData, 0, 0
+    if context = @render watchedAction
+      imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
+      @context.putImageData imageData, 0, 0
 
   render: (action) ->
     unless action?

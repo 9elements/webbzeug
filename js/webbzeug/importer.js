@@ -19,6 +19,7 @@
       splitData = data.split('base64,');
       b64encodedData = splitData[1];
       this.data = Base64.decode(b64encodedData);
+      console.log(this.data);
       this.actions = [];
       identifier = this.readBytes(2);
       if (identifier !== 'WZ') {
