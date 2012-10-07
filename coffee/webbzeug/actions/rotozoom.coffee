@@ -4,7 +4,7 @@ window.Webbzeug.Actions.RotoZoom = class RotoZoomAction extends Webbzeug.Action
   availableParameters: ->
     {
       rotation: { name: 'Rotation', type: 'number', min: 0, max: Math.PI * 2, default: 0, step: 0.01},
-      zoom: { name: 'Zoom', type: 'number', min: 1, max: 255, default: 1}
+      zoom: { name: 'Zoom', type: 'number', min: 1, max: 255, default: 10}
     }
   render: (contexts) ->
     super()
