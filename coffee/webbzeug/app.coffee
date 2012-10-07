@@ -24,10 +24,6 @@ window.Webbzeug.App = class App
       name: 'Flat'
       type: 'generative'
       class: Webbzeug.Actions.Flat
-    normal:
-      name: 'Normal'
-      type: 'normal'
-      class: Webbzeug.Actions.Normal
 
     combine: 
       name: 'Combine'
@@ -57,6 +53,10 @@ window.Webbzeug.App = class App
       name: 'Mirror'
       type: 'processive'
       class: Webbzeug.Actions.Mirror
+    normal:
+      name: 'Normal'
+      type: 'processive'
+      class: Webbzeug.Actions.Normal
 
     load: 
       name: 'Load'

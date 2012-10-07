@@ -39,11 +39,6 @@
         type: 'generative',
         "class": Webbzeug.Actions.Flat
       },
-      normal: {
-        name: 'Normal',
-        type: 'normal',
-        "class": Webbzeug.Actions.Normal
-      },
       combine: {
         name: 'Combine',
         type: 'processive',
@@ -78,6 +73,11 @@
         name: 'Mirror',
         type: 'processive',
         "class": Webbzeug.Actions.Mirror
+      },
+      normal: {
+        name: 'Normal',
+        type: 'processive',
+        "class": Webbzeug.Actions.Normal
       },
       load: {
         name: 'Load',
