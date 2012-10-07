@@ -19,6 +19,20 @@
       return MirrorAction.__super__.constructor.apply(this, arguments);
     }
 
+    MirrorAction.prototype.availableParameters = function() {
+      return {
+        direction: {
+          name: "Direction",
+          type: 'enum',
+          values: {
+            vertical: 'Vertical',
+            horizontal: 'Horizontal'
+          },
+          "default": 'vertical'
+        }
+      };
+    };
+
     MirrorAction.prototype.render = function(contexts) {
       var imageData, x, y, yDrawOffset, ySrcOffset, _i, _j, _ref2, _ref3;
       MirrorAction.__super__.render.call(this);
@@ -27,14 +41,17 @@
         return;
       }
       imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (y = _i = 0, _ref2 = imageData.height; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; y = 0 <= _ref2 ? ++_i : --_i) {
-        ySrcOffset = (y * imageData.width) << 2;
-        yDrawOffset = (y * imageData.width + imageData.width - 1) << 2;
-        for (x = _j = 0, _ref3 = imageData.width / 2; 0 <= _ref3 ? _j < _ref3 : _j > _ref3; x = 0 <= _ref3 ? ++_j : --_j) {
-          imageData.data[yDrawOffset - (x << 2)] = imageData.data[ySrcOffset + (x << 2)];
-          imageData.data[yDrawOffset - (x << 2) + 1] = imageData.data[ySrcOffset + (x << 2) + 1];
-          imageData.data[yDrawOffset - (x << 2) + 2] = imageData.data[ySrcOffset + (x << 2) + 2];
-          imageData.data[yDrawOffset - (x << 2) + 3] = imageData.data[ySrcOffset + (x << 2) + 3];
+      console.log(this.getParameter('direction'));
+      if (this.getParameter('direction') === 'horizontal') {
+        for (y = _i = 0, _ref2 = imageData.height; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; y = 0 <= _ref2 ? ++_i : --_i) {
+          ySrcOffset = (y * imageData.width) << 2 + (x << 2);
+          yDrawOffset = (y * imageData.width + imageData.width - 1) << 2 - (x << 2);
+          for (x = _j = 0, _ref3 = imageData.width / 2; 0 <= _ref3 ? _j < _ref3 : _j > _ref3; x = 0 <= _ref3 ? ++_j : --_j) {
+            imageData.data[yDrawOffset] = imageData.data[ySrcOffset];
+            imageData.data[yDrawOffset + 1] = imageData.data[ySrcOffset + 1];
+            imageData.data[yDrawOffset + 2] = imageData.data[ySrcOffset + 2];
+            imageData.data[yDrawOffset + 3] = imageData.data[ySrcOffset + 3];
+          }
         }
       }
       this.context.putImageData(imageData, 0, 0);

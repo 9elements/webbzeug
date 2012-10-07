@@ -172,6 +172,22 @@ window.Webbzeug.App = class App
 
     for key, info of availableParameters
       switch info.type
+        when 'enum'
+          li = $('<li>').appendTo settingsUl
+          label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo li
+
+          select = $('<select>').appendTo li
+          for optKey, val of info.values
+            option = $('<option>').attr(value: optKey).text(val).appendTo select
+
+            (->
+              _key = key
+              option.change ->
+                action.setParameter _key, $(this).attr('value')
+
+                self.renderAll()
+            )()
+
         when 'number'
           li = $('<li>').appendTo settingsUl
           label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo li

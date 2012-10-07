@@ -165,7 +165,7 @@
     };
 
     App.prototype.showParameters = function(e, action) {
-      var attributes, availableParameters, color, info, input, key, label, li, self, settingsUl, settingsWindow, value, _results,
+      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, settingsWindow, val, value, _results,
         _this = this;
       self = this;
       settingsWindow = $('.workspace-wrapper .parameters');
@@ -188,6 +188,31 @@
       for (key in availableParameters) {
         info = availableParameters[key];
         switch (info.type) {
+          case 'enum':
+            li = $('<li>').appendTo(settingsUl);
+            label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo(li);
+            select = $('<select>').appendTo(li);
+            _results.push((function() {
+              var _ref1, _results1;
+              _ref1 = info.values;
+              _results1 = [];
+              for (optKey in _ref1) {
+                val = _ref1[optKey];
+                option = $('<option>').attr({
+                  value: optKey
+                }).text(val).appendTo(select);
+                _results1.push((function() {
+                  var _key;
+                  _key = key;
+                  return option.change(function() {
+                    action.setParameter(_key, $(this).attr('value'));
+                    return self.renderAll();
+                  });
+                })());
+              }
+              return _results1;
+            })());
+            break;
           case 'number':
             li = $('<li>').appendTo(settingsUl);
             label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo(li);

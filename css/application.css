@@ -177,7 +177,7 @@ body {
         overflow: hidden;
         *zoom: 1; }
         .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li .label {
-          width: 50px;
+          width: 80px;
           float: left; }
         .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li input[type=number], .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li input[type=text] {
           float: right;
