@@ -62,6 +62,15 @@
       }
       return string;
     },
+    bytesToString: function(bytes) {
+      var dict, intBytes;
+      dict = this.getDict();
+      intBytes = parseInt(bytes);
+      if (dict[intBytes]) {
+        return dict[intBytes];
+      }
+      return bytes;
+    },
     versionToInt: function(version) {
       var i, versionInt, versionPart, versionSplit, _i, _ref1;
       versionSplit = version.split('.');

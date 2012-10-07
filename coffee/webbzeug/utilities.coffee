@@ -55,6 +55,14 @@ window.Webbzeug.Utilities =
 
     return string
 
+  bytesToString: (bytes) ->
+    dict = @getDict()
+    intBytes = parseInt bytes
+    if dict[intBytes]
+      return dict[intBytes]
+
+    return bytes
+
   versionToInt: (version) ->
     versionSplit = version.split '.'
     versionInt = 0

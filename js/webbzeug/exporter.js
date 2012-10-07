@@ -10,36 +10,53 @@
     function Exporter() {}
 
     Exporter.prototype.actionsToDataURL = function(actions) {
-      var action, param, value, _i, _len, _ref1;
+      var action, index, param, value, _ref1;
       this.output = '';
       this.startStream();
       this.output += '\x02';
-      for (_i = 0, _len = actions.length; _i < _len; _i++) {
-        action = actions[_i];
+      for (index in actions) {
+        action = actions[index];
         this.output += '\x03';
         this.output += Webbzeug.Utilities.stringToByte(action.type);
         this.output += '\x04';
+        this.writeData(action.index);
         this.output += '\x05';
-        this.output += action.index;
+        this.writeData(action.x);
         this.output += '\x05';
-        this.output += action.x;
+        this.writeData(action.y);
         this.output += '\x05';
-        this.output += action.y;
+        this.writeData(action.width);
         this.output += '\x05';
-        this.output += action.width;
-        this.output += '\x06';
         _ref1 = action.parameters;
         for (param in _ref1) {
           value = _ref1[param];
           this.output += '\x07';
           this.output += Webbzeug.Utilities.stringToByte(param);
           this.output += '\x08';
-          this.output += Webbzeug.Utilities.stringToByte(value);
+          this.writeData(value);
         }
-        this.output += '\x00';
+        this.output += '\xff';
       }
-      this.debugPrint(this.output);
       return "data:application/octet-stream;base64," + Base64.encode(this.output);
+    };
+
+    Exporter.prototype.writeData = function(data) {
+      var stringifiedObj;
+      if (typeof data === 'number' && parseInt(data) === data) {
+        this.output += '\xfa';
+        this.output += chr(data & 0xff);
+      }
+      if (typeof data === 'string') {
+        this.output += '\xfb';
+        this.output += chr(data.length & 0xff);
+        this.output += data;
+      }
+      if (typeof data === 'object') {
+        stringifiedObj = JSON.stringify(data);
+        this.output += '\xfc';
+        this.output += chr(stringifiedObj.length & 0xff);
+        return this.output += stringifiedObj;
+      }
     };
 
     Exporter.prototype.startStream = function() {

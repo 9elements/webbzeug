@@ -14,20 +14,76 @@
     App.prototype.gridWidth = 112 / 3;
 
     App.prototype.classMap = {
-      rectangle: Webbzeug.Actions.Rectangle,
-      circle: Webbzeug.Actions.Circle,
-      fractal: Webbzeug.Actions.Fractal,
-      pixels: Webbzeug.Actions.Pixels,
-      flat: Webbzeug.Actions.Flat,
-      combine: Webbzeug.Actions.Combine,
-      invert: Webbzeug.Actions.Invert,
-      contbri: Webbzeug.Actions.ContrastBrightness,
-      blur: Webbzeug.Actions.Blur,
-      rotozoom: Webbzeug.Actions.RotoZoom,
-      light: Webbzeug.Actions.Light,
-      mirror: Webbzeug.Actions.Mirror,
-      load: Webbzeug.Actions.Load,
-      save: Webbzeug.Actions.Save
+      rectangle: {
+        name: 'Rectangle',
+        type: 'generative',
+        "class": Webbzeug.Actions.Rectangle
+      },
+      circle: {
+        name: 'Circle',
+        type: 'generative',
+        "class": Webbzeug.Actions.Circle
+      },
+      fractal: {
+        name: 'Fractal',
+        type: 'generative',
+        "class": Webbzeug.Actions.Fractal
+      },
+      pixels: {
+        name: 'Pixels',
+        type: 'generative',
+        "class": Webbzeug.Actions.Pixels
+      },
+      flat: {
+        name: 'Flat',
+        type: 'generative',
+        "class": Webbzeug.Actions.Flat
+      },
+      combine: {
+        name: 'Combine',
+        type: 'processive',
+        "class": Webbzeug.Actions.Combine
+      },
+      invert: {
+        name: 'Invert',
+        type: 'processive',
+        "class": Webbzeug.Actions.Invert
+      },
+      contbri: {
+        name: 'Cont / Bri',
+        type: 'processive',
+        "class": Webbzeug.Actions.ContrastBrightness
+      },
+      blur: {
+        name: 'Blur',
+        type: 'processive',
+        "class": Webbzeug.Actions.Blur
+      },
+      rotozoom: {
+        name: 'RotoZoom',
+        type: 'processive',
+        "class": Webbzeug.Actions.RotoZoom
+      },
+      light: {
+        name: 'Light',
+        type: 'processive',
+        "class": Webbzeug.Actions.Light
+      },
+      mirror: {
+        name: 'Mirror',
+        type: 'processive',
+        "class": Webbzeug.Actions.Mirror
+      },
+      load: {
+        name: 'Load',
+        type: 'memory',
+        "class": Webbzeug.Actions.Load
+      },
+      save: {
+        name: 'Save',
+        type: 'memory',
+        "class": Webbzeug.Actions.Save
+      }
     };
 
     function App(canvas) {
@@ -36,7 +92,7 @@
       this.handleSaveLoad();
       this.shiftPressed = false;
       this.incrementalIndex = 0;
-      this.actions = [];
+      this.actions = {};
       this.width = this.context.canvas.width;
       this.height = this.context.canvas.height;
       this.handleNavigation();
@@ -46,10 +102,21 @@
       this.memory = [];
     }
 
+    App.prototype.reset = function() {
+      this.memory = [];
+      this.actions = {};
+      this.incrementalIndex = 0;
+      this.watchedAction = null;
+      this.watchedActionIndex = null;
+      this.selectedElement = null;
+      this.selectedActionIndex = this.selectedActionId = this.selectedActionName = this.selectedActionType = null;
+      return $('.workspace .action').remove();
+    };
+
     App.prototype.handleSaveLoad = function() {
       var _this = this;
       this.exporter = new Webbzeug.Exporter;
-      this.importer = new Webbzeug.Importer;
+      this.importer = new Webbzeug.Importer(this);
       $('.save-link').click(function() {
         var filename, url;
         if (filename = prompt('Please enter a filename:', 'workspace.webb')) {
@@ -70,10 +137,10 @@
         reader = new FileReader();
         reader.onload = (function(theFile) {
           return function(e) {
-            var actions, data;
+            var data;
             data = e.target.result;
-            actions = _this.importer.dataURLToActions(data);
-            return console.log(actions);
+            _this.reset();
+            return _this.importer.importDataURL(data);
           };
         })(file);
         return reader.readAsDataURL(file);
@@ -94,20 +161,40 @@
       });
     };
 
+    App.prototype.newActionElement = function(x, y, actionName, actionType) {
+      var dragger, el;
+      el = $('<div>').addClass('action');
+      el.text(actionName).addClass(actionType).css({
+        left: x,
+        top: y
+      });
+      dragger = $('<div>').addClass('dragger').appendTo(el);
+      $('.workspace').append(el);
+      return el;
+    };
+
+    App.prototype.applyActionToElement = function(actionId, x, y, index, element) {
+      var action,
+        _this = this;
+      action = new this.classMap[actionId]["class"](this, x, y, index);
+      element.attr({
+        'data-index': index
+      });
+      this.actions[index] = action;
+      this.handleElementClick(null, element);
+      element.click(function(e) {
+        return _this.handleElementClick(e, element);
+      });
+      this.handleElementDrag(element);
+      return action;
+    };
+
     App.prototype.handleWorkspaceClick = function() {
       var _this = this;
       $('.workspace').mouseenter(function(e) {
-        var dragger, el, x, y;
+        var el;
         if (!_this.selectedElement && _this.selectedActionId) {
-          el = $('<div>').addClass('action');
-          x = e.pageX;
-          y = e.pageY;
-          el.text(_this.selectedActionName).addClass(_this.selectedActionType).css({
-            left: x,
-            top: y
-          });
-          dragger = $('<div>').addClass('dragger').appendTo(el);
-          $('.workspace').append(el);
+          el = _this.newActionElement(e.pageX, e.pageY, _this.selectedActionName, _this.selectedActionType);
           return _this.selectedElement = el;
         }
       });
@@ -123,25 +210,14 @@
         }
       });
       return $('.workspace').mousedown(function(e) {
-        var action, element, x, y;
+        var x, y;
         $('.workspace').off('mouseenter mousemove mousedown');
         if (_this.selectedElement) {
           x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
           if (_this.selectedActionId) {
-            action = new _this.classMap[_this.selectedActionId](_this, x, y, _this.incrementalIndex);
-            action.index = _this.incrementalIndex;
-            _this.selectedElement.attr({
-              'data-index': _this.incrementalIndex
-            });
+            _this.applyActionToElement(_this.selectedActionId, x, y, _this.incrementalIndex, _this.selectedElement);
             _this.incrementalIndex++;
-            _this.actions.push(action);
-            element = _this.selectedElement;
-            _this.handleElementClick(null, element);
-            _this.selectedElement.click(function(e) {
-              return _this.handleElementClick(e, element);
-            });
-            _this.handleElementDrag(element);
           }
           _this.selectedElement = null;
           return _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
@@ -328,11 +404,11 @@
     };
 
     App.prototype.deleteTree = function() {
-      var action, _i, _len, _ref1, _results;
+      var action, index, _ref1, _results;
       _ref1 = this.actions;
       _results = [];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        action = _ref1[_i];
+      for (index in _ref1) {
+        action = _ref1[index];
         _results.push(action.deleteChildren());
       }
       return _results;
@@ -367,11 +443,11 @@
     };
 
     App.prototype.findChildrenRecursively = function(action) {
-      var children, possibleChildAction, _i, _len, _ref1;
+      var childIndex, children, possibleChildAction, _ref1;
       children = [];
       _ref1 = this.actions;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        possibleChildAction = _ref1[_i];
+      for (childIndex in _ref1) {
+        possibleChildAction = _ref1[childIndex];
         if (possibleChildAction === action) {
           continue;
         }

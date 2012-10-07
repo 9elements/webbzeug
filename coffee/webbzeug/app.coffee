@@ -4,22 +4,64 @@ window.Webbzeug.App = class App
   gridHeight: 27
   gridWidth:  112 / 3
   classMap: 
-    rectangle: Webbzeug.Actions.Rectangle
-    circle: Webbzeug.Actions.Circle
-    fractal: Webbzeug.Actions.Fractal
-    pixels: Webbzeug.Actions.Pixels
-    flat: Webbzeug.Actions.Flat
+    rectangle: 
+      name: 'Rectangle'
+      type: 'generative'
+      class: Webbzeug.Actions.Rectangle
+    circle: 
+      name: 'Circle'
+      type: 'generative'
+      class: Webbzeug.Actions.Circle
+    fractal: 
+      name: 'Fractal'
+      type: 'generative'
+      class: Webbzeug.Actions.Fractal
+    pixels: 
+      name: 'Pixels'
+      type: 'generative'
+      class: Webbzeug.Actions.Pixels
+    flat: 
+      name: 'Flat'
+      type: 'generative'
+      class: Webbzeug.Actions.Flat
 
-    combine: Webbzeug.Actions.Combine
-    invert: Webbzeug.Actions.Invert
-    contbri: Webbzeug.Actions.ContrastBrightness
-    blur: Webbzeug.Actions.Blur
-    rotozoom: Webbzeug.Actions.RotoZoom
-    light: Webbzeug.Actions.Light
-    mirror: Webbzeug.Actions.Mirror
+    combine: 
+      name: 'Combine'
+      type: 'processive'
+      class: Webbzeug.Actions.Combine
+    invert: 
+      name: 'Invert'
+      type: 'processive'
+      class: Webbzeug.Actions.Invert
+    contbri: 
+      name: 'Cont / Bri'
+      type: 'processive'
+      class: Webbzeug.Actions.ContrastBrightness
+    blur: 
+      name: 'Blur'
+      type: 'processive'
+      class: Webbzeug.Actions.Blur
+    rotozoom: 
+      name: 'RotoZoom'
+      type: 'processive'
+      class: Webbzeug.Actions.RotoZoom
+    light: 
+      name: 'Light'
+      type: 'processive'
+      class: Webbzeug.Actions.Light
+    mirror: 
+      name: 'Mirror'
+      type: 'processive'
+      class: Webbzeug.Actions.Mirror
 
-    load: Webbzeug.Actions.Load
-    save: Webbzeug.Actions.Save
+    load: 
+      name: 'Load'
+      type: 'memory'
+      class: Webbzeug.Actions.Load
+    save: 
+      name: 'Save'
+      type: 'memory'
+      class: Webbzeug.Actions.Save
 
   constructor: (@canvas) ->
     @context = @canvas.getContext '2d'
@@ -29,7 +71,7 @@ window.Webbzeug.App = class App
     @shiftPressed = false
 
     @incrementalIndex = 0
-    @actions = []
+    @actions = {}
 
     @width = @context.canvas.width
     @height = @context.canvas.height
@@ -45,9 +87,20 @@ window.Webbzeug.App = class App
     # every 1000 / 60, =>
     #   @render()
 
+  reset: ->
+    @memory = []
+    @actions = {}
+    @incrementalIndex = 0
+    @watchedAction = null
+    @watchedActionIndex = null
+    @selectedElement = null
+    @selectedActionIndex = @selectedActionId = @selectedActionName = @selectedActionType = null
+
+    $('.workspace .action').remove()
+
   handleSaveLoad: ->
     @exporter = new Webbzeug.Exporter
-    @importer = new Webbzeug.Importer
+    @importer = new Webbzeug.Importer this
     $('.save-link').click =>
       if filename = prompt('Please enter a filename:', 'workspace.webb')
         url = @exporter.actionsToDataURL @actions
@@ -67,8 +120,8 @@ window.Webbzeug.App = class App
         return (e) =>
           data = e.target.result
 
-          actions = @importer.dataURLToActions(data)
-          console.log actions
+          @reset()
+          @importer.importDataURL(data)
       )(file)
       reader.readAsDataURL(file)
 
@@ -87,23 +140,38 @@ window.Webbzeug.App = class App
       self.selectedActionName = $(this).text()
       self.selectedActionType = $(this).attr('data-type')
 
+  newActionElement: (x, y, actionName, actionType) ->
+    el = $('<div>').addClass('action')
+
+    el.text(actionName).addClass(actionType).css
+      left: x
+      top: y
+
+    dragger = $('<div>').addClass('dragger').appendTo el
+    $('.workspace').append el
+
+    return el
+
+  applyActionToElement: (actionId, x, y, index, element) ->
+    action = new @classMap[actionId].class this, x, y, index
+
+    element.attr 'data-index': index
+
+    @actions[index] = action
+
+    @handleElementClick null, element
+    element.click (e) =>
+      @handleElementClick e, element
+
+    @handleElementDrag element
+
+    return action
+
   # When workspace is clicked, create new element
   handleWorkspaceClick: ->
     $('.workspace').mouseenter (e) =>
       if not @selectedElement and @selectedActionId
-        el = $('<div>').addClass('action')
-
-        x = e.pageX
-        y = e.pageY
-
-        el.text(@selectedActionName).addClass(@selectedActionType).css
-          left: x
-          top: y
-
-
-        dragger = $('<div>').addClass('dragger').appendTo el
-
-        $('.workspace').append el
+        el = @newActionElement e.pageX, e.pageY, @selectedActionName, @selectedActionType
 
         @selectedElement = el
 
@@ -123,20 +191,9 @@ window.Webbzeug.App = class App
         y = Math.round(@selectedElement.position().top  / @gridHeight)
 
         if @selectedActionId
-          action = new @classMap[@selectedActionId] this, x, y, @incrementalIndex
-          action.index = @incrementalIndex
+          @applyActionToElement @selectedActionId, x, y, @incrementalIndex, @selectedElement
 
-          @selectedElement.attr 'data-index': @incrementalIndex
           @incrementalIndex++
-
-          @actions.push action
-
-          element = @selectedElement
-          @handleElementClick null, element
-          @selectedElement.click (e) =>
-            @handleElementClick e, element
-
-          @handleElementDrag element
 
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
@@ -300,7 +357,7 @@ window.Webbzeug.App = class App
           )()
 
   deleteTree: ->
-    for action in @actions
+    for index, action of @actions
       action.deleteChildren()
   
   ###
@@ -324,7 +381,7 @@ window.Webbzeug.App = class App
 
   findChildrenRecursively: (action) ->
     children = []
-    for possibleChildAction in @actions
+    for childIndex, possibleChildAction of @actions
       if possibleChildAction is action
         continue
 
