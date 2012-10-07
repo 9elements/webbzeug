@@ -41,12 +41,14 @@
       dict[29] = 'height';
       dict[30] = 'x';
       dict[31] = 'y';
-      dict[32] = 'radius';
+      dict[32] = 'radiusX';
       dict[33] = 'rotation';
       dict[34] = 'zoom';
       dict[35] = 'direction';
       dict[36] = 'horizontal';
       dict[37] = 'vertical';
+      dict[38] = 'substract';
+      dict[38] = 'add';
       return dict;
     },
     stringToByte: function(string) {
