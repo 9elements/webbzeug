@@ -26,7 +26,8 @@
           type: 'enum',
           values: {
             multiply: 'Multiply',
-            addition: 'Addition'
+            add: 'Add',
+            substract: 'Substract'
           },
           "default": 'addition'
         }
@@ -48,8 +49,11 @@
           case 'multiply':
             this.multiply(applyingContext);
             break;
-          case 'addition':
-            this.addition(applyingContext);
+          case 'add':
+            this.add(applyingContext);
+            break;
+          case 'substract':
+            this.substract(applyingContext);
         }
       }
       return this.context;
@@ -65,12 +69,24 @@
       return this.context.putImageData(imageData, 0, 0);
     };
 
-    CombineAction.prototype.addition = function(applyingContext) {
+    CombineAction.prototype.add = function(applyingContext) {
       var applyingImageData, i, imageData, _i, _ref2;
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       for (i = _i = 0, _ref2 = applyingImageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
         imageData.data[i] = Math.min(applyingImageData.data[i] + imageData.data[i], 255);
+      }
+      return this.context.putImageData(imageData, 0, 0);
+    };
+
+    CombineAction.prototype.substract = function(applyingContext) {
+      var applyingImageData, i, imageData, j, _i, _j, _ref2;
+      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      for (i = _i = 0, _ref2 = applyingImageData.data.length; _i < _ref2; i = _i += 4) {
+        for (j = _j = 0; _j < 3; j = ++_j) {
+          imageData.data[i + j] = imageData.data[i + j] - applyingImageData.data[i + j];
+        }
       }
       return this.context.putImageData(imageData, 0, 0);
     };
