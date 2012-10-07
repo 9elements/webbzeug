@@ -34,7 +34,7 @@
           type: 'number',
           min: 1,
           max: 255,
-          "default": 1
+          "default": 10
         }
       };
     };
