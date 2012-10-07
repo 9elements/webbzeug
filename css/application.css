@@ -101,20 +101,29 @@ body {
   margin: 50px auto; }
   .app-wrapper .right-wrapper {
     width: 256px;
-    float: right; }
+    float: right;
+    position: relative; }
     .app-wrapper .right-wrapper #canvas {
       display: block;
       width: 256px;
       height: 256px;
       background-color: black;
       margin-bottom: 10px; }
-    .app-wrapper .right-wrapper .export-link {
+    .app-wrapper .right-wrapper .save-link, .app-wrapper .right-wrapper .open-link {
       font: normal 12px Verdana;
       border: 1px solid white;
       border-radius: 3px;
       padding: 5px;
       color: white;
       text-decoration: none; }
+    .app-wrapper .right-wrapper input#file {
+      position: absolute;
+      top: 260px;
+      left: 45px;
+      width: 45px;
+      height: 30px;
+      cursor: pointer;
+      opacity: 0; }
   .app-wrapper .left-wrapper .action {
     color: white;
     font: normal 12px Verdana;

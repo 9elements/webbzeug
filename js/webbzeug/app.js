@@ -31,20 +31,10 @@
     };
 
     function App(canvas) {
-      var _this = this;
       this.canvas = canvas;
       this.context = this.canvas.getContext('2d');
       this.exporter = new Webbzeug.Exporter;
-      $('.export-link').click(function() {
-        var url;
-        url = _this.exporter.actionsToDataURL(_this.actions);
-        if (url != null) {
-          return downloadDataURI({
-            filename: 'workspace.webb',
-            data: url
-          });
-        }
-      });
+      this.handleSaveLoad();
       this.shiftPressed = false;
       this.incrementalIndex = 0;
       this.actions = [];
@@ -56,6 +46,22 @@
       this.selectedActionIndex = null;
       this.memory = [];
     }
+
+    App.prototype.handleSaveLoad = function() {
+      var _this = this;
+      return $('.save-link').click(function() {
+        var filename, url;
+        if (filename = prompt('Please enter a filename:', 'workspace.webb')) {
+          url = _this.exporter.actionsToDataURL(_this.actions);
+          if (url != null) {
+            return downloadDataURI({
+              filename: filename,
+              data: url
+            });
+          }
+        }
+      });
+    };
 
     App.prototype.handleNavigation = function() {
       var self;

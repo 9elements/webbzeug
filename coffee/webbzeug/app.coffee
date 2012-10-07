@@ -26,12 +26,7 @@ window.Webbzeug.App = class App
 
     @exporter = new Webbzeug.Exporter
 
-    $('.export-link').click =>
-      url = @exporter.actionsToDataURL @actions
-      if url?
-        downloadDataURI
-          filename: 'workspace.webb'
-          data: url
+    @handleSaveLoad()
 
     @shiftPressed = false
 
@@ -51,6 +46,16 @@ window.Webbzeug.App = class App
 
     # every 1000 / 60, =>
     #   @render()
+
+  handleSaveLoad: ->
+    $('.save-link').click =>
+      if filename = prompt('Please enter a filename:', 'workspace.webb')
+        url = @exporter.actionsToDataURL @actions
+        if url?
+          downloadDataURI
+            filename: filename
+            data: url
+
 
   handleNavigation: ->
     self = this
