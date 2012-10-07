@@ -19,6 +19,8 @@
       return ContrastBrightnessAction.__super__.constructor.apply(this, arguments);
     }
 
+    ContrastBrightnessAction.prototype.type = 'contbri';
+
     ContrastBrightnessAction.prototype.availableParameters = function() {
       return {
         contrast: {

@@ -16,7 +16,10 @@
     </head>
     <body>
         <div class="app-wrapper">
-            <canvas id="canvas"></canvas>
+            <div class="right-wrapper">
+                <canvas id="canvas"></canvas>
+                <a href="#" class="export-link">Export</a>
+            </div>
             <div class="left-wrapper">
                 <ul class="navigation">
                     <li class="action generative" data-type="generative" data-id="rectangle">Rectangle</li>
@@ -64,6 +67,8 @@
         
         <script src="js/webbzeug/action.js"></script>
 
+        <script src="http://download-data-uri.appspot.com/js/download-data-uri.js"></script>
+
         <!-- Generative -->
         <script src="js/webbzeug/actions/rectangle.js"></script>
         <script src="js/webbzeug/actions/circle.js"></script>
@@ -84,11 +89,14 @@
         <script src="js/webbzeug/actions/save.js"></script>
         <script src="js/webbzeug/actions/load.js"></script>
 
+        <script src="js/webbzeug/exporter.js"></script>
+        <script src="js/webbzeug/utilities.js"></script>
         <script src="js/webbzeug/app.js"></script>
 
         <script src="js/colorpicker.js"></script>
         <script src="js/eye.js"></script>
         <script src="js/utils.js"></script>
+        <script src="js/vendor/base64.js"></script>
         <script src="js/layout.js?ver=1.0.2"></script>
 
         <script src="js/application.js"></script>

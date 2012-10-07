@@ -48,6 +48,8 @@
       return FractalAction.__super__.constructor.apply(this, arguments);
     }
 
+    FractalAction.prototype.type = 'fractal';
+
     FractalAction.prototype.unitSize = 1;
 
     FractalAction.prototype.availableParameters = function() {

@@ -19,6 +19,8 @@
       return MirrorAction.__super__.constructor.apply(this, arguments);
     }
 
+    MirrorAction.prototype.type = 'mirror';
+
     MirrorAction.prototype.availableParameters = function() {
       return {
         direction: {

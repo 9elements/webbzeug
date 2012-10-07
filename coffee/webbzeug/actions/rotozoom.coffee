@@ -1,6 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.RotoZoom = class RotoZoomAction extends Webbzeug.Action
+  type: 'rotozoom'
   availableParameters: ->
     {
       rotation: { name: 'Rotation', type: 'number', min: 0, max: Math.PI * 2, default: 0, step: 0.01},

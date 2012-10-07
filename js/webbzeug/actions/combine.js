@@ -19,6 +19,8 @@
       return CombineAction.__super__.constructor.apply(this, arguments);
     }
 
+    CombineAction.prototype.type = 'combine';
+
     CombineAction.prototype.availableParameters = function() {
       return {
         type: {

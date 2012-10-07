@@ -1,4 +1,5 @@
 window.Webbzeug ?= {}
+window.Webbzeug.Version = '0.0.1'
 window.Webbzeug.App = class App
   gridHeight: 27
   gridWidth:  112 / 3
@@ -22,6 +23,15 @@ window.Webbzeug.App = class App
 
   constructor: (@canvas) ->
     @context = @canvas.getContext '2d'
+
+    @exporter = new Webbzeug.Exporter
+
+    $('.export-link').click =>
+      url = @exporter.actionsToDataURL @actions
+      if url?
+        downloadDataURI
+          filename: 'workspace.webb'
+          data: url
 
     @shiftPressed = false
 
@@ -93,6 +103,7 @@ window.Webbzeug.App = class App
 
         if @selectedActionId
           action = new @classMap[@selectedActionId] this, x, y, @incrementalIndex
+          action.index = @incrementalIndex
 
           @selectedElement.attr 'data-index': @incrementalIndex
           @incrementalIndex++

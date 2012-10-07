@@ -99,12 +99,22 @@ body {
 .app-wrapper {
   width: 1200px;
   margin: 50px auto; }
-  .app-wrapper #canvas {
-    display: block;
+  .app-wrapper .right-wrapper {
     width: 256px;
-    height: 256px;
-    background-color: black;
     float: right; }
+    .app-wrapper .right-wrapper #canvas {
+      display: block;
+      width: 256px;
+      height: 256px;
+      background-color: black;
+      margin-bottom: 10px; }
+    .app-wrapper .right-wrapper .export-link {
+      font: normal 12px Verdana;
+      border: 1px solid white;
+      border-radius: 3px;
+      padding: 5px;
+      color: white;
+      text-decoration: none; }
   .app-wrapper .left-wrapper .action {
     color: white;
     font: normal 12px Verdana;

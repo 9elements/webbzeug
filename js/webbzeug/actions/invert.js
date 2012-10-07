@@ -19,6 +19,8 @@
       return InvertAction.__super__.constructor.apply(this, arguments);
     }
 
+    InvertAction.prototype.type = 'invert';
+
     InvertAction.prototype.render = function(contexts) {
       var i, imageData, _i, _ref2;
       InvertAction.__super__.render.call(this);

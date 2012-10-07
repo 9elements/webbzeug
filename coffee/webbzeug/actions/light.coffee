@@ -1,6 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
+  type: 'light'
   availableParameters: ->
     {
       x: { name: 'X', type: 'number', min: 0, max: 256, default: 32 },

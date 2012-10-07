@@ -5,6 +5,8 @@
     window.Webbzeug = {};
   }
 
+  window.Webbzeug.Version = '0.0.1';
+
   window.Webbzeug.App = App = (function() {
 
     App.prototype.gridHeight = 27;
@@ -29,8 +31,20 @@
     };
 
     function App(canvas) {
+      var _this = this;
       this.canvas = canvas;
       this.context = this.canvas.getContext('2d');
+      this.exporter = new Webbzeug.Exporter;
+      $('.export-link').click(function() {
+        var url;
+        url = _this.exporter.actionsToDataURL(_this.actions);
+        if (url != null) {
+          return downloadDataURI({
+            filename: 'workspace.webb',
+            data: url
+          });
+        }
+      });
       this.shiftPressed = false;
       this.incrementalIndex = 0;
       this.actions = [];
@@ -93,6 +107,7 @@
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
           if (_this.selectedActionId) {
             action = new _this.classMap[_this.selectedActionId](_this, x, y, _this.incrementalIndex);
+            action.index = _this.incrementalIndex;
             _this.selectedElement.attr({
               'data-index': _this.incrementalIndex
             });

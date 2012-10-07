@@ -19,6 +19,8 @@
       return LightAction.__super__.constructor.apply(this, arguments);
     }
 
+    LightAction.prototype.type = 'light';
+
     LightAction.prototype.availableParameters = function() {
       return {
         x: {

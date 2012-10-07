@@ -19,6 +19,8 @@
       return LoadAction.__super__.constructor.apply(this, arguments);
     }
 
+    LoadAction.prototype.type = 'load';
+
     LoadAction.prototype.availableParameters = function() {
       return {
         id: {
