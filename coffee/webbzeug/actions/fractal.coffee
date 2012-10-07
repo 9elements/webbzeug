@@ -30,10 +30,10 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Fractal = class FractalAction extends Webbzeug.Action
+  unitSize: 1
   availableParameters: ->
     {
       roughness: { name: 'Roughness', type: 'number', min: 1, max: 100, default: 3 },
-      unitsize: { name: 'Unit size', type: 'number', min: 1, max: 10, default: 1 },
       seed: { name: 'Seed', type: 'number', min: 1, max: 255, default: Math.round(Math.random() * 255) }
     }
 
@@ -108,7 +108,7 @@ window.Webbzeug.Actions.Fractal = class FractalAction extends Webbzeug.Action
   midpointDisplacement: (dimension, map) ->
     newDimension = dimension / 2
 
-    if newDimension > @getParameter('unitsize')
+    if newDimension > @unitSize
       for i in [newDimension..@app.getWidth()] by newDimension
         for j in [newDimension..@app.getWidth()] by newDimension
           x = i - (newDimension / 2)

@@ -158,6 +158,14 @@ body {
           background-image: url("/images/icon-watched.png");
           background-position: right center;
           background-repeat: no-repeat; }
+        .app-wrapper .left-wrapper .workspace-wrapper .workspace .action .dragger {
+          position: absolute;
+          right: 0px;
+          top: 3px;
+          width: 15px;
+          height: 18px;
+          cursor: ew-resize;
+          background: url("/images/icon-dragger.png") no-repeat center center; }
     .app-wrapper .left-wrapper .workspace-wrapper .parameters {
       position: absolute;
       top: 0;

@@ -64,6 +64,9 @@ window.Webbzeug.App = class App
           left: x
           top: y
 
+
+        dragger = $('<div>').addClass('dragger').appendTo el
+
         $('.workspace').append el
 
         @selectedElement = el
@@ -102,6 +105,24 @@ window.Webbzeug.App = class App
         @selectedActionId = @selectedActionType = @selectedActionName = null
 
   handleElementDrag: (element) ->
+    # Resize drag
+    $(element).find('.dragger').mousedown (e) =>
+      e.stopPropagation()
+
+      editingElement = element
+      $('.workspace').mousemove (e) =>
+        offsetX = $('.workspace').offset().left
+
+        editingElement.css
+          width: Math.floor((e.pageX - offsetX - editingElement.position().left) / @gridWidth) * @gridWidth - 12
+
+      $(document).mouseup (e) =>
+        $('.workspace').off 'mousemove'
+
+        action = @actions[editingElement.attr('data-index')]
+        action.width = Math.round(editingElement.width() / @gridWidth)
+
+    # Move drag
     $(element).mousedown (e) =>
       editingElement = element
 

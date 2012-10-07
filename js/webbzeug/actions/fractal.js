@@ -48,6 +48,8 @@
       return FractalAction.__super__.constructor.apply(this, arguments);
     }
 
+    FractalAction.prototype.unitSize = 1;
+
     FractalAction.prototype.availableParameters = function() {
       return {
         roughness: {
@@ -56,13 +58,6 @@
           min: 1,
           max: 100,
           "default": 3
-        },
-        unitsize: {
-          name: 'Unit size',
-          type: 'number',
-          min: 1,
-          max: 10,
-          "default": 1
         },
         seed: {
           name: 'Seed',
@@ -120,7 +115,7 @@
     FractalAction.prototype.midpointDisplacement = function(dimension, map) {
       var bl, br, center, i, j, newDimension, tl, tr, x, y, _i, _j, _ref2, _ref3;
       newDimension = dimension / 2;
-      if (newDimension > this.getParameter('unitsize')) {
+      if (newDimension > this.unitSize) {
         for (i = _i = newDimension, _ref2 = this.app.getWidth(); newDimension <= _ref2 ? _i <= _ref2 : _i >= _ref2; i = _i += newDimension) {
           for (j = _j = newDimension, _ref3 = this.app.getWidth(); newDimension <= _ref3 ? _j <= _ref3 : _j >= _ref3; j = _j += newDimension) {
             x = i - (newDimension / 2);

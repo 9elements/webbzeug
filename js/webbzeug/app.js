@@ -57,7 +57,7 @@
     App.prototype.handleWorkspaceClick = function() {
       var _this = this;
       $('.workspace').mouseenter(function(e) {
-        var el, x, y;
+        var dragger, el, x, y;
         if (!_this.selectedElement && _this.selectedActionId) {
           el = $('<div>').addClass('action');
           x = e.pageX;
@@ -66,6 +66,7 @@
             left: x,
             top: y
           });
+          dragger = $('<div>').addClass('dragger').appendTo(el);
           $('.workspace').append(el);
           return _this.selectedElement = el;
         }
@@ -109,6 +110,24 @@
 
     App.prototype.handleElementDrag = function(element) {
       var _this = this;
+      $(element).find('.dragger').mousedown(function(e) {
+        var editingElement;
+        e.stopPropagation();
+        editingElement = element;
+        $('.workspace').mousemove(function(e) {
+          var offsetX;
+          offsetX = $('.workspace').offset().left;
+          return editingElement.css({
+            width: Math.floor((e.pageX - offsetX - editingElement.position().left) / _this.gridWidth) * _this.gridWidth - 12
+          });
+        });
+        return $(document).mouseup(function(e) {
+          var action;
+          $('.workspace').off('mousemove');
+          action = _this.actions[editingElement.attr('data-index')];
+          return action.width = Math.round(editingElement.width() / _this.gridWidth);
+        });
+      });
       return $(element).mousedown(function(e) {
         var editingElement;
         editingElement = element;
