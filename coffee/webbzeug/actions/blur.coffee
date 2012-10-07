@@ -5,7 +5,7 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
   availableParameters: ->
     {
       strength: { name: 'Strength', type: 'number', default: 1, min: 1 , max: 30 }
-      type: { name: 'Type', type: 'enum', values: { linear: 'Linear', gauss: 'Gauss', median: 'Median' }, default: 'linear' }
+      type: { name: 'Type', type: 'enum', values: { linear: 'Linear', gauss: 'Gauss' }, default: 'linear' }
     }
 
   linearBlur: (contexts) ->
@@ -149,6 +149,4 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
         @linearBlur contexts
       when 'gauss'
         @gaussBlur contexts
-      when 'median'
-        @linearBlur contexts
     return @context

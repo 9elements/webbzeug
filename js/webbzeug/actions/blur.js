@@ -35,8 +35,7 @@
           type: 'enum',
           values: {
             linear: 'Linear',
-            gauss: 'Gauss',
-            median: 'Median'
+            gauss: 'Gauss'
           },
           "default": 'linear'
         }
@@ -197,9 +196,6 @@
           break;
         case 'gauss':
           this.gaussBlur(contexts);
-          break;
-        case 'median':
-          this.linearBlur(contexts);
       }
       return this.context;
     };
