@@ -12,22 +12,19 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
 
     @context.canvas.width *= 2
 
-    if contexts.length is 0
-      @context.fillStyle = 'black'
-      @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
+    if contexts.length == 0
+      console.log "Dude a light needs an input"
+      return
 
-      imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-      imagePixelData = imageData.data
-    else
-      imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
-      @context.putImageData imageData, 0, 0
-      imagePixelData = imageData.data
+    # How to copy the image data from one context to another
+    inputImageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
+    outputImageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
 
     w = @app.getWidth()
     h = @app.getHeight()
 
-    posX = @getParameter('x')
-    posY = @getParameter('y')
+    posX = parseInt @getParameter('x')
+    posY = parseInt @getParameter('y')
 
     deltaHypotenuse = []
     for x in [w...0]
@@ -40,19 +37,19 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
     for x in [w...0]
       for y in [h...0]
 
-        px1 = imagePixelData[@getPixelIndex(x, y + 1) + 2]
-        px2 = imagePixelData[@getPixelIndex(x, y - 1) + 2]
-        px3 = imagePixelData[@getPixelIndex(x + 1, y) + 2]
-        px4 = imagePixelData[@getPixelIndex(x - 1, y) + 2]
+        px1 = inputImageData.data[@getPixelIndex(x, y + 1) + 2]
+        px2 = inputImageData.data[@getPixelIndex(x, y - 1) + 2]
+        px3 = inputImageData.data[@getPixelIndex(x + 1, y) + 2]
+        px4 = inputImageData.data[@getPixelIndex(x - 1, y) + 2]
 
         intensity = @luminosity(deltaHypotenuse[@luminosity(px1 - px2 - y + posY) * w + @luminosity(px3 - px4 - x + posX)])
 
-        for i in [3...0]
-          imagePixelData[@getPixelIndex(x, y) + i] = intensity
+        for i in [0...3]
+          outputImageData.data[@getPixelIndex(x, y) + i] = intensity
 
-        imagePixelData[@getPixelIndex(x, y) + 3] = w - 1
+        outputImageData.data[@getPixelIndex(x, y) + 3] = w - 1
 
-    @context.putImageData imageData, 0, 0
+    @context.putImageData outputImageData, 0, 0
     return @context
 
   getPixelIndex: (x, y) ->

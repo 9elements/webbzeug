@@ -39,23 +39,19 @@
     };
 
     LightAction.prototype.render = function(contexts) {
-      var V, W, deltaHypotenuse, h, i, imageData, imagePixelData, intensity, posX, posY, px1, px2, px3, px4, w, x, y, _i, _j, _k, _l, _m;
+      var V, W, deltaHypotenuse, h, i, inputImageData, intensity, outputImageData, posX, posY, px1, px2, px3, px4, w, x, y, _i, _j, _k, _l, _m;
       LightAction.__super__.render.call(this);
       this.context.canvas.width *= 2;
       if (contexts.length === 0) {
-        this.context.fillStyle = 'black';
-        this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
-        imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        imagePixelData = imageData.data;
-      } else {
-        imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        this.context.putImageData(imageData, 0, 0);
-        imagePixelData = imageData.data;
+        console.log("Dude a light needs an input");
+        return;
       }
+      inputImageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       w = this.app.getWidth();
       h = this.app.getHeight();
-      posX = this.getParameter('x');
-      posY = this.getParameter('y');
+      posX = parseInt(this.getParameter('x'));
+      posY = parseInt(this.getParameter('y'));
       deltaHypotenuse = [];
       for (x = _i = w; w <= 0 ? _i < 0 : _i > 0; x = w <= 0 ? ++_i : --_i) {
         for (y = _j = h; h <= 0 ? _j < 0 : _j > 0; y = h <= 0 ? ++_j : --_j) {
@@ -66,18 +62,18 @@
       }
       for (x = _k = w; w <= 0 ? _k < 0 : _k > 0; x = w <= 0 ? ++_k : --_k) {
         for (y = _l = h; h <= 0 ? _l < 0 : _l > 0; y = h <= 0 ? ++_l : --_l) {
-          px1 = imagePixelData[this.getPixelIndex(x, y + 1) + 2];
-          px2 = imagePixelData[this.getPixelIndex(x, y - 1) + 2];
-          px3 = imagePixelData[this.getPixelIndex(x + 1, y) + 2];
-          px4 = imagePixelData[this.getPixelIndex(x - 1, y) + 2];
+          px1 = inputImageData.data[this.getPixelIndex(x, y + 1) + 2];
+          px2 = inputImageData.data[this.getPixelIndex(x, y - 1) + 2];
+          px3 = inputImageData.data[this.getPixelIndex(x + 1, y) + 2];
+          px4 = inputImageData.data[this.getPixelIndex(x - 1, y) + 2];
           intensity = this.luminosity(deltaHypotenuse[this.luminosity(px1 - px2 - y + posY) * w + this.luminosity(px3 - px4 - x + posX)]);
-          for (i = _m = 3; _m > 0; i = --_m) {
-            imagePixelData[this.getPixelIndex(x, y) + i] = intensity;
+          for (i = _m = 0; _m < 3; i = ++_m) {
+            outputImageData.data[this.getPixelIndex(x, y) + i] = intensity;
           }
-          imagePixelData[this.getPixelIndex(x, y) + 3] = w - 1;
+          outputImageData.data[this.getPixelIndex(x, y) + 3] = w - 1;
         }
       }
-      this.context.putImageData(imageData, 0, 0);
+      this.context.putImageData(outputImageData, 0, 0);
       return this.context;
     };
 
