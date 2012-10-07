@@ -13,7 +13,7 @@ window.Webbzeug.Actions.RotoZoom = class RotoZoomAction extends Webbzeug.Action
       return
 
     rotation = @getParameter('rotation')
-    zoom  = @getParameter('zoom')
+    zoom  = @getParameter('zoom') / 10
 
     # How to copy the image data from one context to another
     inputImageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()

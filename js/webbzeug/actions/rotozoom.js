@@ -47,7 +47,7 @@
         return;
       }
       rotation = this.getParameter('rotation');
-      zoom = this.getParameter('zoom');
+      zoom = this.getParameter('zoom') / 10;
       inputImageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       cosrot = Math.cos(rotation) * zoom;
