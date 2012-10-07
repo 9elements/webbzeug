@@ -220,7 +220,8 @@
               type: 'range',
               min: info.min || 0,
               max: info.max || 9999,
-              value: action.getParameter(key) || info["default"]
+              value: action.getParameter(key) || info["default"],
+              step: info.step || 1
             };
             input = $('<input>').attr(attributes).appendTo(li);
             value = $('<div>').addClass('value').text(attributes.value).appendTo(li);

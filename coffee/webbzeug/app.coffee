@@ -197,6 +197,7 @@ window.Webbzeug.App = class App
             min: info.min or 0
             max: info.max or 9999
             value: action.getParameter(key) or info.default
+            step: info.step or 1
 
           input = $('<input>').attr(attributes).appendTo li
 
@@ -283,7 +284,7 @@ window.Webbzeug.App = class App
 
     unless watchedAction?
       return false
-    
+
     context = @render watchedAction
 
     imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
