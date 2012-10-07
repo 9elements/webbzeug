@@ -3,93 +3,25 @@ window.Webbzeug.Version = '0.0.1'
 window.Webbzeug.App = class App
   gridHeight: 27
   gridWidth:  112 / 3
-  classMap: 
-    rectangle: 
-      name: 'Rectangle'
-      type: 'generative'
-      class: Webbzeug.Actions.Rectangle
-    circle: 
-      name: 'Circle'
-      type: 'generative'
-      class: Webbzeug.Actions.Circle
-    fractal: 
-      name: 'Fractal'
-      type: 'generative'
-      class: Webbzeug.Actions.Fractal
-    pixels: 
-      name: 'Pixels'
-      type: 'generative'
-      class: Webbzeug.Actions.Pixels
-    flat: 
-      name: 'Flat'
-      type: 'generative'
-      class: Webbzeug.Actions.Flat
-
-    combine: 
-      name: 'Combine'
-      type: 'processive'
-      class: Webbzeug.Actions.Combine
-    invert: 
-      name: 'Invert'
-      type: 'processive'
-      class: Webbzeug.Actions.Invert
-    contbri: 
-      name: 'Cont / Bri'
-      type: 'processive'
-      class: Webbzeug.Actions.ContrastBrightness
-    blur: 
-      name: 'Blur'
-      type: 'processive'
-      class: Webbzeug.Actions.Blur
-    rotozoom: 
-      name: 'RotoZoom'
-      type: 'processive'
-      class: Webbzeug.Actions.RotoZoom
-    light: 
-      name: 'Light'
-      type: 'processive'
-      class: Webbzeug.Actions.Light
-    mirror: 
-      name: 'Mirror'
-      type: 'processive'
-      class: Webbzeug.Actions.Mirror
-    normal:
-      name: 'Normal'
-      type: 'processive'
-      class: Webbzeug.Actions.Normal
-
-    load: 
-      name: 'Load'
-      type: 'memory'
-      class: Webbzeug.Actions.Load
-    save: 
-      name: 'Save'
-      type: 'memory'
-      class: Webbzeug.Actions.Save
-
+  shiftPressed: false
   constructor: (@canvas) ->
-    @context = @canvas.getContext '2d'
+    @workspace = $('.workspace')
+    @setupCanvas()
+    @reset()
 
-    @handleSaveLoad()
-
-    @shiftPressed = false
-
-    @incrementalIndex = 0
-    @actions = {}
-
-    @width = @context.canvas.width
-    @height = @context.canvas.height
+    @loadSaveHandler = new Webbzeug.LoadSaveHandler $('.save-link'), $('input#file')
 
     @handleNavigation()
-    @handleWorkspaceKeyboard()
+    @handleKeyboardInput()
 
-    @watchedActionIndex  = null
-    @selectedActionIndex = null
+  ###
+    Setup
+  ###
 
-    @memory = []
-
-    # every 1000 / 60, =>
-    #   @render()
+  setupCanvas: ->
+    @context = @canvas.getContext '2d'
+    @width = @context.canvas.width
+    @height = @context.canvas.height
 
   reset: ->
     @memory = []
@@ -100,36 +32,33 @@ window.Webbzeug.App = class App
     @selectedElement = null
     @selectedActionIndex = @selectedActionId = @selectedActionName = @selectedActionType = null
 
-    $('.workspace .action').remove()
+    # Remove all action divs
+    @workspace.find('.action').remove()
 
-  handleSaveLoad: ->
-    @exporter = new Webbzeug.Exporter
-    @importer = new Webbzeug.Importer this
-    $('.save-link').click =>
-      if filename = prompt('Please enter a filename:', 'workspace.webb')
-        url = @exporter.actionsToDataURL @actions
-        if url?
-          downloadDataURI
-            filename: filename
-            data: url
+  ###
+    Keyboard input
+  ###
+  handleKeyboardInput: ->
+    $(document).keyup (e) =>
+      if e.keyCode is 16
+        @shiftPressed = false
 
-    $('input#file').change (evt) =>
-      evt.stopPropagation()
-      evt.preventDefault()
+    $(document).keydown (e) =>
+      if e.keyCode is 16
+        @shiftPressed = true
+      if e.keyCode is 32
+        e.preventDefault()
+        if @selectedActionIndex
+          $('.workspace .action').removeClass('watched')
+          $('.workspace .action[data-index=' + @selectedActionIndex + ']').addClass('watched')
 
-      file = evt.target.files[0]
+          @watchedActionIndex = @selectedActionIndex
 
-      reader = new FileReader()
-      reader.onload = ((theFile) =>
-        return (e) =>
-          data = e.target.result
+          @renderAll()
 
-          @reset()
-          @importer.importDataURL(data)
-      )(file)
-      reader.readAsDataURL(file)
-
-
+  ###
+    Navigation
+  ###
   handleNavigation: ->
     self = this
     $('.navigation li').click (e) ->
@@ -144,6 +73,9 @@ window.Webbzeug.App = class App
       self.selectedActionName = $(this).text()
       self.selectedActionType = $(this).attr('data-type')
 
+  ###
+    Action creation / handling / dragging / resizing
+  ###
   newActionElement: (x, y, actionName, width, actionType) ->
     el = $('<div>').addClass('action')
 
@@ -158,7 +90,7 @@ window.Webbzeug.App = class App
     return el
 
   applyActionToElement: (actionId, x, y, width, index, element) ->
-    action = new @classMap[actionId].class this, x, y, width, index
+    action = new Webbzeug.ClassMap[actionId].class this, x, y, width, index
 
     element.attr 'data-index': index
 
@@ -179,7 +111,6 @@ window.Webbzeug.App = class App
 
     return action
 
-  # When workspace is clicked, create new element
   handleWorkspaceClick: ->
     $('.workspace').mouseenter (e) =>
       if not @selectedElement and @selectedActionId
@@ -247,25 +178,6 @@ window.Webbzeug.App = class App
         action.x = Math.round(editingElement.position().left / @gridWidth)
         action.y = Math.round(editingElement.position().top  / @gridHeight)
 
-  handleWorkspaceKeyboard: ->
-    $(document).keyup (e) =>
-      if e.keyCode is 16
-        @shiftPressed = false
-
-    $(document).keydown (e) =>
-      if e.keyCode is 16
-        @shiftPressed = true
-      if e.keyCode is 32
-        e.preventDefault()
-        if @selectedActionIndex
-          $('.workspace .action').removeClass('watched')
-          $('.workspace .action[data-index=' + @selectedActionIndex + ']').addClass('watched')
-
-          @watchedActionIndex = @selectedActionIndex
-
-          @renderAll()
-
-
   handleElementClick: (e, element) ->
     @selectedActionIndex = element.attr('data-index')
 
@@ -275,6 +187,9 @@ window.Webbzeug.App = class App
     if @shiftPressed
       @showParameters e, @actions[@selectedActionIndex]
 
+  ###
+    Parameters
+  ###
   showParameters: (e, action) ->
     self = this
 
@@ -384,7 +299,6 @@ window.Webbzeug.App = class App
   getWidth: -> @canvas.width
   getHeight: -> @canvas.height
 
-
   ###
     Tree building / handling
   ###
@@ -412,6 +326,9 @@ window.Webbzeug.App = class App
 
     action.children = children
 
+  ###
+    Rendering
+  ###
   renderAll: ->
     @buildTree()
 

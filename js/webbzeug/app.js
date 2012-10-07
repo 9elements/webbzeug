@@ -13,99 +13,28 @@
 
     App.prototype.gridWidth = 112 / 3;
 
-    App.prototype.classMap = {
-      rectangle: {
-        name: 'Rectangle',
-        type: 'generative',
-        "class": Webbzeug.Actions.Rectangle
-      },
-      circle: {
-        name: 'Circle',
-        type: 'generative',
-        "class": Webbzeug.Actions.Circle
-      },
-      fractal: {
-        name: 'Fractal',
-        type: 'generative',
-        "class": Webbzeug.Actions.Fractal
-      },
-      pixels: {
-        name: 'Pixels',
-        type: 'generative',
-        "class": Webbzeug.Actions.Pixels
-      },
-      flat: {
-        name: 'Flat',
-        type: 'generative',
-        "class": Webbzeug.Actions.Flat
-      },
-      combine: {
-        name: 'Combine',
-        type: 'processive',
-        "class": Webbzeug.Actions.Combine
-      },
-      invert: {
-        name: 'Invert',
-        type: 'processive',
-        "class": Webbzeug.Actions.Invert
-      },
-      contbri: {
-        name: 'Cont / Bri',
-        type: 'processive',
-        "class": Webbzeug.Actions.ContrastBrightness
-      },
-      blur: {
-        name: 'Blur',
-        type: 'processive',
-        "class": Webbzeug.Actions.Blur
-      },
-      rotozoom: {
-        name: 'RotoZoom',
-        type: 'processive',
-        "class": Webbzeug.Actions.RotoZoom
-      },
-      light: {
-        name: 'Light',
-        type: 'processive',
-        "class": Webbzeug.Actions.Light
-      },
-      mirror: {
-        name: 'Mirror',
-        type: 'processive',
-        "class": Webbzeug.Actions.Mirror
-      },
-      normal: {
-        name: 'Normal',
-        type: 'processive',
-        "class": Webbzeug.Actions.Normal
-      },
-      load: {
-        name: 'Load',
-        type: 'memory',
-        "class": Webbzeug.Actions.Load
-      },
-      save: {
-        name: 'Save',
-        type: 'memory',
-        "class": Webbzeug.Actions.Save
-      }
-    };
+    App.prototype.shiftPressed = false;
 
     function App(canvas) {
       this.canvas = canvas;
-      this.context = this.canvas.getContext('2d');
-      this.handleSaveLoad();
-      this.shiftPressed = false;
-      this.incrementalIndex = 0;
-      this.actions = {};
-      this.width = this.context.canvas.width;
-      this.height = this.context.canvas.height;
+      this.workspace = $('.workspace');
+      this.setupCanvas();
+      this.reset();
+      this.loadSaveHandler = new Webbzeug.LoadSaveHandler($('.save-link'), $('input#file'));
       this.handleNavigation();
-      this.handleWorkspaceKeyboard();
-      this.watchedActionIndex = null;
-      this.selectedActionIndex = null;
-      this.memory = [];
+      this.handleKeyboardInput();
     }
+
+    /*
+        Setup
+    */
+
+
+    App.prototype.setupCanvas = function() {
+      this.context = this.canvas.getContext('2d');
+      this.width = this.context.canvas.width;
+      return this.height = this.context.canvas.height;
+    };
 
     App.prototype.reset = function() {
       this.memory = [];
@@ -115,42 +44,41 @@
       this.watchedActionIndex = null;
       this.selectedElement = null;
       this.selectedActionIndex = this.selectedActionId = this.selectedActionName = this.selectedActionType = null;
-      return $('.workspace .action').remove();
+      return this.workspace.find('.action').remove();
     };
 
-    App.prototype.handleSaveLoad = function() {
+    /*
+        Keyboard input
+    */
+
+
+    App.prototype.handleKeyboardInput = function() {
       var _this = this;
-      this.exporter = new Webbzeug.Exporter;
-      this.importer = new Webbzeug.Importer(this);
-      $('.save-link').click(function() {
-        var filename, url;
-        if (filename = prompt('Please enter a filename:', 'workspace.webb')) {
-          url = _this.exporter.actionsToDataURL(_this.actions);
-          if (url != null) {
-            return downloadDataURI({
-              filename: filename,
-              data: url
-            });
+      $(document).keyup(function(e) {
+        if (e.keyCode === 16) {
+          return _this.shiftPressed = false;
+        }
+      });
+      return $(document).keydown(function(e) {
+        if (e.keyCode === 16) {
+          _this.shiftPressed = true;
+        }
+        if (e.keyCode === 32) {
+          e.preventDefault();
+          if (_this.selectedActionIndex) {
+            $('.workspace .action').removeClass('watched');
+            $('.workspace .action[data-index=' + _this.selectedActionIndex + ']').addClass('watched');
+            _this.watchedActionIndex = _this.selectedActionIndex;
+            return _this.renderAll();
           }
         }
       });
-      return $('input#file').change(function(evt) {
-        var file, reader;
-        evt.stopPropagation();
-        evt.preventDefault();
-        file = evt.target.files[0];
-        reader = new FileReader();
-        reader.onload = (function(theFile) {
-          return function(e) {
-            var data;
-            data = e.target.result;
-            _this.reset();
-            return _this.importer.importDataURL(data);
-          };
-        })(file);
-        return reader.readAsDataURL(file);
-      });
     };
+
+    /*
+        Navigation
+    */
+
 
     App.prototype.handleNavigation = function() {
       var self;
@@ -165,6 +93,11 @@
         return self.selectedActionType = $(this).attr('data-type');
       });
     };
+
+    /*
+        Action creation / handling / dragging / resizing
+    */
+
 
     App.prototype.newActionElement = function(x, y, actionName, width, actionType) {
       var dragger, el;
@@ -182,7 +115,7 @@
     App.prototype.applyActionToElement = function(actionId, x, y, width, index, element) {
       var action,
         _this = this;
-      action = new this.classMap[actionId]["class"](this, x, y, width, index);
+      action = new Webbzeug.ClassMap[actionId]["class"](this, x, y, width, index);
       element.attr({
         'data-index': index
       });
@@ -283,29 +216,6 @@
       });
     };
 
-    App.prototype.handleWorkspaceKeyboard = function() {
-      var _this = this;
-      $(document).keyup(function(e) {
-        if (e.keyCode === 16) {
-          return _this.shiftPressed = false;
-        }
-      });
-      return $(document).keydown(function(e) {
-        if (e.keyCode === 16) {
-          _this.shiftPressed = true;
-        }
-        if (e.keyCode === 32) {
-          e.preventDefault();
-          if (_this.selectedActionIndex) {
-            $('.workspace .action').removeClass('watched');
-            $('.workspace .action[data-index=' + _this.selectedActionIndex + ']').addClass('watched');
-            _this.watchedActionIndex = _this.selectedActionIndex;
-            return _this.renderAll();
-          }
-        }
-      });
-    };
-
     App.prototype.handleElementClick = function(e, element) {
       this.selectedActionIndex = element.attr('data-index');
       $('.workspace .action').removeClass('selected');
@@ -314,6 +224,11 @@
         return this.showParameters(e, this.actions[this.selectedActionIndex]);
       }
     };
+
+    /*
+        Parameters
+    */
+
 
     App.prototype.showParameters = function(e, action) {
       var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, settingsWindow, val, value, _ref1, _results,
@@ -481,6 +396,11 @@
       }
       return action.children = children;
     };
+
+    /*
+        Rendering
+    */
+
 
     App.prototype.renderAll = function() {
       var context, imageData, startTime, watchedAction;
