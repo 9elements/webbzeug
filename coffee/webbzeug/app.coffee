@@ -24,6 +24,10 @@ window.Webbzeug.App = class App
       name: 'Flat'
       type: 'generative'
       class: Webbzeug.Actions.Flat
+    normal:
+      name: 'Normal'
+      type: 'normal'
+      class: Webbzeug.Actions.Normal
 
     combine: 
       name: 'Combine'
