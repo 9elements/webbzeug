@@ -26,28 +26,28 @@
           type: 'number',
           min: 0,
           max: 255,
-          "default": 0
+          "default": 64
         },
         y: {
           name: 'Y',
           type: 'number',
           min: 0,
           max: 255,
-          "default": 0
+          "default": 64
         },
         width: {
           name: 'Width',
           type: 'number',
           min: 0,
           max: 255,
-          "default": 50
+          "default": 128
         },
         height: {
           name: 'Height',
           type: 'number',
           min: 0,
           max: 255,
-          "default": 50
+          "default": 128
         },
         color: {
           name: 'Color',

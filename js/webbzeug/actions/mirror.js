@@ -37,7 +37,7 @@
       var destIndex, imageData, srcIndex, x, y, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5;
       MirrorAction.__super__.render.call(this);
       if (contexts.length === 0) {
-        alert("Dude a mirror needs an input");
+        console.log("Dude a mirror needs an input");
         return false;
       }
       imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());

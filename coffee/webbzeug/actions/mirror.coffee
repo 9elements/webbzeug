@@ -9,7 +9,7 @@ window.Webbzeug.Actions.Mirror = class MirrorAction extends Webbzeug.Action
   render: (contexts) ->
     super()
     if contexts.length == 0
-      alert "Dude a mirror needs an input"
+      console.log "Dude a mirror needs an input"
       return false
 
     # How to copy the image data from one context to another

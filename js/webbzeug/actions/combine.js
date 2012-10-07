@@ -19,6 +19,49 @@
       return CombineAction.__super__.constructor.apply(this, arguments);
     }
 
+    CombineAction.prototype.availableParameters = function() {
+      return {
+        type: {
+          name: 'Type',
+          type: 'enum',
+          values: {
+            multiply: 'Multiply'
+          },
+          "default": 'multiply'
+        }
+      };
+    };
+
+    CombineAction.prototype.render = function(contexts) {
+      var applyingContext, i, imageData, _i, _ref2;
+      CombineAction.__super__.render.call(this);
+      if (contexts.length < 2) {
+        console.log('A combine needs at least 2 inputs!');
+        return false;
+      }
+      imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      this.context.putImageData(imageData, 0, 0);
+      for (i = _i = 1, _ref2 = contexts.length; 1 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 1 <= _ref2 ? ++_i : --_i) {
+        applyingContext = contexts[i];
+        switch (this.getParameter('type')) {
+          case 'multiply':
+            this.multiply(applyingContext);
+        }
+      }
+      return this.context;
+    };
+
+    CombineAction.prototype.multiply = function(applyingContext) {
+      var applyingImageData, i, imageData, _i, _ref2;
+      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      for (i = _i = 0, _ref2 = applyingImageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+        imageData.data[i] = Math.round(applyingImageData.data[i] * imageData.data[i] / 255);
+      }
+      console.log(imageData);
+      return this.context.putImageData(imageData, 0, 0);
+    };
+
     return CombineAction;
 
   })(Webbzeug.Action);
