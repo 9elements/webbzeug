@@ -19,6 +19,25 @@
       return ContrastBrightnessAction.__super__.constructor.apply(this, arguments);
     }
 
+    ContrastBrightnessAction.prototype.availableParameters = function() {
+      return {
+        contrast: {
+          name: "Contrast",
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 127
+        },
+        brightness: {
+          name: "Brightness",
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": 127
+        }
+      };
+    };
+
     ContrastBrightnessAction.prototype.render = function(contexts) {
       var brightness, contrast, i, imageData, _i, _ref2;
       ContrastBrightnessAction.__super__.render.call(this);
@@ -26,9 +45,9 @@
         console.log("Dude an cont-bri needs an input");
         return;
       }
-      contrast = 160;
+      contrast = this.getParameter('contrast');
       contrast = contrast / 128;
-      brightness = 10;
+      brightness = this.getParameter('brightness') - 127;
       imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       for (i = _i = 0, _ref2 = imageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
         if ((i % 4) !== 3) {

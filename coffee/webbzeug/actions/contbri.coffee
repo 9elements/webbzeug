@@ -1,15 +1,20 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.ContrastBrightness = class ContrastBrightnessAction extends Webbzeug.Action
+  availableParameters: ->
+    {
+      contrast: { name: "Contrast", type: 'number', min: 0, max: 255, default: 127 },
+      brightness: { name: "Brightness", type: 'number', min: 0, max: 255, default: 127 }
+    }
   render: (contexts) ->
     super()
     if contexts.length == 0
       console.log "Dude an cont-bri needs an input"
       return
 
-    contrast = 160
+    contrast = @getParameter('contrast')
     contrast = contrast / 128
-    brightness = 10
+    brightness = @getParameter('brightness') - 127
 
     imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
    
