@@ -3,7 +3,7 @@ window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
   availableParameters: ->
     {
-      type: { name: 'Type', type: 'enum', values: { multiply: 'Multiply' }, default: 'multiply' }
+      type: { name: 'Type', type: 'enum', values: { multiply: 'Multiply', addition: 'Addition' }, default: 'addition' }
     }
 
   render: (contexts) ->
@@ -24,10 +24,12 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
       switch @getParameter('type')
         when 'multiply'
           @multiply applyingContext
+        when 'addition'
+          @addition applyingContext
 
     return @context
 
-  # Multiplies 
+  # Multiplication
   multiply: (applyingContext) ->
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
     applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
@@ -35,6 +37,14 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
     for i in [0...applyingImageData.data.length]
       imageData.data[i] = Math.round(applyingImageData.data[i] * imageData.data[i] / 255)
 
-    console.log imageData
+    @context.putImageData imageData, 0, 0
+
+  # Addition
+  addition: (applyingContext) ->
+    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+
+    for i in [0...applyingImageData.data.length]
+      imageData.data[i] = Math.min(applyingImageData.data[i] + imageData.data[i], 255)
 
     @context.putImageData imageData, 0, 0

@@ -25,9 +25,10 @@
           name: 'Type',
           type: 'enum',
           values: {
-            multiply: 'Multiply'
+            multiply: 'Multiply',
+            addition: 'Addition'
           },
-          "default": 'multiply'
+          "default": 'addition'
         }
       };
     };
@@ -46,6 +47,9 @@
         switch (this.getParameter('type')) {
           case 'multiply':
             this.multiply(applyingContext);
+            break;
+          case 'addition':
+            this.addition(applyingContext);
         }
       }
       return this.context;
@@ -58,7 +62,16 @@
       for (i = _i = 0, _ref2 = applyingImageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
         imageData.data[i] = Math.round(applyingImageData.data[i] * imageData.data[i] / 255);
       }
-      console.log(imageData);
+      return this.context.putImageData(imageData, 0, 0);
+    };
+
+    CombineAction.prototype.addition = function(applyingContext) {
+      var applyingImageData, i, imageData, _i, _ref2;
+      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      for (i = _i = 0, _ref2 = applyingImageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+        imageData.data[i] = Math.min(applyingImageData.data[i] + imageData.data[i], 255);
+      }
       return this.context.putImageData(imageData, 0, 0);
     };
 
