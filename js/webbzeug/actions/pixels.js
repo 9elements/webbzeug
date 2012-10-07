@@ -45,6 +45,8 @@
       return PixelsAction.__super__.constructor.apply(this, arguments);
     }
 
+    PixelsAction.prototype.type = 'pixels';
+
     PixelsAction.prototype.availableParameters = function() {
       return {
         seed: {

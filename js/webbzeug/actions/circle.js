@@ -19,6 +19,8 @@
       return CircleAction.__super__.constructor.apply(this, arguments);
     }
 
+    CircleAction.prototype.type = 'circle';
+
     CircleAction.prototype.availableParameters = function() {
       return {
         x: {

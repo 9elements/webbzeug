@@ -1,6 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
+  type: 'combine'
   availableParameters: ->
     {
       type: { name: 'Type', type: 'enum', values: { multiply: 'Multiply', add: 'Add', substract: 'Substract' }, default: 'addition' }

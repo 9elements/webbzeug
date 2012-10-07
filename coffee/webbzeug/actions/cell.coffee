@@ -1,6 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Invert = class InvertAction extends Webbzeug.Action
+  type: 'cell'
   render: (contexts) ->
     super()
     if contexts.length == 0

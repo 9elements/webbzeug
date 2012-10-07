@@ -19,6 +19,8 @@
       return BlurAction.__super__.constructor.apply(this, arguments);
     }
 
+    BlurAction.prototype.type = 'blur';
+
     BlurAction.prototype.availableParameters = function() {
       return {
         strength: {

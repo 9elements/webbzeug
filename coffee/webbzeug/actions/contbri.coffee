@@ -1,6 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.ContrastBrightness = class ContrastBrightnessAction extends Webbzeug.Action
+  type: 'contbri'
   availableParameters: ->
     {
       contrast: { name: "Contrast", type: 'number', min: 0, max: 255, default: 127 },

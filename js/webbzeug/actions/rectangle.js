@@ -19,6 +19,8 @@
       return RectangleAction.__super__.constructor.apply(this, arguments);
     }
 
+    RectangleAction.prototype.type = 'rectangle';
+
     RectangleAction.prototype.availableParameters = function() {
       return {
         x: {

@@ -19,6 +19,8 @@
       return RotoZoomAction.__super__.constructor.apply(this, arguments);
     }
 
+    RotoZoomAction.prototype.type = 'rotozoom';
+
     RotoZoomAction.prototype.availableParameters = function() {
       return {
         rotation: {

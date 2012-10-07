@@ -19,6 +19,8 @@
       return SaveAction.__super__.constructor.apply(this, arguments);
     }
 
+    SaveAction.prototype.type = 'save';
+
     SaveAction.prototype.availableParameters = function() {
       return {
         id: {

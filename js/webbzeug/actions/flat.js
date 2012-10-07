@@ -19,6 +19,8 @@
       return FlatAction.__super__.constructor.apply(this, arguments);
     }
 
+    FlatAction.prototype.type = 'flat';
+
     FlatAction.prototype.availableParameters = function() {
       return {
         color: {
