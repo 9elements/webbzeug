@@ -33,7 +33,6 @@
     function App(canvas) {
       this.canvas = canvas;
       this.context = this.canvas.getContext('2d');
-      this.exporter = new Webbzeug.Exporter;
       this.handleSaveLoad();
       this.shiftPressed = false;
       this.incrementalIndex = 0;
@@ -49,7 +48,9 @@
 
     App.prototype.handleSaveLoad = function() {
       var _this = this;
-      return $('.save-link').click(function() {
+      this.exporter = new Webbzeug.Exporter;
+      this.importer = new Webbzeug.Importer;
+      $('.save-link').click(function() {
         var filename, url;
         if (filename = prompt('Please enter a filename:', 'workspace.webb')) {
           url = _this.exporter.actionsToDataURL(_this.actions);
@@ -60,6 +61,22 @@
             });
           }
         }
+      });
+      return $('input#file').change(function(evt) {
+        var file, reader;
+        evt.stopPropagation();
+        evt.preventDefault();
+        file = evt.target.files[0];
+        reader = new FileReader();
+        reader.onload = (function(theFile) {
+          return function(e) {
+            var actions, data;
+            data = e.target.result;
+            actions = _this.importer.dataURLToActions(data);
+            return console.log(actions);
+          };
+        })(file);
+        return reader.readAsDataURL(file);
       });
     };
 

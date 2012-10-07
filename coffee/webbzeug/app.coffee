@@ -24,8 +24,6 @@ window.Webbzeug.App = class App
   constructor: (@canvas) ->
     @context = @canvas.getContext '2d'
 
-    @exporter = new Webbzeug.Exporter
-
     @handleSaveLoad()
 
     @shiftPressed = false
@@ -48,6 +46,8 @@ window.Webbzeug.App = class App
     #   @render()
 
   handleSaveLoad: ->
+    @exporter = new Webbzeug.Exporter
+    @importer = new Webbzeug.Importer
     $('.save-link').click =>
       if filename = prompt('Please enter a filename:', 'workspace.webb')
         url = @exporter.actionsToDataURL @actions
@@ -55,6 +55,22 @@ window.Webbzeug.App = class App
           downloadDataURI
             filename: filename
             data: url
+
+    $('input#file').change (evt) =>
+      evt.stopPropagation()
+      evt.preventDefault()
+
+      file = evt.target.files[0]
+
+      reader = new FileReader()
+      reader.onload = ((theFile) =>
+        return (e) =>
+          data = e.target.result
+
+          actions = @importer.dataURLToActions(data)
+          console.log actions
+      )(file)
+      reader.readAsDataURL(file)
 
 
   handleNavigation: ->
