@@ -155,17 +155,16 @@
     };
 
     App.prototype.handleElementClick = function(e, element) {
-      if (!this.shiftPressed) {
-        this.selectedActionIndex = element.attr('data-index');
-        $('.workspace .action').removeClass('selected');
-        return $(element).addClass('selected');
-      } else {
+      this.selectedActionIndex = element.attr('data-index');
+      $('.workspace .action').removeClass('selected');
+      $(element).addClass('selected');
+      if (this.shiftPressed) {
         return this.showParameters(e, this.actions[this.selectedActionIndex]);
       }
     };
 
     App.prototype.showParameters = function(e, action) {
-      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, settingsWindow, val, value, _results,
+      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, settingsWindow, val, value, _ref1, _results,
         _this = this;
       self = this;
       settingsWindow = $('.workspace-wrapper .parameters');
@@ -192,25 +191,23 @@
             li = $('<li>').appendTo(settingsUl);
             label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo(li);
             select = $('<select>').appendTo(li);
-            _results.push((function() {
-              var _ref1, _results1;
-              _ref1 = info.values;
-              _results1 = [];
-              for (optKey in _ref1) {
-                val = _ref1[optKey];
-                option = $('<option>').attr({
-                  value: optKey
-                }).text(val).appendTo(select);
-                _results1.push((function() {
-                  var _key;
-                  _key = key;
-                  return option.change(function() {
-                    action.setParameter(_key, $(this).attr('value'));
-                    return self.renderAll();
-                  });
-                })());
+            _ref1 = info.values;
+            for (optKey in _ref1) {
+              val = _ref1[optKey];
+              option = $('<option>').attr({
+                value: optKey
+              }).text(val).appendTo(select);
+              if (action.getParameter(key) === optKey) {
+                option.attr('selected', 'selected');
               }
-              return _results1;
+            }
+            _results.push((function() {
+              var _key;
+              _key = key;
+              return select.change(function() {
+                action.setParameter(_key, select.val());
+                return self.renderAll();
+              });
             })());
             break;
           case 'number':

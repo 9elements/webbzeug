@@ -140,12 +140,12 @@ window.Webbzeug.App = class App
 
 
   handleElementClick: (e, element) ->
-    unless @shiftPressed
-      @selectedActionIndex = element.attr('data-index')
+    @selectedActionIndex = element.attr('data-index')
 
-      $('.workspace .action').removeClass('selected')
-      $(element).addClass('selected')
-    else
+    $('.workspace .action').removeClass('selected')
+    $(element).addClass('selected')
+    
+    if @shiftPressed
       @showParameters e, @actions[@selectedActionIndex]
 
   showParameters: (e, action) ->
@@ -179,14 +179,16 @@ window.Webbzeug.App = class App
           select = $('<select>').appendTo li
           for optKey, val of info.values
             option = $('<option>').attr(value: optKey).text(val).appendTo select
+            if action.getParameter(key) is optKey
+              option.attr 'selected', 'selected'
 
-            (->
-              _key = key
-              option.change ->
-                action.setParameter _key, $(this).attr('value')
+          (->
+            _key = key
+            select.change ->
+              action.setParameter _key, select.val()
 
-                self.renderAll()
-            )()
+              self.renderAll()
+          )()
 
         when 'number'
           li = $('<li>').appendTo settingsUl
