@@ -45,9 +45,10 @@
           vector3X = vector1Y * vector2Z - vector1Z * vector2Y;
           vector3Y = vector1Z * vector2X - vector1X * vector2Z;
           vector3Z = vector1X * vector2Y - vector1Y * vector2X;
-          outputImageData.data[index] = vector3X;
-          outputImageData.data[index + 1] = vector3Y;
-          outputImageData.data[index + 2] = vector3Z;
+          outputImageData.data[index] = (vector3X + 255) / 2;
+          outputImageData.data[index + 1] = (vector3Y + 255) / 2;
+          outputImageData.data[index + 2] = (vector3Z + 255) / 2;
+          outputImageData.data[index + 3] = 255;
         }
       }
       this.context.putImageData(outputImageData, 0, 0);
