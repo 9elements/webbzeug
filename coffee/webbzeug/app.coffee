@@ -140,20 +140,21 @@ window.Webbzeug.App = class App
       self.selectedActionName = $(this).text()
       self.selectedActionType = $(this).attr('data-type')
 
-  newActionElement: (x, y, actionName, actionType) ->
+  newActionElement: (x, y, actionName, width, actionType) ->
     el = $('<div>').addClass('action')
 
     el.text(actionName).addClass(actionType).css
       left: x
       top: y
+      width: width * @gridWidth - 12
 
     dragger = $('<div>').addClass('dragger').appendTo el
     $('.workspace').append el
 
     return el
 
-  applyActionToElement: (actionId, x, y, index, element) ->
-    action = new @classMap[actionId].class this, x, y, index
+  applyActionToElement: (actionId, x, y, width, index, element) ->
+    action = new @classMap[actionId].class this, x, y, width, index
 
     element.attr 'data-index': index
 
@@ -178,7 +179,7 @@ window.Webbzeug.App = class App
   handleWorkspaceClick: ->
     $('.workspace').mouseenter (e) =>
       if not @selectedElement and @selectedActionId
-        el = @newActionElement e.pageX, e.pageY, @selectedActionName, @selectedActionType
+        el = @newActionElement e.pageX, e.pageY, @selectedActionName, 3, @selectedActionType
 
         @selectedElement = el
 
@@ -198,7 +199,7 @@ window.Webbzeug.App = class App
         y = Math.round(@selectedElement.position().top  / @gridHeight)
 
         if @selectedActionId
-          @applyActionToElement @selectedActionId, x, y, @incrementalIndex, @selectedElement
+          @applyActionToElement @selectedActionId, x, y, 3, @incrementalIndex, @selectedElement
 
           @incrementalIndex++
 

@@ -161,22 +161,23 @@
       });
     };
 
-    App.prototype.newActionElement = function(x, y, actionName, actionType) {
+    App.prototype.newActionElement = function(x, y, actionName, width, actionType) {
       var dragger, el;
       el = $('<div>').addClass('action');
       el.text(actionName).addClass(actionType).css({
         left: x,
-        top: y
+        top: y,
+        width: width * this.gridWidth - 12
       });
       dragger = $('<div>').addClass('dragger').appendTo(el);
       $('.workspace').append(el);
       return el;
     };
 
-    App.prototype.applyActionToElement = function(actionId, x, y, index, element) {
+    App.prototype.applyActionToElement = function(actionId, x, y, width, index, element) {
       var action,
         _this = this;
-      action = new this.classMap[actionId]["class"](this, x, y, index);
+      action = new this.classMap[actionId]["class"](this, x, y, width, index);
       element.attr({
         'data-index': index
       });
@@ -204,7 +205,7 @@
       $('.workspace').mouseenter(function(e) {
         var el;
         if (!_this.selectedElement && _this.selectedActionId) {
-          el = _this.newActionElement(e.pageX, e.pageY, _this.selectedActionName, _this.selectedActionType);
+          el = _this.newActionElement(e.pageX, e.pageY, _this.selectedActionName, 3, _this.selectedActionType);
           return _this.selectedElement = el;
         }
       });
@@ -226,7 +227,7 @@
           x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
           if (_this.selectedActionId) {
-            _this.applyActionToElement(_this.selectedActionId, x, y, _this.incrementalIndex, _this.selectedElement);
+            _this.applyActionToElement(_this.selectedActionId, x, y, 3, _this.incrementalIndex, _this.selectedElement);
             _this.incrementalIndex++;
           }
           _this.selectedElement = null;

@@ -9,11 +9,12 @@
 
     Action.prototype.width = 3;
 
-    function Action(app, x, y, index) {
+    function Action(app, x, y, width, index) {
       var info, parameter, _ref1;
       this.app = app;
       this.x = x;
       this.y = y;
+      this.width = width;
       this.index = index;
       this.children = [];
       this.parameters = {};

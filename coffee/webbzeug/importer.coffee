@@ -60,8 +60,8 @@ window.Webbzeug.Importer = class Importer
     if @debug
       console.log "Action index", index, "x", x, "y", y, "width", width
 
-    el = @app.newActionElement x * @app.gridWidth, y * @app.gridHeight, @app.classMap[type].name, @app.classMap[type].type
-    action = @app.applyActionToElement type, x, y, index, el
+    el = @app.newActionElement x * @app.gridWidth, y * @app.gridHeight, @app.classMap[type].name, width, @app.classMap[type].type
+    action = @app.applyActionToElement type, x, y, width, index, el
 
     parameterKey = null
     parameterVal = null

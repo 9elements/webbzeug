@@ -1,7 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Action = class Action
   width: 3
-  constructor: (@app, @x, @y, @index) ->
+  constructor: (@app, @x, @y, @width, @index) ->
     @children = []
 
     @parameters = {}

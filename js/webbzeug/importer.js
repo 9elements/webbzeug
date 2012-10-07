@@ -65,8 +65,8 @@
       if (this.debug) {
         console.log("Action index", index, "x", x, "y", y, "width", width);
       }
-      el = this.app.newActionElement(x * this.app.gridWidth, y * this.app.gridHeight, this.app.classMap[type].name, this.app.classMap[type].type);
-      action = this.app.applyActionToElement(type, x, y, index, el);
+      el = this.app.newActionElement(x * this.app.gridWidth, y * this.app.gridHeight, this.app.classMap[type].name, width, this.app.classMap[type].type);
+      action = this.app.applyActionToElement(type, x, y, width, index, el);
       parameterKey = null;
       parameterVal = null;
       _results = [];
