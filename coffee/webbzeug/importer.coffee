@@ -1,13 +1,13 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Importer = class Importer
-  debug: false
+  debug: true
   constructor: (@app) -> return
   importDataURL: (data) ->
     splitData      = data.split 'base64,'
     b64encodedData = splitData[1]
     @data          = Base64.decode b64encodedData
 
-    console.log @data
+    @debugPrint @data
 
     @actions = []
 
@@ -86,6 +86,11 @@ window.Webbzeug.Importer = class Importer
       stringLength = @readInt()
       val = @readBytes stringLength
 
+    if valueType is '\xfd'
+      # Float
+      stringLength = @readInt()
+      val = parseFloat(@readBytes(stringLength, false))
+
     if valueType is '\xfc'
       # Object (JSON stringified)
       stringLength = @readInt()
@@ -98,11 +103,12 @@ window.Webbzeug.Importer = class Importer
     @data = @data.slice 1
     return int
     
-  readBytes: (count) ->
+  readBytes: (count, translate=true) ->
     bytes = @data[0...count]
     @data = @data.slice count
 
-    bytes = Webbzeug.Utilities.bytesToString bytes
+    if translate
+      bytes = Webbzeug.Utilities.bytesToString bytes
 
     return bytes
 

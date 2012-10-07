@@ -377,7 +377,12 @@
               return _input.change(function() {
                 var newVal;
                 newVal = _input.val();
-                action.setParameter(_key, parseInt(newVal));
+                if (!!(newVal % 1)) {
+                  newVal = parseFloat(newVal);
+                } else {
+                  newVal = parseInt(newVal);
+                }
+                action.setParameter(_key, newVal);
                 _value.text(newVal);
                 return self.renderAll();
               });

@@ -334,7 +334,13 @@ window.Webbzeug.App = class App
             _value = value
             _input.change ->
               newVal = _input.val()
-              action.setParameter _key, parseInt(newVal)
+
+              if !!(newVal % 1)
+                newVal = parseFloat(newVal)
+              else
+                newVal = parseInt(newVal)
+
+              action.setParameter _key, newVal
               _value.text newVal
 
               self.renderAll()
