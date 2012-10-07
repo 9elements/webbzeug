@@ -19,6 +19,57 @@
       return BlurAction.__super__.constructor.apply(this, arguments);
     }
 
+    BlurAction.prototype.availableParameters = function() {
+      return {
+        strength: {
+          name: 'Strength',
+          type: 'number',
+          "default": 1,
+          min: 1,
+          max: 10
+        }
+      };
+    };
+
+    BlurAction.prototype.render = function(contexts) {
+      var i, imageData, index, n, outputData, rowLength, strength, value, x, y, _i, _j, _k, _l, _ref2, _ref3;
+      BlurAction.__super__.render.call(this);
+      if (contexts.length === 0) {
+        console.log("Dude an blur needs an input");
+        return;
+      }
+      strength = parseInt(this.getParameter('strength'));
+      for (n = _i = 0; 0 <= strength ? _i < strength : _i > strength; n = 0 <= strength ? ++_i : --_i) {
+        if (n === 0) {
+          imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+        } else {
+          imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+        }
+        outputData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+        rowLength = this.app.getWidth() << 2;
+        for (y = _j = 1, _ref2 = this.app.getHeight() - 1; 1 <= _ref2 ? _j < _ref2 : _j > _ref2; y = 1 <= _ref2 ? ++_j : --_j) {
+          for (x = _k = 1, _ref3 = this.app.getWidth() - 1; 1 <= _ref3 ? _k < _ref3 : _k > _ref3; x = 1 <= _ref3 ? ++_k : --_k) {
+            index = (x << 2) + y * (this.app.getWidth() << 2);
+            for (i = _l = 0; _l < 3; i = ++_l) {
+              value = imageData.data[index + i - rowLength];
+              value += imageData.data[index + i - 4 - rowLength];
+              value += imageData.data[index + i + 4 - rowLength];
+              value += imageData.data[index + i];
+              value += imageData.data[index + i - 4];
+              value += imageData.data[index + i + 4];
+              value += imageData.data[index + i + rowLength];
+              value += imageData.data[index + i - 4 + rowLength];
+              value += imageData.data[index + i + 4 + rowLength];
+              outputData.data[index + i] = value / 9;
+            }
+            outputData.data[index + 3] = 255;
+          }
+        }
+        this.context.putImageData(outputData, 0, 0);
+      }
+      return this.context;
+    };
+
     return BlurAction;
 
   })(Webbzeug.Action);
