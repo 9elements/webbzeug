@@ -19,13 +19,17 @@ window.Webbzeug.Actions.Normal = class NormalAction extends Webbzeug.Action
       for x in [0...w - 1]
         rowLen = (w << 2)
         index = (x << 2) + y * rowLen
-        vector1X = inputImageData.data[index] - inputImageData.data[index + 4]
-        vector1Y = inputImageData.data[index + 1]  - inputImageData.data[index + 5]
-        vector1Z = inputImageData.data[index + 2]   - inputImageData.data[index + 6]
+        gray = (inputImageData.data[index] + inputImageData.data[index + 1] + inputImageData.data[index + 2]) / 3  
+        grayRight = (inputImageData.data[index + 4] + inputImageData.data[index + 5] + inputImageData.data[index + 6]) / 3  
+        grayBottom = (inputImageData.data[index + rowLen] + inputImageData.data[index + rowLen + 1] + inputImageData.data[index + rowLen + 2]) / 3  
 
-        vector2X = inputImageData.data[index] - inputImageData.data[index + rowLen]
-        vector2Y = inputImageData.data[index + 1]  - inputImageData.data[index + rowLen + 1]
-        vector2Z = inputImageData.data[index + 2]   - inputImageData.data[index + rowLen + 2]
+        vector1X = -1
+        vector1Y = 0
+        vector1Z = gray - grayRight
+
+        vector2X = 0
+        vector2Y = -1
+        vector2Z = gray - grayBottom
 
         # and now cross product
         vector3X = vector1Y * vector2Z - vector1Z * vector2Y
