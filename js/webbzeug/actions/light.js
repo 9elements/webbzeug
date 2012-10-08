@@ -111,9 +111,9 @@
         for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
           rowLen = w << 2;
           index = (x << 2) + y * rowLen;
-          normalX = (normalImageData[index] / 127) - 1;
-          normalY = (normalImageData[index + 1] / 127) - 1;
-          normalZ = (normalImageData[index + 2] / 127) - 1;
+          normalX = (normalImageData.data[index] / 127) - 1;
+          normalY = (normalImageData.data[index + 1] / 127) - 1;
+          normalZ = (normalImageData.data[index + 2] / 127) - 1;
           normalLen = this.magnitude(normalX, normalY, normalZ);
           normalX /= normalLen;
           normalY /= normalLen;
@@ -126,11 +126,11 @@
           reflectionX /= reflectionLen;
           reflectionY /= reflectionLen;
           reflectionZ /= reflectionLen;
-          rDotV = Math.max(0, this.dot(reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ));
+          rDotV = this.dot(reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ);
           totalSpecular = Math.pow(rDotV, 2);
           totalSpecular *= 255;
           for (i = _k = 0; _k < 3; i = ++_k) {
-            outputImageData.data[index + i] = Math.min(inputImageData.data[index + i] + inputImageData.data[index + i] * nDotL, 255);
+            outputImageData.data[index + i] = Math.min(inputImageData.data[index + i] + totalSpecular, 255);
           }
           outputImageData.data[index + 3] = 255;
         }

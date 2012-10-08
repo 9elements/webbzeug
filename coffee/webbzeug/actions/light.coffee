@@ -52,20 +52,23 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
     eyeY /= eyeLen
     eyeZ /= eyeLen
  
+    #console.log eyeX, eyeY, eyeZ, lightX, lightY, lightZ
+
     for x in [0...w]
       for y in [0...h]
         rowLen = (w << 2)
         index = (x << 2) + y * rowLen
-        normalX = ( normalImageData[index] / 127 ) - 1
-        normalY = ( normalImageData[index + 1] / 127 ) - 1 
-        normalZ = ( normalImageData[index + 2] / 127 ) - 1
+        normalX = ( normalImageData.data[index] / 127 ) - 1
+        normalY = ( normalImageData.data[index + 1] / 127 ) - 1 
+        normalZ = ( normalImageData.data[index + 2] / 127 ) - 1
         normalLen = @magnitude normalX, normalY, normalZ 
         normalX /= normalLen  
         normalY /= normalLen  
         normalZ /= normalLen  
 
         nDotL = @dot normalX, normalY, normalZ, lightX, lightY, lightZ 
-        
+        #console.log normalX, normalY, normalZ, lightX, lightY, lightZ
+
         reflectionX = ( 2 * normalX * nDotL ) - lightX
         reflectionY = ( 2 * normalY * nDotL ) - lightY
         reflectionZ = ( 2 * normalZ * nDotL ) - lightZ
@@ -74,7 +77,7 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
         reflectionY /= reflectionLen
         reflectionZ /= reflectionLen
 
-        rDotV = Math.max( 0 , @dot reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ  ) 
+        rDotV =  @dot reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ  
   # float4 fvTotalDiffuse   = fvDiffuse * fNDotL * fvBaseColor;
         totalSpecular  = Math.pow( rDotV, 2 );
         totalSpecular *= 255
@@ -85,7 +88,7 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
 #   return( saturate( fvTotalAmbient + fvTotalDiffuse + fvTotalSpecular ) );
  
         for i in [0...3]
-          outputImageData.data[index + i] = Math.min( inputImageData.data[index + i] + inputImageData.data[index + i] * nDotL , 255 )
+          outputImageData.data[index + i] = Math.min( inputImageData.data[index + i]  + totalSpecular, 255 )
         outputImageData.data[index + 3] = 255
 
     @context.putImageData outputImageData, 0, 0
