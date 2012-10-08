@@ -192,15 +192,16 @@
     };
 
     App.prototype.handleWorkspaceClick = function() {
-      var _this = this;
-      $('.workspace-wrapper').mouseenter(function(e) {
+      var onMouseDown, onMouseEnter, onMouseMove,
+        _this = this;
+      onMouseEnter = function(e) {
         var el;
         if (!_this.selectedElement && _this.selectedActionId) {
           el = _this.newActionElement(e.pageX, e.pageY, _this.selectedActionName, 3, _this.selectedActionType);
           return _this.selectedElement = el;
         }
-      });
-      $('.workspace-wrapper').mousemove(function(e) {
+      };
+      onMouseMove = function(e) {
         var offsetX, offsetY;
         if (_this.selectedElement) {
           offsetX = $('.workspace').offset().left;
@@ -210,10 +211,12 @@
             top: Math.floor((e.pageY - offsetY) / _this.gridHeight) * _this.gridHeight
           });
         }
-      });
-      return $('.workspace-wrapper').mousedown(function(e) {
+      };
+      onMouseDown = function(e) {
         var x, y;
-        $('.workspace-wrapper').off('mouseenter mousemove mousedown');
+        $('.workspace-wrapper').off('mouseenter', onMouseEnter);
+        $('.workspace-wrapper').off('mousemove', onMouseMove);
+        $('.workspace-wrapper').off('mousedown', onMouseDown);
         if (_this.selectedElement) {
           x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
@@ -224,7 +227,10 @@
           _this.selectedElement = null;
           return _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
         }
-      });
+      };
+      $('.workspace-wrapper').mouseenter(onMouseEnter);
+      $('.workspace-wrapper').mousemove(onMouseMove);
+      return $('.workspace-wrapper').mousedown(onMouseDown);
     };
 
     App.prototype.handleMultipleSelection = function(element) {
@@ -232,31 +238,32 @@
         _this = this;
       selectionRectEl = $('.selection');
       return this.workspace.mousedown(function(e) {
-        var selectionRect;
+        var handleMouseMove, selectionRect;
         e.preventDefault();
         selectionRect = {};
         selectionRect.x = e.pageX;
         selectionRect.y = e.pageY;
-        selectionRectEl.stop().show().css({
-          opacity: 1,
-          width: 0,
-          height: 0,
+        selectionRectEl.css({
           left: selectionRect.x,
           top: selectionRect.y
         });
-        $(document).mousemove(function(e) {
+        handleMouseMove = function(e) {
           selectionRect.width = e.pageX - selectionRect.x;
           selectionRect.height = e.pageY - selectionRect.y;
+          if (Math.abs(selectionRect.width) >= 5 || Math.abs(selectionRect.height) >= 5) {
+            selectionRectEl.stop().show();
+          }
           return selectionRectEl.css({
             left: selectionRect.width > 0 ? selectionRect.x : selectionRect.x + selectionRect.width,
             top: selectionRect.height > 0 ? selectionRect.y : selectionRect.y + selectionRect.height,
             width: Math.abs(selectionRect.width),
             height: Math.abs(selectionRect.height)
           });
-        });
-        return $(document).mouseup(function(e) {
+        };
+        $(document).mousemove(handleMouseMove);
+        return $(document).one('mouseup', function(e) {
           var action, intersectingActions, offsetX, offsetY, r1, r2, _i, _len, _ref1, _results;
-          $(document).off('mousemove');
+          $(document).off('mousemove', handleMouseMove);
           selectionRectEl.fadeOut('fast');
           /*
                     Selection done
@@ -278,27 +285,25 @@
             r2.top = r2.top + selectionRect.height;
           }
           _this.workspace.find('.action').removeClass('selected');
-          if (!(r2.width > 0 || r2.height > 0)) {
-            return false;
-          }
-          _ref1 = _this.actionsArr;
-          _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            action = _ref1[_i];
-            r1 = {
-              left: action.x * _this.gridWidth + offsetX,
-              top: action.y * _this.gridHeight + offsetY,
-              width: action.width * _this.gridWidth,
-              height: _this.gridHeight
-            };
-            if (!(r2.left > r1.left + r1.width || r2.left + r2.width < r1.left || r2.top > r1.top + r1.height || r2.top + r2.height < r1.top)) {
-              action.element.addClass('selected');
-              _results.push(console.log(action.constructor.name, action));
-            } else {
-              _results.push(void 0);
+          if (r2.width > 0 || r2.height > 0) {
+            _ref1 = _this.actionsArr;
+            _results = [];
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              action = _ref1[_i];
+              r1 = {
+                left: action.x * _this.gridWidth + offsetX,
+                top: action.y * _this.gridHeight + offsetY,
+                width: action.width * _this.gridWidth,
+                height: _this.gridHeight
+              };
+              if (!(r2.left > r1.left + r1.width || r2.left + r2.width < r1.left || r2.top > r1.top + r1.height || r2.top + r2.height < r1.top)) {
+                _results.push(action.element.addClass('selected'));
+              } else {
+                _results.push(void 0);
+              }
             }
+            return _results;
           }
-          return _results;
         });
       });
     };
@@ -309,30 +314,31 @@
         return e.stopPropagation();
       });
       $(element).find('.dragger').mousedown(function(e) {
-        var editingElement;
+        var editingElement, handleMouseMove;
         e.stopPropagation();
         e.preventDefault();
         editingElement = element;
-        $(document).mousemove(function(e) {
+        handleMouseMove = function(e) {
           var offsetX;
           e.preventDefault();
           offsetX = $('.workspace').offset().left;
           return editingElement.css({
             width: Math.max(3, Math.floor((e.pageX - offsetX - editingElement.position().left) / _this.gridWidth)) * _this.gridWidth
           });
-        });
+        };
+        $(document).mousemove(handleMouseMove);
         return $(document).mouseup(function(e) {
           var action;
-          $(document).off('mousemove');
+          $(document).off('mousemove', handleMouseMove);
           action = _this.actions[editingElement.attr('data-index')];
           return action.width = Math.round(editingElement.width() / _this.gridWidth);
         });
       });
       return $(element).mousedown(function(e) {
-        var editingElement;
+        var editingElement, handleMouseMove;
         e.preventDefault();
         editingElement = element;
-        $(document).mousemove(function(e) {
+        handleMouseMove = function(e) {
           var offsetX, offsetY;
           e.preventDefault();
           offsetX = $('.workspace').offset().left;
@@ -341,10 +347,11 @@
             left: Math.floor((e.pageX - offsetX) / _this.gridWidth) * _this.gridWidth,
             top: Math.floor((e.pageY - offsetY) / _this.gridHeight) * _this.gridHeight
           });
-        });
+        };
+        $(document).mousemove(handleMouseMove);
         return $(document).mouseup(function(e) {
           var action;
-          $(document).off('mousemove');
+          $(document).off('mousemove', handleMouseMove);
           action = _this.actions[editingElement.attr('data-index')];
           action.x = Math.round(editingElement.position().left / _this.gridWidth);
           return action.y = Math.round(editingElement.position().top / _this.gridHeight);
@@ -367,23 +374,23 @@
 
 
     App.prototype.showParameters = function(e, action) {
-      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, settingsWindow, val, value, _ref1, _results,
+      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, val, value, _ref1, _results,
         _this = this;
       self = this;
-      settingsWindow = $('.workspace-wrapper .parameters');
-      settingsWindow.show().css({
+      this.settingsWindow = $('.workspace-wrapper .parameters');
+      this.settingsWindow.show().css({
         left: (action.x + action.width) * this.gridWidth + 10,
         top: action.y * this.gridHeight
       });
-      settingsWindow.click(function(e) {
+      this.settingsWindow.click(function(e) {
         return e.stopPropagation();
       });
       e.stopPropagation();
       $(document).click(function(e) {
-        settingsWindow.hide();
+        _this.settingsWindow.hide();
         return $(document).off('click');
       });
-      settingsUl = settingsWindow.find('ul');
+      settingsUl = this.settingsWindow.find('ul');
       settingsUl.empty();
       availableParameters = action.availableParameters();
       _results = [];

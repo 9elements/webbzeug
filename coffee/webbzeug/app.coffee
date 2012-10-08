@@ -152,13 +152,13 @@ window.Webbzeug.App = class App
     return action
 
   handleWorkspaceClick: ->
-    $('.workspace-wrapper').mouseenter (e) =>
+    onMouseEnter = (e) =>
       if not @selectedElement and @selectedActionId
         el = @newActionElement e.pageX, e.pageY, @selectedActionName, 3, @selectedActionType
 
         @selectedElement = el
 
-    $('.workspace-wrapper').mousemove (e) =>
+    onMouseMove = (e) =>
       if @selectedElement
         offsetX = $('.workspace').offset().left
         offsetY = $('.workspace').offset().top
@@ -167,8 +167,10 @@ window.Webbzeug.App = class App
           left: Math.floor((e.pageX - offsetX) / @gridWidth) * @gridWidth
           top:  Math.floor((e.pageY - offsetY) / @gridHeight) * @gridHeight
 
-    $('.workspace-wrapper').mousedown (e) =>
-      $('.workspace-wrapper').off('mouseenter mousemove mousedown')
+    onMouseDown = (e) =>
+      $('.workspace-wrapper').off 'mouseenter', onMouseEnter
+      $('.workspace-wrapper').off 'mousemove', onMouseMove
+      $('.workspace-wrapper').off 'mousedown', onMouseDown
       if @selectedElement
         x = Math.round(@selectedElement.position().left / @gridWidth)
         y = Math.round(@selectedElement.position().top  / @gridHeight)
@@ -181,6 +183,10 @@ window.Webbzeug.App = class App
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
 
+    $('.workspace-wrapper').mouseenter onMouseEnter
+    $('.workspace-wrapper').mousemove  onMouseMove
+    $('.workspace-wrapper').mousedown  onMouseDown
+
   handleMultipleSelection: (element) ->
     selectionRectEl = $('.selection')
     @workspace.mousedown (e) =>
@@ -191,16 +197,16 @@ window.Webbzeug.App = class App
       selectionRect.x = e.pageX
       selectionRect.y = e.pageY
 
-      selectionRectEl.stop().show().css
-        opacity: 1
-        width: 0
-        height: 0
+      selectionRectEl.css
         left: selectionRect.x
         top: selectionRect.y
 
-      $(document).mousemove (e) =>
+      handleMouseMove = (e) =>
         selectionRect.width = e.pageX - selectionRect.x
         selectionRect.height = e.pageY - selectionRect.y
+
+        if Math.abs(selectionRect.width) >= 5 or Math.abs(selectionRect.height) >= 5
+          selectionRectEl.stop().show()
 
         selectionRectEl.css
           left: if selectionRect.width > 0 then selectionRect.x else selectionRect.x + selectionRect.width
@@ -208,8 +214,10 @@ window.Webbzeug.App = class App
           width: Math.abs(selectionRect.width)
           height: Math.abs(selectionRect.height)
 
-      $(document).mouseup (e) =>
-        $(document).off 'mousemove'
+      $(document).mousemove handleMouseMove
+
+      $(document).one 'mouseup', (e) =>
+        $(document).off 'mousemove', handleMouseMove
         selectionRectEl.fadeOut 'fast'
 
         ###
@@ -233,25 +241,20 @@ window.Webbzeug.App = class App
 
         @workspace.find('.action').removeClass('selected')
 
-        unless r2.width > 0 or r2.height > 0
-          return false
+        if r2.width > 0 or r2.height > 0
+          for action in @actionsArr
+            # rectangular intersection test
+            r1 =
+              left:   action.x * @gridWidth + offsetX
+              top:    action.y * @gridHeight + offsetY
+              width:  action.width * @gridWidth
+              height: @gridHeight
 
-        for action in @actionsArr
-          # rectangular intersection test
-          r1 =
-            left:   action.x * @gridWidth + offsetX
-            top:    action.y * @gridHeight + offsetY
-            width:  action.width * @gridWidth
-            height: @gridHeight
-
-          unless r2.left > r1.left + r1.width or
-            r2.left + r2.width < r1.left or
-            r2.top > r1.top + r1.height or
-            r2.top + r2.height < r1.top
-              action.element.addClass('selected')
-              console.log action.constructor.name, action
-
-
+            unless r2.left > r1.left + r1.width or
+              r2.left + r2.width < r1.left or
+              r2.top > r1.top + r1.height or
+              r2.top + r2.height < r1.top
+                action.element.addClass('selected')
 
   handleElementDrag: (element) ->
     # Resize drag
@@ -263,7 +266,8 @@ window.Webbzeug.App = class App
       e.preventDefault()
 
       editingElement = element
-      $(document).mousemove (e) =>
+
+      handleMouseMove = (e) =>
         e.preventDefault()
 
         offsetX = $('.workspace').offset().left
@@ -271,8 +275,10 @@ window.Webbzeug.App = class App
         editingElement.css
           width: Math.max(3, Math.floor((e.pageX - offsetX - editingElement.position().left) / @gridWidth)) * @gridWidth
 
+      $(document).mousemove handleMouseMove
+
       $(document).mouseup (e) =>
-        $(document).off 'mousemove'
+        $(document).off 'mousemove', handleMouseMove
 
         action = @actions[editingElement.attr('data-index')]
         action.width = Math.round(editingElement.width() / @gridWidth)
@@ -283,7 +289,7 @@ window.Webbzeug.App = class App
 
       editingElement = element
 
-      $(document).mousemove (e) =>
+      handleMouseMove = (e) =>
         e.preventDefault()
 
         offsetX = $('.workspace').offset().left
@@ -293,8 +299,10 @@ window.Webbzeug.App = class App
           left: Math.floor((e.pageX - offsetX) / @gridWidth) * @gridWidth
           top:  Math.floor((e.pageY - offsetY) / @gridHeight) * @gridHeight
 
+      $(document).mousemove handleMouseMove
+
       $(document).mouseup (e) =>
-        $(document).off('mousemove')
+        $(document).off 'mousemove', handleMouseMove
 
         action = @actions[editingElement.attr('data-index')]
         action.x = Math.round(editingElement.position().left / @gridWidth)
@@ -315,20 +323,20 @@ window.Webbzeug.App = class App
   showParameters: (e, action) ->
     self = this
 
-    settingsWindow = $('.workspace-wrapper .parameters')
+    @settingsWindow = $('.workspace-wrapper .parameters')
 
-    settingsWindow.show().css
+    @settingsWindow.show().css
       left: (action.x + action.width) * @gridWidth + 10 #+ $('.workspace-wrapper').offset().left
       top: action.y * @gridHeight #+ $('.workspace-wrapper').offset().top
 
-    settingsWindow.click (e) => e.stopPropagation()
+    @settingsWindow.click (e) => e.stopPropagation()
 
     e.stopPropagation()
-    $(document).click (e) ->
-      settingsWindow.hide()
+    $(document).click (e) =>
+      @settingsWindow.hide()
       $(document).off 'click'
 
-    settingsUl = settingsWindow.find('ul')
+    settingsUl = @settingsWindow.find('ul')
     settingsUl.empty()
 
     # Build settings
