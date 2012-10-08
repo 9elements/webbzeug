@@ -13,6 +13,7 @@ window.Webbzeug.App = class App
     @loadSaveHandler = new Webbzeug.LoadSaveHandler this, $('.save-link'), $('input#file')
 
     @handleNavigation()
+    @handleMultipleSelection()  
     @handleKeyboardInput()
 
   ###
@@ -130,6 +131,8 @@ window.Webbzeug.App = class App
 
     element.attr 'data-index': index
 
+    action.element = element
+
     @actions[index] = action
     @actionsArr.push action
 
@@ -178,8 +181,83 @@ window.Webbzeug.App = class App
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
 
+  handleMultipleSelection: (element) ->
+    selectionRectEl = $('.selection')
+    @workspace.mousedown (e) =>
+      e.preventDefault()
+
+      selectionRect = {}
+
+      selectionRect.x = e.pageX
+      selectionRect.y = e.pageY
+
+      selectionRectEl.stop().show().css
+        opacity: 1
+        width: 0
+        height: 0
+        left: selectionRect.x
+        top: selectionRect.y
+
+      $(document).mousemove (e) =>
+        selectionRect.width = e.pageX - selectionRect.x
+        selectionRect.height = e.pageY - selectionRect.y
+
+        selectionRectEl.css
+          left: if selectionRect.width > 0 then selectionRect.x else selectionRect.x + selectionRect.width
+          top: if selectionRect.height > 0 then selectionRect.y else selectionRect.y + selectionRect.height
+          width: Math.abs(selectionRect.width)
+          height: Math.abs(selectionRect.height)
+
+      $(document).mouseup (e) =>
+        $(document).off 'mousemove'
+        selectionRectEl.fadeOut 'fast'
+
+        ###
+          Selection done
+        ###
+        intersectingActions = []
+
+        offsetX = @workspace.offset().left
+        offsetY = @workspace.offset().top
+
+        r2 = 
+          left:   selectionRect.x
+          top:    selectionRect.y
+          width:  Math.abs(selectionRect.width)
+          height: Math.abs(selectionRect.height)
+
+        if selectionRect.width < 0
+          r2.left = r2.left + selectionRect.width
+        if selectionRect.height < 0
+          r2.top = r2.top + selectionRect.height
+
+        @workspace.find('.action').removeClass('selected')
+
+        unless r2.width > 0 or r2.height > 0
+          return false
+
+        for action in @actionsArr
+          # rectangular intersection test
+          r1 =
+            left:   action.x * @gridWidth + offsetX
+            top:    action.y * @gridHeight + offsetY
+            width:  action.width * @gridWidth
+            height: @gridHeight
+
+          unless r2.left > r1.left + r1.width or
+            r2.left + r2.width < r1.left or
+            r2.top > r1.top + r1.height or
+            r2.top + r2.height < r1.top
+              action.element.addClass('selected')
+              console.log action.constructor.name, action
+
+
+
   handleElementDrag: (element) ->
     # Resize drag
+    $(element).mousedown (e) =>
+      e.stopPropagation()
+
     $(element).find('.dragger').mousedown (e) =>
       e.stopPropagation()
       e.preventDefault()

@@ -200,6 +200,17 @@ header {
     .navigation .type:hover .types {
       display: block; }
 
+.selection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 8;
+  display: none; }
+
 .workspace-wrapper {
   width: 675px;
   height: 600px;
@@ -208,6 +219,13 @@ header {
   border-radius: 3px;
   z-index: 1;
   position: absolute; }
+  .workspace-wrapper .workspace {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2; }
   .workspace-wrapper .grid {
     position: absolute;
     z-index: 1; }

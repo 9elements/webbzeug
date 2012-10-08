@@ -23,6 +23,7 @@
       this.reset();
       this.loadSaveHandler = new Webbzeug.LoadSaveHandler(this, $('.save-link'), $('input#file'));
       this.handleNavigation();
+      this.handleMultipleSelection();
       this.handleKeyboardInput();
     }
 
@@ -169,6 +170,7 @@
       element.attr({
         'data-index': index
       });
+      action.element = element;
       this.actions[index] = action;
       this.actionsArr.push(action);
       this.handleElementClick(null, element);
@@ -225,8 +227,87 @@
       });
     };
 
+    App.prototype.handleMultipleSelection = function(element) {
+      var selectionRectEl,
+        _this = this;
+      selectionRectEl = $('.selection');
+      return this.workspace.mousedown(function(e) {
+        var selectionRect;
+        e.preventDefault();
+        selectionRect = {};
+        selectionRect.x = e.pageX;
+        selectionRect.y = e.pageY;
+        selectionRectEl.stop().show().css({
+          opacity: 1,
+          width: 0,
+          height: 0,
+          left: selectionRect.x,
+          top: selectionRect.y
+        });
+        $(document).mousemove(function(e) {
+          selectionRect.width = e.pageX - selectionRect.x;
+          selectionRect.height = e.pageY - selectionRect.y;
+          return selectionRectEl.css({
+            left: selectionRect.width > 0 ? selectionRect.x : selectionRect.x + selectionRect.width,
+            top: selectionRect.height > 0 ? selectionRect.y : selectionRect.y + selectionRect.height,
+            width: Math.abs(selectionRect.width),
+            height: Math.abs(selectionRect.height)
+          });
+        });
+        return $(document).mouseup(function(e) {
+          var action, intersectingActions, offsetX, offsetY, r1, r2, _i, _len, _ref1, _results;
+          $(document).off('mousemove');
+          selectionRectEl.fadeOut('fast');
+          /*
+                    Selection done
+          */
+
+          intersectingActions = [];
+          offsetX = _this.workspace.offset().left;
+          offsetY = _this.workspace.offset().top;
+          r2 = {
+            left: selectionRect.x,
+            top: selectionRect.y,
+            width: Math.abs(selectionRect.width),
+            height: Math.abs(selectionRect.height)
+          };
+          if (selectionRect.width < 0) {
+            r2.left = r2.left + selectionRect.width;
+          }
+          if (selectionRect.height < 0) {
+            r2.top = r2.top + selectionRect.height;
+          }
+          _this.workspace.find('.action').removeClass('selected');
+          if (!(r2.width > 0 || r2.height > 0)) {
+            return false;
+          }
+          _ref1 = _this.actionsArr;
+          _results = [];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            action = _ref1[_i];
+            r1 = {
+              left: action.x * _this.gridWidth + offsetX,
+              top: action.y * _this.gridHeight + offsetY,
+              width: action.width * _this.gridWidth,
+              height: _this.gridHeight
+            };
+            if (!(r2.left > r1.left + r1.width || r2.left + r2.width < r1.left || r2.top > r1.top + r1.height || r2.top + r2.height < r1.top)) {
+              action.element.addClass('selected');
+              _results.push(console.log(action.constructor.name, action));
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        });
+      });
+    };
+
     App.prototype.handleElementDrag = function(element) {
       var _this = this;
+      $(element).mousedown(function(e) {
+        return e.stopPropagation();
+      });
       $(element).find('.dragger').mousedown(function(e) {
         var editingElement;
         e.stopPropagation();
