@@ -235,7 +235,7 @@
           e.preventDefault();
           offsetX = $('.workspace').offset().left;
           return editingElement.css({
-            width: Math.floor((e.pageX - offsetX - editingElement.position().left) / _this.gridWidth) * _this.gridWidth
+            width: Math.max(3, Math.floor((e.pageX - offsetX - editingElement.position().left) / _this.gridWidth)) * _this.gridWidth
           });
         });
         return $(document).mouseup(function(e) {

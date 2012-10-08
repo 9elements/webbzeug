@@ -189,7 +189,7 @@ window.Webbzeug.App = class App
         offsetX = $('.workspace').offset().left
 
         editingElement.css
-          width: Math.floor((e.pageX - offsetX - editingElement.position().left) / @gridWidth) * @gridWidth
+          width: Math.max(3, Math.floor((e.pageX - offsetX - editingElement.position().left) / @gridWidth)) * @gridWidth
 
       $(document).mouseup (e) =>
         $(document).off 'mousemove'
