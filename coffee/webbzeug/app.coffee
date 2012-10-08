@@ -66,6 +66,12 @@ window.Webbzeug.App = class App
     $(document).keydown (e) =>
       if e.keyCode is 16
         @shiftPressed = true
+      if e.keyCode is 8
+        if @selectedElements.length > 0
+          e.preventDefault()
+
+          @removeElements @selectedElements
+
       if e.keyCode is 32
         e.preventDefault()
         if @selectedActionIndex
@@ -111,6 +117,20 @@ window.Webbzeug.App = class App
   ###
     Action creation / handling / dragging / resizing
   ###
+  removeElements: (elements) ->
+    for element in elements
+      action = @actions[element.attr('data-index')]
+      delete @actions[action.index]
+      @actionsArr = _.without(@actionsArr, action)
+
+      if element.attr('data-index') is @selectedActionIndex
+        @selectedActionIndex = null
+
+    for element in elements
+      $(element).remove()
+
+    @selectedElements = []
+
   newActionElement: (x, y, actionName, width, actionType) ->
     el = $('<div>').addClass('action')
 

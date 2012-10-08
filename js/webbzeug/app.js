@@ -92,6 +92,12 @@
         if (e.keyCode === 16) {
           _this.shiftPressed = true;
         }
+        if (e.keyCode === 8) {
+          if (_this.selectedElements.length > 0) {
+            e.preventDefault();
+            _this.removeElements(_this.selectedElements);
+          }
+        }
         if (e.keyCode === 32) {
           e.preventDefault();
           if (_this.selectedActionIndex) {
@@ -148,6 +154,24 @@
         Action creation / handling / dragging / resizing
     */
 
+
+    App.prototype.removeElements = function(elements) {
+      var action, element, _i, _j, _len, _len1;
+      for (_i = 0, _len = elements.length; _i < _len; _i++) {
+        element = elements[_i];
+        action = this.actions[element.attr('data-index')];
+        delete this.actions[action.index];
+        this.actionsArr = _.without(this.actionsArr, action);
+        if (element.attr('data-index') === this.selectedActionIndex) {
+          this.selectedActionIndex = null;
+        }
+      }
+      for (_j = 0, _len1 = elements.length; _j < _len1; _j++) {
+        element = elements[_j];
+        $(element).remove();
+      }
+      return this.selectedElements = [];
+    };
 
     App.prototype.newActionElement = function(x, y, actionName, width, actionType) {
       var draggerIcon, el, watchedIcon, wrapper;
