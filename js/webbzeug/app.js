@@ -69,7 +69,8 @@
       this.watchedAction = null;
       this.watchedActionIndex = null;
       this.selectedElement = null;
-      return this.selectedActionIndex = this.selectedActionId = this.selectedActionName = this.selectedActionType = null;
+      this.selectedActionIndex = this.selectedActionId = this.selectedActionName = this.selectedActionType = null;
+      return this.workspace.find('.action').remove();
     };
 
     /*
@@ -288,8 +289,8 @@
       self = this;
       settingsWindow = $('.workspace-wrapper .parameters');
       settingsWindow.show().css({
-        left: (action.x + action.width + 1) * this.gridWidth,
-        top: (action.y + 1) * this.gridHeight
+        left: (action.x + action.width) * this.gridWidth + 10,
+        top: action.y * this.gridHeight
       });
       settingsWindow.click(function(e) {
         return e.stopPropagation();

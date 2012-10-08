@@ -213,3 +213,39 @@ header {
     .workspace-wrapper .action.processive {
       background: #db2222;
       box-shadow: 0 2px 0 #831010; }
+
+.colorpicker {
+  z-index: 10; }
+
+.workspace-wrapper .parameters {
+  width: 250px;
+  height: 300px;
+  background: white;
+  border-radius: 5px;
+  padding: 15px;
+  position: absolute;
+  font: normal 11px Verdana;
+  overflow-y: scroll;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2) inset;
+  display: none;
+  z-index: 6; }
+  .workspace-wrapper .parameters ul li {
+    overflow: hidden;
+    *zoom: 1;
+    height: 30px; }
+    .workspace-wrapper .parameters ul li .label {
+      width: 80px;
+      float: left; }
+    .workspace-wrapper .parameters ul li input {
+      float: left; }
+    .workspace-wrapper .parameters ul li .value {
+      float: left;
+      padding: 3px;
+      font: normal 9px Verdana; }
+    .workspace-wrapper .parameters ul li .colorpicker-control {
+      width: 16px;
+      height: 16px;
+      float: left;
+      border-radius: 3px;
+      border: 3px solid rgba(0, 0, 0, 0.3);
+      cursor: pointer; }

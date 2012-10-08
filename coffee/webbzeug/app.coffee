@@ -50,7 +50,7 @@ window.Webbzeug.App = class App
     @selectedActionIndex = @selectedActionId = @selectedActionName = @selectedActionType = null
 
     # Remove all action divs
-    # @workspace.find('.action').remove()
+    @workspace.find('.action').remove()
 
   ###
     Keyboard input
@@ -238,8 +238,8 @@ window.Webbzeug.App = class App
     settingsWindow = $('.workspace-wrapper .parameters')
 
     settingsWindow.show().css
-      left: (action.x + action.width + 1) * @gridWidth #+ $('.workspace-wrapper').offset().left
-      top: (action.y + 1) * @gridHeight #+ $('.workspace-wrapper').offset().top
+      left: (action.x + action.width) * @gridWidth + 10 #+ $('.workspace-wrapper').offset().left
+      top: action.y * @gridHeight #+ $('.workspace-wrapper').offset().top
 
     settingsWindow.click (e) => e.stopPropagation()
 
