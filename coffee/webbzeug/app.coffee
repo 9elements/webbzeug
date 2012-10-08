@@ -139,10 +139,10 @@ window.Webbzeug.App = class App
 
     element.on 'mouseenter', =>
       if action.renderTime
-        $('.debug').text action.constructor.name + ' rendered in ' + action.renderTime + 'ms'
+        $('.debug').text action.constructor.name + ': rendered in ' + action.renderTime + 'ms'
     element.on 'mouseleave', =>
       if @renderTime
-        $('.debug').text 'Texture rendered in ' + @renderTime + 'ms'
+        $('.debug').text 'rendered in ' + @renderTime + 'ms'
 
     return action
 
@@ -385,7 +385,7 @@ window.Webbzeug.App = class App
       @context.putImageData imageData, 0, 0
     @renderTime = (+new Date() - startTime)
 
-    $('.debug').text 'Texture rendered in ' + @renderTime + 'ms'
+    $('.debug').text 'rendered in ' + @renderTime + 'ms'
 
   render: (action) ->
     unless action?

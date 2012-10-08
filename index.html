@@ -50,10 +50,22 @@
     <script src='js/application.js'></script>
   </head>
   <body>
-    <header></header>
+    <header>
+      <div class='header-wrapper'>
+        <a class='logo' href='/'></a>
+        <div class='claim'>generative graphics in your browser</div>
+        <div class='authors'>
+          brought to you by
+          <a href='http://twitter.com/rattazong' target='_blank'>@rattazong</a>
+          and
+          <a href='http://twitter.com/Kastor_' target='_blank'>@Kastor_</a>
+        </div>
+      </div>
+    </header>
     <div class='app-wrapper'>
       <div class='right-wrapper'>
         <canvas id='canvas'></canvas>
+        <div class='debug'></div>
         <a class='save-link' href='#'>Save</a>
         <a class='open-link' href='#'>Open</a>
         <input id='file' type='file' />

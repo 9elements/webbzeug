@@ -176,12 +176,12 @@
       this.handleElementDrag(element);
       element.on('mouseenter', function() {
         if (action.renderTime) {
-          return $('.debug').text(action.constructor.name + ' rendered in ' + action.renderTime + 'ms');
+          return $('.debug').text(action.constructor.name + ': rendered in ' + action.renderTime + 'ms');
         }
       });
       element.on('mouseleave', function() {
         if (_this.renderTime) {
-          return $('.debug').text('Texture rendered in ' + _this.renderTime + 'ms');
+          return $('.debug').text('rendered in ' + _this.renderTime + 'ms');
         }
       });
       return action;
@@ -468,7 +468,7 @@
         this.context.putImageData(imageData, 0, 0);
       }
       this.renderTime = +new Date() - startTime;
-      return $('.debug').text('Texture rendered in ' + this.renderTime + 'ms');
+      return $('.debug').text('rendered in ' + this.renderTime + 'ms');
     };
 
     App.prototype.render = function(action) {

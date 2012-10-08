@@ -62,10 +62,19 @@
     %script{ :src => "js/application.js" }
   %body
     %header
+      .header-wrapper
+        %a.logo{ :href => '/' }
+        .claim generative graphics in your browser
 
+        .authors
+          brought to you by
+          %a{ :href => "http://twitter.com/rattazong", :target => "_blank" } @rattazong
+          and
+          %a{ :href => "http://twitter.com/Kastor_", :target => "_blank" } @Kastor_
     .app-wrapper
       .right-wrapper
         %canvas#canvas
+        .debug
         %a.save-link{ :href => "#" } Save
         %a.open-link{ :href => "#" } Open
 

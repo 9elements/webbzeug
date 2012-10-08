@@ -13,16 +13,50 @@ body
   width: 980px
   margin: auto
   padding-top: 20px
+  +clearfix()
 
 .right-wrapper
   float: right
   width: 265px
+  height: 400px
+  position: relative
 
   canvas
     background: black
     width: 256px
     height: 256px
     margin-top: 40px
+    margin-bottom: 10px
+
+  .debug
+    font: normal 9px Verdana
+    color: white
+    text-transform: uppercase
+    padding: 5px
+
+  .save-link, .open-link
+    padding: 5px 10px
+    font: normal 10px Verdana
+    color: white
+    text-decoration: none
+    text-transform: uppercase
+    background: rgba(white, 0.3)
+    border-radius: 2px
+    border: 1px solid rgba(white, 0.4)
+    text-shadow: 1px 1px 0 rgba(black, 0.5)
+
+    &:hover
+      background: rgba(white, 0.5)
+
+  input#file
+    position: absolute
+    left: 52px
+    top: 313px
+    width: 50px
+    height: 22px
+
+    opacity: 0
+
 
 @import "header"
 @import "navigation"
