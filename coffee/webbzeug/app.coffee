@@ -1,15 +1,16 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Version = '0.0.1'
 window.Webbzeug.App = class App
-  gridHeight: 27
+  gridHeight: 28
   gridWidth:  112 / 3
   shiftPressed: false
   constructor: (@canvas) ->
     @workspace = $('.workspace')
     @setupCanvas()
+    @buildGrid()
     @reset()
 
-    @loadSaveHandler = new Webbzeug.LoadSaveHandler $('.save-link'), $('input#file')
+    @loadSaveHandler = new Webbzeug.LoadSaveHandler this, $('.save-link'), $('input#file')
 
     @handleNavigation()
     @handleKeyboardInput()
@@ -23,6 +24,22 @@ window.Webbzeug.App = class App
     @width = @context.canvas.width
     @height = @context.canvas.height
 
+  buildGrid: ->
+    rows = 30
+    cols = 50
+
+    grid = @workspace.parent().find '.grid'
+
+    grid.css
+      width: (cols + 1) * @gridWidth
+      height: (rows + 1) * @gridHeight
+
+    for r in [0...rows]
+      rowDiv = $('<div>').addClass('grid-row').css(height: @gridHeight - 1).appendTo grid
+
+    for c in [0...cols]
+      colDiv = $('<div>').addClass('grid-col').css(width: @gridWidth, height: grid.height(), left: @gridWidth * c).appendTo grid
+
   reset: ->
     @memory = []
     @actions = {}
@@ -33,7 +50,7 @@ window.Webbzeug.App = class App
     @selectedActionIndex = @selectedActionId = @selectedActionName = @selectedActionType = null
 
     # Remove all action divs
-    @workspace.find('.action').remove()
+    # @workspace.find('.action').remove()
 
   ###
     Keyboard input
@@ -60,14 +77,29 @@ window.Webbzeug.App = class App
     Navigation
   ###
   handleNavigation: ->
+    # Setup
+    types = {}
+    for name, action of Webbzeug.ClassMap
+      types[action.type] ?= []
+
+      action.id = name
+      types[action.type].push action
+
+    navigationWrapper = $('.navigation')
+
+    for type, actions of types
+      typeLi = $('<li>').addClass('type ' + type).text(_.str.classify(type)).appendTo navigationWrapper
+
+      actionsUl = $('<ul>').addClass('types ' + type).appendTo typeLi
+      for action in actions
+        actionLi = $('<li>').attr('data-id': action.id, 'data-type': type).text(action.name).appendTo actionsUl
+
+    # Handle clicks
     self = this
-    $('.navigation li').click (e) ->
+    $('.navigation li ul li').click (e) ->
       e.preventDefault()
 
       self.handleWorkspaceClick()
-
-      $(this).parent().find('li').removeClass('active')
-      $(this).addClass('active')
 
       self.selectedActionId = $(this).attr('data-id')
       self.selectedActionName = $(this).text()
@@ -79,13 +111,16 @@ window.Webbzeug.App = class App
   newActionElement: (x, y, actionName, width, actionType) ->
     el = $('<div>').addClass('action')
 
-    el.text(actionName).addClass(actionType).css
+    el.addClass(actionType + ' ' + actionType).css
       left: x
       top: y
-      width: width * @gridWidth - 12
+      width: width * @gridWidth
 
-    dragger = $('<div>').addClass('dragger').appendTo el
-    $('.workspace').append el
+    wrapper     = $('<div>').addClass('wrapper').text(actionName).appendTo el
+    watchedIcon = $('<div>').addClass('watched-icon').appendTo wrapper
+    draggerIcon = $('<div>').addClass('dragger').appendTo wrapper
+
+    @workspace.append el
 
     return el
 
@@ -112,13 +147,13 @@ window.Webbzeug.App = class App
     return action
 
   handleWorkspaceClick: ->
-    $('.workspace').mouseenter (e) =>
+    $('.workspace-wrapper').mouseenter (e) =>
       if not @selectedElement and @selectedActionId
         el = @newActionElement e.pageX, e.pageY, @selectedActionName, 3, @selectedActionType
 
         @selectedElement = el
 
-    $('.workspace').mousemove (e) =>
+    $('.workspace-wrapper').mousemove (e) =>
       if @selectedElement
         offsetX = $('.workspace').offset().left
         offsetY = $('.workspace').offset().top
@@ -127,8 +162,8 @@ window.Webbzeug.App = class App
           left: Math.floor((e.pageX - offsetX) / @gridWidth) * @gridWidth
           top:  Math.floor((e.pageY - offsetY) / @gridHeight) * @gridHeight
 
-    $('.workspace').mousedown (e) =>
-      $('.workspace').off('mouseenter mousemove mousedown')
+    $('.workspace-wrapper').mousedown (e) =>
+      $('.workspace-wrapper').off('mouseenter mousemove mousedown')
       if @selectedElement
         x = Math.round(@selectedElement.position().left / @gridWidth)
         y = Math.round(@selectedElement.position().top  / @gridHeight)
@@ -145,25 +180,32 @@ window.Webbzeug.App = class App
     # Resize drag
     $(element).find('.dragger').mousedown (e) =>
       e.stopPropagation()
+      e.preventDefault()
 
       editingElement = element
-      $('.workspace').mousemove (e) =>
+      $(document).mousemove (e) =>
+        e.preventDefault()
+
         offsetX = $('.workspace').offset().left
 
         editingElement.css
-          width: Math.floor((e.pageX - offsetX - editingElement.position().left) / @gridWidth) * @gridWidth - 12
+          width: Math.floor((e.pageX - offsetX - editingElement.position().left) / @gridWidth) * @gridWidth
 
       $(document).mouseup (e) =>
-        $('.workspace').off 'mousemove'
+        $(document).off 'mousemove'
 
         action = @actions[editingElement.attr('data-index')]
         action.width = Math.round(editingElement.width() / @gridWidth)
 
     # Move drag
     $(element).mousedown (e) =>
+      e.preventDefault()
+
       editingElement = element
 
-      $('.workspace').mousemove (e) =>
+      $(document).mousemove (e) =>
+        e.preventDefault()
+
         offsetX = $('.workspace').offset().left
         offsetY = $('.workspace').offset().top
 
@@ -172,7 +214,7 @@ window.Webbzeug.App = class App
           top:  Math.floor((e.pageY - offsetY) / @gridHeight) * @gridHeight
 
       $(document).mouseup (e) =>
-        $('.workspace').off('mousemove')
+        $(document).off('mousemove')
 
         action = @actions[editingElement.attr('data-index')]
         action.x = Math.round(editingElement.position().left / @gridWidth)

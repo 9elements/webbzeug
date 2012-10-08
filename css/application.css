@@ -45,187 +45,171 @@ a img {
 article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block; }
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline; }
-
-body {
-  line-height: 1; }
-
-ol, ul {
-  list-style: none; }
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0; }
-
-caption, th, td {
-  text-align: left;
-  font-weight: normal;
-  vertical-align: middle; }
-
-q, blockquote {
-  quotes: none; }
-  q:before, q:after, blockquote:before, blockquote:after {
-    content: "";
-    content: none; }
-
-a img {
-  border: none; }
-
-article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
-  display: block; }
-
 body {
   background-color: #333333;
   width: 100%; }
 
+* {
+  -webkit-font-smoothing: antialiased; }
+
 .app-wrapper {
-  width: 1200px;
-  margin: 50px auto; }
-  .app-wrapper .right-wrapper {
+  width: 980px;
+  margin: auto;
+  padding-top: 20px; }
+
+.right-wrapper {
+  float: right;
+  width: 265px; }
+  .right-wrapper canvas {
+    background: black;
     width: 256px;
-    float: right;
-    position: relative; }
-    .app-wrapper .right-wrapper #canvas {
-      display: block;
-      width: 256px;
-      height: 256px;
-      background-color: black;
-      margin-bottom: 10px; }
-    .app-wrapper .right-wrapper .save-link, .app-wrapper .right-wrapper .open-link {
-      font: normal 12px Verdana;
-      border: 1px solid white;
-      border-radius: 3px;
-      padding: 5px;
-      color: white;
-      text-decoration: none; }
-    .app-wrapper .right-wrapper input#file {
-      position: absolute;
-      top: 260px;
-      left: 45px;
-      width: 45px;
-      height: 30px;
-      cursor: pointer;
-      opacity: 0; }
-  .app-wrapper .left-wrapper .action {
+    height: 256px;
+    margin-top: 40px; }
+
+header {
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 50px; }
+
+.navigation {
+  overflow: hidden;
+  *zoom: 1;
+  margin-bottom: 10px;
+  overflow: visible;
+  height: 30px; }
+  .navigation .type {
+    font: bold 10px Verdana;
     color: white;
-    font: normal 12px Verdana;
-    border: 1px solid white;
-    padding: 5px;
-    border-radius: 2px;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    float: left;
+    width: 85px;
+    padding: 9px 25px 8px 10px;
+    text-align: center;
+    background: black;
+    border-radius: 3px;
+    box-shadow: 0 2px 0 rgba(255, 255, 255, 0.3) inset;
+    margin-right: 10px;
     cursor: pointer;
-    width: 100px; }
-    .app-wrapper .left-wrapper .action.generative {
-      background: blue; }
-    .app-wrapper .left-wrapper .action.processive {
-      background: red; }
-    .app-wrapper .left-wrapper .action.memory {
-      background: darkgreen; }
-  .app-wrapper .left-wrapper .navigation {
-    padding-top: 10px;
-    width: 750px;
-    overflow: hidden;
-    *zoom: 1; }
-    .app-wrapper .left-wrapper .navigation li {
-      display: inline-block;
-      color: white;
-      font: normal 12px Verdana;
-      padding: 5px;
-      border-radius: 2px;
-      border: 1px solid white;
-      float: left;
-      margin: 3px;
-      cursor: pointer; }
-      .app-wrapper .left-wrapper .navigation li:hover, .app-wrapper .left-wrapper .navigation li.active {
-        background-color: rgba(255, 255, 255, 0.2); }
-  .app-wrapper .left-wrapper .debug {
+    position: relative; }
+    .navigation .type.generative {
+      background: #3e92f7;
+      background: -moz-linear-gradient(top, #3e92f7 0%, #0458bd 100%);
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #3e92f7), color-stop(100%, #0458bd));
+      background: -webkit-linear-gradient(top, #3e92f7 0%, #0458bd 100%);
+      background: -o-linear-gradient(top, #3e92f7 0%, #0458bd 100%);
+      background: -ms-linear-gradient(top, #3e92f7 0%, #0458bd 100%);
+      background: linear-gradient(to bottom, #3e92f7 0%, #0458bd 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3e92f7', endColorstr='#0458bd',GradientType=0 );
+      box-shadow: 0 2px 0 rgba(255, 255, 255, 0.3) inset, 0 3px 0 #123866; }
+    .navigation .type.processive {
+      background: #f73e3e;
+      background: -moz-linear-gradient(top, #f73e3e 0%, #bd0404 100%);
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f73e3e), color-stop(100%, #bd0404));
+      background: -webkit-linear-gradient(top, #f73e3e 0%, #bd0404 100%);
+      background: -o-linear-gradient(top, #f73e3e 0%, #bd0404 100%);
+      background: -ms-linear-gradient(top, #f73e3e 0%, #bd0404 100%);
+      background: linear-gradient(to bottom, #f73e3e 0%, #bd0404 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f73e3e', endColorstr='#bd0404',GradientType=0 );
+      box-shadow: 0 2px 0 rgba(255, 255, 255, 0.3) inset, 0 3px 0 #831010; }
+    .navigation .type.memory {
+      background: #f7b43e;
+      background: -moz-linear-gradient(top, #f7b43e 0%, #bd7a04 100%);
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f7b43e), color-stop(100%, #bd7a04));
+      background: -webkit-linear-gradient(top, #f7b43e 0%, #bd7a04 100%);
+      background: -o-linear-gradient(top, #f7b43e 0%, #bd7a04 100%);
+      background: -ms-linear-gradient(top, #f7b43e 0%, #bd7a04 100%);
+      background: linear-gradient(to bottom, #f7b43e 0%, #bd7a04 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f7b43e', endColorstr='#bd7a04',GradientType=0 );
+      box-shadow: 0 2px 0 rgba(255, 255, 255, 0.3) inset, 0 3px 0 #7f550d; }
+    .navigation .type .types {
+      position: absolute;
+      top: 29px;
+      left: 0px;
+      background: #e9e9e9;
+      text-align: left;
+      font: normal 10px Verdana;
+      color: black;
+      text-shadow: 1px 1px 0 white;
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+      width: 120px;
+      display: none;
+      z-index: 5;
+      box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.2) inset; }
+      .navigation .type .types li {
+        padding: 8px 10px;
+        width: 100px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7); }
+        .navigation .type .types li:hover {
+          background: rgba(0, 0, 0, 0.1); }
+    .navigation .type:hover .types {
+      display: block; }
+
+.workspace-wrapper {
+  width: 675px;
+  height: 600px;
+  background: #232323;
+  overflow: scroll;
+  border-radius: 3px;
+  z-index: 1;
+  position: absolute; }
+  .workspace-wrapper .grid {
     position: absolute;
-    right: 0;
-    top: 0;
-    color: red;
-    font: normal 10px Verdana;
-    padding: 3px; }
-  .app-wrapper .left-wrapper .workspace-wrapper {
-    width: 850px;
-    height: 500px;
-    overflow: scroll;
-    position: absolute;
-    border: 1px solid rgba(255, 255, 255, 0.3); }
-    .app-wrapper .left-wrapper .workspace-wrapper .workspace {
-      background: rgba(0, 0, 0, 0.2);
-      width: 1500px;
-      height: 1500px;
-      position: relative; }
-      .app-wrapper .left-wrapper .workspace-wrapper .workspace * {
-        -moz-user-select: -moz-none;
-        -khtml-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-        user-select: none; }
-      .app-wrapper .left-wrapper .workspace-wrapper .workspace .action {
-        position: absolute; }
-        .app-wrapper .left-wrapper .workspace-wrapper .workspace .action.selected {
-          box-shadow: white 0 0 0 3px inset; }
-        .app-wrapper .left-wrapper .workspace-wrapper .workspace .action.watched {
-          background-image: url("/images/icon-watched.png");
-          background-position: right center;
-          background-repeat: no-repeat; }
-        .app-wrapper .left-wrapper .workspace-wrapper .workspace .action .dragger {
-          position: absolute;
-          right: 0px;
-          top: 3px;
-          width: 15px;
-          height: 18px;
-          cursor: ew-resize;
-          background: url("/images/icon-dragger.png") no-repeat center center; }
-    .app-wrapper .left-wrapper .workspace-wrapper .parameters {
+    z-index: 1; }
+    .workspace-wrapper .grid .grid-row {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-style: inset; }
+    .workspace-wrapper .grid .grid-col {
       position: absolute;
       top: 0;
-      left: 0;
-      display: none;
-      width: 250px;
-      height: 300px;
-      background: white;
-      border-radius: 5px;
-      box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 3px inset;
-      overflow-y: scroll;
-      padding: 10px;
-      font: normal 11px Verdana; }
-      .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li {
-        list-style: none;
-        margin-bottom: 4px;
-        overflow: hidden;
-        *zoom: 1; }
-        .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li .label {
-          width: 80px;
-          float: left; }
-        .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li input[type=number], .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li input[type=text] {
-          float: right;
-          width: 70px; }
-        .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li .value {
-          float: right;
-          width: 30px; }
-        .app-wrapper .left-wrapper .workspace-wrapper .parameters ul li .colorpicker-control {
-          float: left;
-          width: 86px;
-          height: 20px;
-          cursor: pointer;
-          border-radius: 3px;
-          box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5) inset; }
+      border-right: 1px solid rgba(255, 255, 255, 0.05); }
+  .workspace-wrapper .action {
+    position: absolute;
+    z-index: 4;
+    width: 112px;
+    font: bold 10px Verdana;
+    color: black;
+    text-shadow: 1px 1px 0 white;
+    text-transform: uppercase;
+    border-radius: 2px;
+    padding-bottom: 2px;
+    cursor: move; }
+    .workspace-wrapper .action .wrapper {
+      background: #eeeeee;
+      background: -moz-linear-gradient(top, #eeeeee 0%, #b1b1b1 100%);
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #b1b1b1));
+      background: -webkit-linear-gradient(top, #eeeeee 0%, #b1b1b1 100%);
+      background: -o-linear-gradient(top, #eeeeee 0%, #b1b1b1 100%);
+      background: -ms-linear-gradient(top, #eeeeee 0%, #b1b1b1 100%);
+      background: linear-gradient(to bottom, #eeeeee 0%, #b1b1b1 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#b1b1b1',GradientType=0 );
+      padding: 6px 12px;
+      border-radius: 3px; }
+      .workspace-wrapper .action .wrapper .dragger {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: url("/images/icon-dragger.png") no-repeat center center;
+        width: 4px;
+        height: 15px;
+        padding: 5px;
+        cursor: ew-resize; }
+    .workspace-wrapper .action.selected .wrapper {
+      box-shadow: 0px 0px 0px 2px white inset; }
+    .workspace-wrapper .action.watched .wrapper .watched-icon {
+      display: block;
+      background: url("/images/icon-watched.png") no-repeat center center;
+      width: 16px;
+      height: 10px;
+      position: absolute;
+      right: 10px;
+      top: 8px; }
+    .workspace-wrapper .action.generative {
+      background: #1d71d6;
+      box-shadow: 0 2px 0 #094893; }
+    .workspace-wrapper .action.processive {
+      background: #db2222;
+      box-shadow: 0 2px 0 #831010; }

@@ -1,6 +1,4 @@
-@import "compass/utilities/general/clearfix"
-@import "compass/css3/box-shadow"
-@import "compass/reset"
+@import "compass"
 
 +global-reset()
 
@@ -8,172 +6,24 @@ body
   background-color: #333
   width: 100%
 
+*
+  -webkit-font-smoothing: antialiased
+
 .app-wrapper
-  width: 1200px
-  margin: 50px auto
+  width: 980px
+  margin: auto
+  padding-top: 20px
 
-  .right-wrapper
+.right-wrapper
+  float: right
+  width: 265px
+
+  canvas
+    background: black
     width: 256px
-    float: right
-    position: relative
+    height: 256px
+    margin-top: 40px
 
-    #canvas
-      display: block
-      width: 256px
-      height: 256px
-      background-color: black
-      margin-bottom: 10px
-
-    .save-link, .open-link
-      font: normal 12px Verdana
-      border: 1px solid white
-      border-radius: 3px
-      padding: 5px
-
-      color: white
-      text-decoration: none
-
-    input#file
-      position: absolute
-      top: 260px
-      left: 45px
-      width: 45px
-      height: 30px
-      cursor: pointer
-      opacity: 0
-
-  .left-wrapper
-
-    .action
-      color: white
-      font: normal 12px Verdana
-      border: 1px solid white
-      padding: 5px
-      border-radius: 2px
-
-      cursor: pointer
-
-      width: 100px
-
-      &.generative
-        background: blue
-      &.processive
-        background: red
-      &.memory
-        background: darkgreen
-
-    .navigation
-      padding-top: 10px
-      width: 750px
-      +clearfix
-      li
-        display: inline-block
-        color: white
-        font: normal 12px Verdana
-        padding: 5px
-        border-radius: 2px
-        border: 1px solid white
-        float: left
-        margin: 3px
-        cursor: pointer
-
-        &:hover, &.active
-          background-color: rgba(white, 0.2)
-
-    .debug
-      position: absolute
-      right: 0
-      top: 0
-      color: red
-      font: normal 10px Verdana
-      padding: 3px
-
-    .workspace-wrapper
-      width: 850px
-      height: 500px
-      overflow: scroll
-
-      position: absolute
-
-      border: 1px solid rgba(white, 0.3)
-
-      .workspace
-        background: rgba(black, 0.2)
-        width: 1500px
-        height: 1500px
-
-        position: relative
-        *
-          -moz-user-select: -moz-none
-          -khtml-user-select: none
-          -webkit-user-select: none
-          -ms-user-select: none
-          user-select: none
-
-        .action
-          position: absolute
-
-          &.selected
-            box-shadow: white 0 0 0 3px inset
-          &.watched
-            background-image: url('/images/icon-watched.png')
-            background-position: right center
-            background-repeat: no-repeat
-
-          .dragger
-            position: absolute
-            right: 0px
-            top: 3px
-
-            width: 15px
-            height: 18px
-
-            cursor: ew-resize
-
-            background: url('/images/icon-dragger.png') no-repeat center center
-
-      .parameters
-        position: absolute
-
-        top: 0
-        left: 0
-
-        display: none
-
-        width: 250px
-        height: 300px
-
-        background: white
-        border-radius: 5px
-
-        box-shadow: rgba(black, 0.2) 0 0 0 3px inset
-
-        overflow-y: scroll
-
-        padding: 10px
-
-        font: normal 11px Verdana
-
-        ul
-          li
-            list-style: none
-            margin-bottom: 4px
-            +clearfix()
-            .label
-              width: 80px
-              float: left
-            input[type=number], input[type=text]
-              float: right
-              width: 70px
-            .value
-              float: right
-              width: 30px
-
-            .colorpicker-control
-              float: left
-              width: 86px
-              height: 20px
-              cursor: pointer
-
-              border-radius: 3px
-              box-shadow: 0 0 0 2px rgba(black, 0.5) inset
+@import "header"
+@import "navigation"
+@import "workspace"

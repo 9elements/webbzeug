@@ -1,0 +1,83 @@
+!!! 5
+%html
+  %head
+    %title .webbzeug - generative graphics in your browser
+
+    %meta{ :charset => "utf-8" }
+    %meta{ :'http-equiv' => "X-UA-Compatible", :content => "IE=edge,chrome=1" }
+    %meta{ :name => "description", :content => "" }
+    %meta{ :name => "viewport", :content => "width=device-width" }
+
+    %link{ :rel => "stylesheet", :href => "/css/application.css" }
+    %link{ :rel => "stylesheet", :href => "/css/colorpicker.css" }
+
+    %script{ :src => "/js/vendor/modernizr-2.6.1.min.js" }
+
+    %script{ :src => "http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" }
+    %script{ :src => "js/plugins.js" }
+    
+    %script{ :src => "js/webbzeug/action.js" }
+
+    %script{ :src => "http://download-data-uri.appspot.com/js/download-data-uri.js" }
+
+    //- Generative
+    %script{ :src => "js/webbzeug/actions/rectangle.js" }
+    %script{ :src => "js/webbzeug/actions/circle.js" }
+    %script{ :src => "js/webbzeug/actions/fractal.js" }
+    %script{ :src => "js/webbzeug/actions/pixels.js" }
+    %script{ :src => "js/webbzeug/actions/flat.js" }
+    %script{ :src => "js/webbzeug/actions/normal.js" }
+
+    //- Processive
+    %script{ :src => "js/webbzeug/actions/combine.js" }
+    %script{ :src => "js/webbzeug/actions/invert.js" }
+    %script{ :src => "js/webbzeug/actions/contbri.js" }
+    %script{ :src => "js/webbzeug/actions/blur.js" }
+    %script{ :src => "js/webbzeug/actions/rotozoom.js" }
+    %script{ :src => "js/webbzeug/actions/light.js" }
+    %script{ :src => "js/webbzeug/actions/mirror.js" }
+
+    //- Memory
+    %script{ :src => "js/webbzeug/actions/save.js" }
+    %script{ :src => "js/webbzeug/actions/load.js" }
+
+    //- Basics
+    %script{ :src => "js/webbzeug/loadsavehandler.js" }
+    %script{ :src => "js/webbzeug/classmap.js" }
+    %script{ :src => "js/webbzeug/exporter.js" }
+    %script{ :src => "js/webbzeug/importer.js" }
+    %script{ :src => "js/webbzeug/utilities.js" }
+    %script{ :src => "js/webbzeug/app.js" }
+
+    %script{ :src => "js/colorpicker.js" }
+    %script{ :src => "js/eye.js" }
+    %script{ :src => "js/utils.js" }
+    %script{ :src => "js/vendor/base64.js" }
+    %script{ :src => "js/vendor/ord.js" }
+    %script{ :src => "js/vendor/chr.js" }
+    %script{ :src => "js/vendor/underscore.js" }
+    %script{ :src => "js/vendor/underscore.string.js" }
+    %script{ :src => "js/layout.js?ver=1.0.2" }
+
+    %script{ :src => "js/application.js" }
+  %body
+    %header
+
+    .app-wrapper
+      .right-wrapper
+        %canvas#canvas
+        %a.save-link{ :href => "#" } Save
+        %a.open-link{ :href => "#" } Open
+
+        %input#file{ :type => "file" }
+
+      .left-wrapper
+        %ul.navigation
+
+        / .debug Debug
+
+        .workspace-wrapper
+          .grid
+          .workspace
+          .parameters
+            %ul

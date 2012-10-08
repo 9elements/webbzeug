@@ -1,0 +1,95 @@
+.workspace-wrapper
+  width: 675px
+  height: 600px
+  background: #232323
+
+  overflow: scroll
+
+  border-radius: 3px
+
+  z-index: 1
+
+  position: absolute
+
+  .grid
+    position: absolute
+    z-index: 1
+    .grid-row
+      border-top: 1px solid rgba(white, 0.05)
+      border-style: inset
+    .grid-col
+      position: absolute
+      top: 0
+      border-right: 1px solid rgba(white, 0.05)
+
+  .action
+    position: absolute
+
+    z-index: 4
+
+    width: 112px
+
+    font: bold 10px Verdana
+    color: black
+    text-shadow: 1px 1px 0 white
+
+    text-transform: uppercase
+
+    border-radius: 2px
+
+    padding-bottom: 2px
+
+    cursor: move
+
+    .wrapper
+      background: #eeeeee
+      background: -moz-linear-gradient(top, #eeeeee 0%, #b1b1b1 100%)
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#b1b1b1))
+      background: -webkit-linear-gradient(top, #eeeeee 0%,#b1b1b1 100%)
+      background: -o-linear-gradient(top, #eeeeee 0%,#b1b1b1 100%)
+      background: -ms-linear-gradient(top, #eeeeee 0%,#b1b1b1 100%)
+      background: linear-gradient(to bottom, #eeeeee 0%,#b1b1b1 100%)
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#b1b1b1',GradientType=0 )
+
+      padding: 6px 12px
+
+      border-radius: 3px
+
+      .dragger
+        position: absolute
+        top: 0
+        right: 0
+
+        background: url('/images/icon-dragger.png') no-repeat center center
+
+        width: 4px
+        height: 15px
+
+        padding: 5px
+
+        cursor: ew-resize
+
+    &.selected
+      .wrapper
+        box-shadow: 0px 0px 0px 2px white inset
+
+    &.watched
+      .wrapper
+        .watched-icon
+          display: block
+
+          background: url('/images/icon-watched.png') no-repeat center center
+          width: 16px
+          height: 10px
+
+          position: absolute
+          right: 10px
+          top: 8px
+
+    &.generative
+      background: #1d71d6
+      box-shadow: 0 2px 0 #094893
+
+    &.processive
+      background: #db2222
+      box-shadow: 0 2px 0 #831010

@@ -1,107 +1,74 @@
 <!DOCTYPE html>
-<html class="no-js">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>webbzeug</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/application.css">
-        <link rel="stylesheet" media="screen" type="text/css" href="css/colorpicker.css" />
-        <script src="js/vendor/modernizr-2.6.1.min.js"></script>
-
-    </head>
-    <body>
-        <div class="app-wrapper">
-            <div class="right-wrapper">
-                <canvas id="canvas"></canvas>
-                <a href="#" class="save-link">Save</a>
-                <a href="#" class="open-link">Open</a>
-
-                <input type="file" id="file" />
-            </div>
-            <div class="left-wrapper">
-                <ul class="navigation">
-                    <li class="action generative" data-type="generative" data-id="rectangle">Rectangle</li>
-                    <li class="action generative" data-type="generative" data-id="circle">Circle</li>
-                    <li class="action generative" data-type="generative" data-id="fractal">Fractal</li>
-                    <li class="action generative" data-type="generative" data-id="pixels">Pixels</li>
-                    <li class="action generative" data-type="generative" data-id="flat">Flat</li>
-                </ul>
-                <ul class="navigation">
-                    <li class="action processive" data-type="processive" data-id="combine">Combine</li>
-                    <li class="action processive" data-type="processive" data-id="invert">Invert</li>
-                    <li class="action processive" data-type="processive" data-id="contbri">Cont / Bri</li>
-                    <li class="action processive" data-type="processive" data-id="blur">Blur</li>
-                    <li class="action processive" data-type="processive" data-id="rotozoom">Rotozoom</li>
-                    <li class="action processive" data-type="processive" data-id="light">Light</li>
-                    <li class="action processive" data-type="processive" data-id="mirror">Mirror</li>
-
-                    <li class="action processive" data-type="processive" data-id="normal">Normal</li>
-                </ul>
-                <ul class="navigation">
-                    <li class="action memory" data-type="memory" data-id="save">Save</li>
-                    <li class="action memory" data-type="memory" data-id="load">Load</li>
-                </ul>
-                <div class="debug"></div>
-                <div class="workspace-wrapper">
-                    <div class="workspace">
-                    </div>
-                    <div class="parameters">
-                        <ul></ul>
-                    </div>
-                </div>
-            </div>
+<html>
+  <head>
+    <title>.webbzeug - generative graphics in your browser</title>
+    <meta charset='utf-8' />
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />
+    <meta content='' name='description' />
+    <meta content='width=device-width' name='viewport' />
+    <link href='/css/application.css' rel='stylesheet' />
+    <link href='/css/colorpicker.css' rel='stylesheet' />
+    <script src='/js/vendor/modernizr-2.6.1.min.js'></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+    <script src='js/plugins.js'></script>
+    <script src='js/webbzeug/action.js'></script>
+    <script src='http://download-data-uri.appspot.com/js/download-data-uri.js'></script>
+    <!-- /- Generative -->
+    <script src='js/webbzeug/actions/rectangle.js'></script>
+    <script src='js/webbzeug/actions/circle.js'></script>
+    <script src='js/webbzeug/actions/fractal.js'></script>
+    <script src='js/webbzeug/actions/pixels.js'></script>
+    <script src='js/webbzeug/actions/flat.js'></script>
+    <script src='js/webbzeug/actions/normal.js'></script>
+    <!-- /- Processive -->
+    <script src='js/webbzeug/actions/combine.js'></script>
+    <script src='js/webbzeug/actions/invert.js'></script>
+    <script src='js/webbzeug/actions/contbri.js'></script>
+    <script src='js/webbzeug/actions/blur.js'></script>
+    <script src='js/webbzeug/actions/rotozoom.js'></script>
+    <script src='js/webbzeug/actions/light.js'></script>
+    <script src='js/webbzeug/actions/mirror.js'></script>
+    <!-- /- Memory -->
+    <script src='js/webbzeug/actions/save.js'></script>
+    <script src='js/webbzeug/actions/load.js'></script>
+    <!-- /- Basics -->
+    <script src='js/webbzeug/loadsavehandler.js'></script>
+    <script src='js/webbzeug/classmap.js'></script>
+    <script src='js/webbzeug/exporter.js'></script>
+    <script src='js/webbzeug/importer.js'></script>
+    <script src='js/webbzeug/utilities.js'></script>
+    <script src='js/webbzeug/app.js'></script>
+    <script src='js/colorpicker.js'></script>
+    <script src='js/eye.js'></script>
+    <script src='js/utils.js'></script>
+    <script src='js/vendor/base64.js'></script>
+    <script src='js/vendor/ord.js'></script>
+    <script src='js/vendor/chr.js'></script>
+    <script src='js/vendor/underscore.js'></script>
+    <script src='js/vendor/underscore.string.js'></script>
+    <script src='js/layout.js?ver=1.0.2'></script>
+    <script src='js/application.js'></script>
+  </head>
+  <body>
+    <header></header>
+    <div class='app-wrapper'>
+      <div class='right-wrapper'>
+        <canvas id='canvas'></canvas>
+        <a class='save-link' href='#'>Save</a>
+        <a class='open-link' href='#'>Open</a>
+        <input id='file' type='file' />
+      </div>
+      <div class='left-wrapper'>
+        <ul class='navigation'></ul>
+        <!-- .debug Debug -->
+        <div class='workspace-wrapper'>
+          <div class='grid'></div>
+          <div class='workspace'></div>
+          <div class='parameters'>
+            <ul></ul>
+          </div>
         </div>
-
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
-        <script src="js/plugins.js"></script>
-        
-        <script src="js/webbzeug/action.js"></script>
-
-        <script src="http://download-data-uri.appspot.com/js/download-data-uri.js"></script>
-
-        <!-- Generative -->
-        <script src="js/webbzeug/actions/rectangle.js"></script>
-        <script src="js/webbzeug/actions/circle.js"></script>
-        <script src="js/webbzeug/actions/fractal.js"></script>
-        <script src="js/webbzeug/actions/pixels.js"></script>
-        <script src="js/webbzeug/actions/flat.js"></script>
-        <script src="js/webbzeug/actions/normal.js"></script>
-
-        <!-- Processive -->
-        <script src="js/webbzeug/actions/combine.js"></script>
-        <script src="js/webbzeug/actions/invert.js"></script>
-        <script src="js/webbzeug/actions/contbri.js"></script>
-        <script src="js/webbzeug/actions/blur.js"></script>
-        <script src="js/webbzeug/actions/rotozoom.js"></script>
-        <script src="js/webbzeug/actions/light.js"></script>
-        <script src="js/webbzeug/actions/mirror.js"></script>
-
-        <!-- Memory -->
-        <script src="js/webbzeug/actions/save.js"></script>
-        <script src="js/webbzeug/actions/load.js"></script>
-
-        <!-- Basics -->
-        <script src="js/webbzeug/loadsavehandler.js"></script>
-        <script src="js/webbzeug/classmap.js"></script>
-        <script src="js/webbzeug/exporter.js"></script>
-        <script src="js/webbzeug/importer.js"></script>
-        <script src="js/webbzeug/utilities.js"></script>
-        <script src="js/webbzeug/app.js"></script>
-
-        <script src="js/colorpicker.js"></script>
-        <script src="js/eye.js"></script>
-        <script src="js/utils.js"></script>
-        <script src="js/vendor/base64.js"></script>
-        <script src="js/vendor/ord.js"></script>
-        <script src="js/vendor/chr.js"></script>
-        <script src="js/layout.js?ver=1.0.2"></script>
-
-        <script src="js/application.js"></script>
-    </body>
+      </div>
+    </div>
+  </body>
 </html>

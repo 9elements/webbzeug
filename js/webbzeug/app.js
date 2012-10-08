@@ -9,7 +9,7 @@
 
   window.Webbzeug.App = App = (function() {
 
-    App.prototype.gridHeight = 27;
+    App.prototype.gridHeight = 28;
 
     App.prototype.gridWidth = 112 / 3;
 
@@ -19,8 +19,9 @@
       this.canvas = canvas;
       this.workspace = $('.workspace');
       this.setupCanvas();
+      this.buildGrid();
       this.reset();
-      this.loadSaveHandler = new Webbzeug.LoadSaveHandler($('.save-link'), $('input#file'));
+      this.loadSaveHandler = new Webbzeug.LoadSaveHandler(this, $('.save-link'), $('input#file'));
       this.handleNavigation();
       this.handleKeyboardInput();
     }
@@ -36,6 +37,31 @@
       return this.height = this.context.canvas.height;
     };
 
+    App.prototype.buildGrid = function() {
+      var c, colDiv, cols, grid, r, rowDiv, rows, _i, _j, _results;
+      rows = 30;
+      cols = 50;
+      grid = this.workspace.parent().find('.grid');
+      grid.css({
+        width: (cols + 1) * this.gridWidth,
+        height: (rows + 1) * this.gridHeight
+      });
+      for (r = _i = 0; 0 <= rows ? _i < rows : _i > rows; r = 0 <= rows ? ++_i : --_i) {
+        rowDiv = $('<div>').addClass('grid-row').css({
+          height: this.gridHeight - 1
+        }).appendTo(grid);
+      }
+      _results = [];
+      for (c = _j = 0; 0 <= cols ? _j < cols : _j > cols; c = 0 <= cols ? ++_j : --_j) {
+        _results.push(colDiv = $('<div>').addClass('grid-col').css({
+          width: this.gridWidth,
+          height: grid.height(),
+          left: this.gridWidth * c
+        }).appendTo(grid));
+      }
+      return _results;
+    };
+
     App.prototype.reset = function() {
       this.memory = [];
       this.actions = {};
@@ -43,8 +69,7 @@
       this.watchedAction = null;
       this.watchedActionIndex = null;
       this.selectedElement = null;
-      this.selectedActionIndex = this.selectedActionId = this.selectedActionName = this.selectedActionType = null;
-      return this.workspace.find('.action').remove();
+      return this.selectedActionIndex = this.selectedActionId = this.selectedActionName = this.selectedActionType = null;
     };
 
     /*
@@ -81,13 +106,34 @@
 
 
     App.prototype.handleNavigation = function() {
-      var self;
+      var action, actionLi, actions, actionsUl, name, navigationWrapper, self, type, typeLi, types, _i, _len, _name, _ref1, _ref2;
+      types = {};
+      _ref1 = Webbzeug.ClassMap;
+      for (name in _ref1) {
+        action = _ref1[name];
+        if ((_ref2 = types[_name = action.type]) == null) {
+          types[_name] = [];
+        }
+        action.id = name;
+        types[action.type].push(action);
+      }
+      navigationWrapper = $('.navigation');
+      for (type in types) {
+        actions = types[type];
+        typeLi = $('<li>').addClass('type ' + type).text(_.str.classify(type)).appendTo(navigationWrapper);
+        actionsUl = $('<ul>').addClass('types ' + type).appendTo(typeLi);
+        for (_i = 0, _len = actions.length; _i < _len; _i++) {
+          action = actions[_i];
+          actionLi = $('<li>').attr({
+            'data-id': action.id,
+            'data-type': type
+          }).text(action.name).appendTo(actionsUl);
+        }
+      }
       self = this;
-      return $('.navigation li').click(function(e) {
+      return $('.navigation li ul li').click(function(e) {
         e.preventDefault();
         self.handleWorkspaceClick();
-        $(this).parent().find('li').removeClass('active');
-        $(this).addClass('active');
         self.selectedActionId = $(this).attr('data-id');
         self.selectedActionName = $(this).text();
         return self.selectedActionType = $(this).attr('data-type');
@@ -100,15 +146,17 @@
 
 
     App.prototype.newActionElement = function(x, y, actionName, width, actionType) {
-      var dragger, el;
+      var draggerIcon, el, watchedIcon, wrapper;
       el = $('<div>').addClass('action');
-      el.text(actionName).addClass(actionType).css({
+      el.addClass(actionType + ' ' + actionType).css({
         left: x,
         top: y,
-        width: width * this.gridWidth - 12
+        width: width * this.gridWidth
       });
-      dragger = $('<div>').addClass('dragger').appendTo(el);
-      $('.workspace').append(el);
+      wrapper = $('<div>').addClass('wrapper').text(actionName).appendTo(el);
+      watchedIcon = $('<div>').addClass('watched-icon').appendTo(wrapper);
+      draggerIcon = $('<div>').addClass('dragger').appendTo(wrapper);
+      this.workspace.append(el);
       return el;
     };
 
@@ -140,14 +188,14 @@
 
     App.prototype.handleWorkspaceClick = function() {
       var _this = this;
-      $('.workspace').mouseenter(function(e) {
+      $('.workspace-wrapper').mouseenter(function(e) {
         var el;
         if (!_this.selectedElement && _this.selectedActionId) {
           el = _this.newActionElement(e.pageX, e.pageY, _this.selectedActionName, 3, _this.selectedActionType);
           return _this.selectedElement = el;
         }
       });
-      $('.workspace').mousemove(function(e) {
+      $('.workspace-wrapper').mousemove(function(e) {
         var offsetX, offsetY;
         if (_this.selectedElement) {
           offsetX = $('.workspace').offset().left;
@@ -158,9 +206,9 @@
           });
         }
       });
-      return $('.workspace').mousedown(function(e) {
+      return $('.workspace-wrapper').mousedown(function(e) {
         var x, y;
-        $('.workspace').off('mouseenter mousemove mousedown');
+        $('.workspace-wrapper').off('mouseenter mousemove mousedown');
         if (_this.selectedElement) {
           x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
@@ -179,26 +227,30 @@
       $(element).find('.dragger').mousedown(function(e) {
         var editingElement;
         e.stopPropagation();
+        e.preventDefault();
         editingElement = element;
-        $('.workspace').mousemove(function(e) {
+        $(document).mousemove(function(e) {
           var offsetX;
+          e.preventDefault();
           offsetX = $('.workspace').offset().left;
           return editingElement.css({
-            width: Math.floor((e.pageX - offsetX - editingElement.position().left) / _this.gridWidth) * _this.gridWidth - 12
+            width: Math.floor((e.pageX - offsetX - editingElement.position().left) / _this.gridWidth) * _this.gridWidth
           });
         });
         return $(document).mouseup(function(e) {
           var action;
-          $('.workspace').off('mousemove');
+          $(document).off('mousemove');
           action = _this.actions[editingElement.attr('data-index')];
           return action.width = Math.round(editingElement.width() / _this.gridWidth);
         });
       });
       return $(element).mousedown(function(e) {
         var editingElement;
+        e.preventDefault();
         editingElement = element;
-        $('.workspace').mousemove(function(e) {
+        $(document).mousemove(function(e) {
           var offsetX, offsetY;
+          e.preventDefault();
           offsetX = $('.workspace').offset().left;
           offsetY = $('.workspace').offset().top;
           return editingElement.css({
@@ -208,7 +260,7 @@
         });
         return $(document).mouseup(function(e) {
           var action;
-          $('.workspace').off('mousemove');
+          $(document).off('mousemove');
           action = _this.actions[editingElement.attr('data-index')];
           action.x = Math.round(editingElement.position().left / _this.gridWidth);
           return action.y = Math.round(editingElement.position().top / _this.gridHeight);

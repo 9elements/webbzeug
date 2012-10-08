@@ -1,11 +1,11 @@
 window.Webbzeug ?= {}
 window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
-  constructor: (saveLink, loadInput) ->
+  constructor: (@app, saveLink, loadInput) ->
     @exporter = new Webbzeug.Exporter
-    @importer = new Webbzeug.Importer this
+    @importer = new Webbzeug.Importer @app
     saveLink.click =>
       if filename = prompt('Please enter a filename:', 'workspace.webb')
-        url = @exporter.actionsToDataURL @actions
+        url = @exporter.actionsToDataURL @app.actions
         if url?
           downloadDataURI
             filename: filename
@@ -22,7 +22,7 @@ window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
         return (e) =>
           data = e.target.result
 
-          @reset()
+          @app.reset()
           @importer.importDataURL(data)
       )(file)
       reader.readAsDataURL(file)
