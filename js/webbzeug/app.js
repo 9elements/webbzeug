@@ -65,6 +65,7 @@
     App.prototype.reset = function() {
       this.memory = [];
       this.actions = {};
+      this.actionsArr = [];
       this.incrementalIndex = 0;
       this.watchedAction = null;
       this.watchedActionIndex = null;
@@ -169,6 +170,7 @@
         'data-index': index
       });
       this.actions[index] = action;
+      this.actionsArr.push(action);
       this.handleElementClick(null, element);
       element.click(function(e) {
         return _this.handleElementClick(e, element);
@@ -427,16 +429,27 @@
         return;
       }
       this.deleteTree();
+      this.actionsArr.sort(this.actionsSorter);
       watchedAction = this.actions[this.watchedActionIndex];
       return this.findChildrenRecursively(watchedAction);
     };
 
+    App.prototype.actionsSorter = function(a, b) {
+      if (a.x > b.x) {
+        return 1;
+      } else if (a.x < b.x) {
+        return -1;
+      } else {
+        return 0;
+      }
+    };
+
     App.prototype.findChildrenRecursively = function(action) {
-      var childIndex, children, possibleChildAction, _ref1;
+      var children, possibleChildAction, _i, _len, _ref1;
       children = [];
-      _ref1 = this.actions;
-      for (childIndex in _ref1) {
-        possibleChildAction = _ref1[childIndex];
+      _ref1 = this.actionsArr;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        possibleChildAction = _ref1[_i];
         if (possibleChildAction === action) {
           continue;
         }

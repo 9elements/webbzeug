@@ -19,7 +19,7 @@
       return HSCBAction.__super__.constructor.apply(this, arguments);
     }
 
-    HSCBAction.prototype.type = 'contbri';
+    HSCBAction.prototype.type = 'hscb';
 
     HSCBAction.prototype.availableParameters = function() {
       return {
@@ -58,7 +58,7 @@
       var b, brightness, contrast, g, hsv, i, imageData, index, j, r, rgb, _i, _j, _ref2;
       HSCBAction.__super__.render.call(this);
       if (contexts.length === 0) {
-        console.log("Dude an cont-bri needs an input");
+        console.log("Dude an hscb needs an input");
         return;
       }
       contrast = this.getParameter('contrast');

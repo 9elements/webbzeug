@@ -1,7 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.HSCB = class HSCBAction extends Webbzeug.Action
-  type: 'contbri'
+  type: 'hscb'
   availableParameters: ->
     {
       hue: { name: "Hue", type: 'number', min: -180, max: 180, default: 0 },
@@ -12,7 +12,7 @@ window.Webbzeug.Actions.HSCB = class HSCBAction extends Webbzeug.Action
   render: (contexts) ->
     super()
     if contexts.length == 0
-      console.log "Dude an cont-bri needs an input"
+      console.log "Dude an hscb needs an input"
       return
 
     contrast = @getParameter('contrast')

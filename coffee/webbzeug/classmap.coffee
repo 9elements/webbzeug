@@ -59,6 +59,10 @@ window.Webbzeug.ClassMap =
     name: 'Normal'
     type: 'processive'
     class: Webbzeug.Actions.Normal
+  mask:
+    name: 'Mask'
+    type: 'processive'
+    class: Webbzeug.Actions.Mask
 
   ###
     Memory actions

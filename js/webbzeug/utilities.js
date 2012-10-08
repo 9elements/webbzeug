@@ -14,7 +14,7 @@
       dict[2] = 'cell';
       dict[3] = 'circle';
       dict[4] = 'combine';
-      dict[5] = 'contbri';
+      dict[5] = 'hscb';
       dict[6] = 'flat';
       dict[7] = 'fractal';
       dict[8] = 'invert';

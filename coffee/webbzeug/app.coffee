@@ -43,6 +43,7 @@ window.Webbzeug.App = class App
   reset: ->
     @memory = []
     @actions = {}
+    @actionsArr = []
     @incrementalIndex = 0
     @watchedAction = null
     @watchedActionIndex = null
@@ -130,6 +131,7 @@ window.Webbzeug.App = class App
     element.attr 'data-index': index
 
     @actions[index] = action
+    @actionsArr.push action
 
     @handleElementClick null, element
     element.click (e) =>
@@ -350,12 +352,23 @@ window.Webbzeug.App = class App
 
     @deleteTree()
 
+    @actionsArr.sort @actionsSorter
+
     watchedAction = @actions[@watchedActionIndex]
     @findChildrenRecursively watchedAction
 
+  actionsSorter: (a, b) ->
+    if a.x > b.x
+      return 1
+    else if a.x < b.x
+      return -1
+    else
+      return 0
+
+
   findChildrenRecursively: (action) ->
     children = []
-    for childIndex, possibleChildAction of @actions
+    for possibleChildAction in @actionsArr
       if possibleChildAction is action
         continue
 
