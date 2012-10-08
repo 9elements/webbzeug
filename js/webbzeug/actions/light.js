@@ -23,68 +23,120 @@
 
     LightAction.prototype.availableParameters = function() {
       return {
-        x: {
-          name: 'X',
-          type: 'number',
-          min: 0,
-          max: 256,
-          "default": 32
-        },
-        y: {
-          name: 'Y',
+        eyeX: {
+          name: 'eye X',
           type: 'number',
           min: 0,
           max: 256,
           "default": 128
+        },
+        eyeY: {
+          name: 'eye Y',
+          type: 'number',
+          min: 0,
+          max: 256,
+          "default": 128
+        },
+        eyeZ: {
+          name: 'eye Z',
+          type: 'number',
+          min: 0,
+          max: 256,
+          "default": 128
+        },
+        lightX: {
+          name: 'light X',
+          type: 'number',
+          min: 0,
+          max: 256,
+          "default": 20
+        },
+        lightY: {
+          name: 'light Y',
+          type: 'number',
+          min: 0,
+          max: 256,
+          "default": 20
+        },
+        lightZ: {
+          name: 'light Z',
+          type: 'number',
+          min: 0,
+          max: 256,
+          "default": 20
         }
       };
     };
 
+    LightAction.prototype.magnitude = function(x, y, z) {
+      var len;
+      x *= x;
+      y *= y;
+      z *= z;
+      len = x + y + z;
+      return Math.sqrt(len);
+    };
+
+    LightAction.prototype.dot = function(x1, y1, z1, x2, y2, z2) {
+      return x1 * x2 + y1 * y2 + z1 * z2;
+    };
+
     LightAction.prototype.render = function(contexts) {
-      var V, W, deltaHypotenuse, h, i, inputImageData, intensity, outputImageData, posX, posY, px1, px2, px3, px4, w, x, y, _i, _j, _k, _l, _m;
+      var eyeLen, eyeX, eyeY, eyeZ, h, i, index, inputImageData, lightLen, lightX, lightY, lightZ, nDotL, normalImageData, normalLen, normalX, normalY, normalZ, outputImageData, rDotV, reflectionLen, reflectionX, reflectionY, reflectionZ, rowLen, totalSpecular, w, x, y, _i, _j, _k;
       LightAction.__super__.render.call(this);
-      this.context.canvas.width *= 2;
       if (contexts.length === 0) {
         console.log("Dude a light needs an input");
         return;
       }
       inputImageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      normalImageData = contexts[1].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       w = this.app.getWidth();
       h = this.app.getHeight();
-      posX = parseInt(this.getParameter('x'));
-      posY = parseInt(this.getParameter('y'));
-      deltaHypotenuse = [];
-      for (x = _i = w; w <= 0 ? _i < 0 : _i > 0; x = w <= 0 ? ++_i : --_i) {
-        for (y = _j = h; h <= 0 ? _j < 0 : _j > 0; y = h <= 0 ? ++_j : --_j) {
-          V = (x - w / 2) / 128;
-          W = (y - h / 2) / 128;
-          deltaHypotenuse[y * w + x] = Math.max(0, 1 - Math.sqrt(V * V + W * W)) * 256;
-        }
-      }
-      for (x = _k = w; w <= 0 ? _k < 0 : _k > 0; x = w <= 0 ? ++_k : --_k) {
-        for (y = _l = h; h <= 0 ? _l < 0 : _l > 0; y = h <= 0 ? ++_l : --_l) {
-          px1 = inputImageData.data[this.getPixelIndex(x, y + 1) + 2];
-          px2 = inputImageData.data[this.getPixelIndex(x, y - 1) + 2];
-          px3 = inputImageData.data[this.getPixelIndex(x + 1, y) + 2];
-          px4 = inputImageData.data[this.getPixelIndex(x - 1, y) + 2];
-          intensity = this.luminosity(deltaHypotenuse[this.luminosity(px1 - px2 - y + posY) * w + this.luminosity(px3 - px4 - x + posX)]);
-          for (i = _m = 0; _m < 3; i = ++_m) {
-            outputImageData.data[this.getPixelIndex(x, y) + i] = intensity;
+      eyeX = parseInt(this.getParameter('eyeX'));
+      eyeY = -1 * parseInt(this.getParameter('eyeY'));
+      eyeZ = -1 * parseInt(this.getParameter('eyeZ'));
+      lightX = parseInt(this.getParameter('lightX'));
+      lightY = -1 * parseInt(this.getParameter('lightY'));
+      lightZ = -1 * parseInt(this.getParameter('lightZ'));
+      lightLen = this.magnitude(lightX, lightY, lightZ);
+      eyeLen = this.magnitude(eyeX, eyeY, eyeZ);
+      lightX /= lightLen;
+      lightY /= lightLen;
+      lightZ /= lightLen;
+      eyeX /= eyeLen;
+      eyeY /= eyeLen;
+      eyeZ /= eyeLen;
+      for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+        for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+          rowLen = w << 2;
+          index = (x << 2) + y * rowLen;
+          normalX = (normalImageData[index] / 127) - 1;
+          normalY = (normalImageData[index + 1] / 127) - 1;
+          normalZ = (normalImageData[index + 2] / 127) - 1;
+          normalLen = this.magnitude(normalX, normalY, normalZ);
+          normalX /= normalLen;
+          normalY /= normalLen;
+          normalZ /= normalLen;
+          nDotL = this.dot(normalX, normalY, normalZ, lightX, lightY, lightZ);
+          reflectionX = (2 * normalX * nDotL) - lightX;
+          reflectionY = (2 * normalY * nDotL) - lightY;
+          reflectionZ = (2 * normalZ * nDotL) - lightZ;
+          reflectionLen = this.magnitude(reflectionX, reflectionY, reflectionZ);
+          reflectionX /= reflectionLen;
+          reflectionY /= reflectionLen;
+          reflectionZ /= reflectionLen;
+          rDotV = Math.max(0, this.dot(reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ));
+          totalSpecular = Math.pow(rDotV, 2);
+          totalSpecular *= 255;
+          for (i = _k = 0; _k < 3; i = ++_k) {
+            outputImageData.data[index + i] = Math.min(inputImageData.data[index + i] + inputImageData.data[index + i] * nDotL, 255);
           }
-          outputImageData.data[this.getPixelIndex(x, y) + 3] = w - 1;
+          outputImageData.data[index + 3] = 255;
         }
       }
       this.context.putImageData(outputImageData, 0, 0);
       return this.context;
-    };
-
-    LightAction.prototype.getPixelIndex = function(x, y) {
-      return (y * 256 + x) * 4;
-    };
-
-    LightAction.prototype.luminosity = function(d) {
-      return Math.round(Math.min(Math.max(d, 0), this.app.getWidth() - 1));
     };
 
     return LightAction;
