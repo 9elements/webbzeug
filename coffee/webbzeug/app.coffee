@@ -49,6 +49,7 @@ window.Webbzeug.App = class App
     @watchedAction = null
     @watchedActionIndex = null
     @selectedElement = null
+    @selectedElements = []
     @selectedActionIndex = @selectedActionId = @selectedActionName = @selectedActionType = null
 
     # Remove all action divs
@@ -240,8 +241,10 @@ window.Webbzeug.App = class App
           r2.top = r2.top + selectionRect.height
 
         @workspace.find('.action').removeClass('selected')
+        @selectedElements = []
 
         if r2.width > 0 or r2.height > 0
+          selectedElements = []
           for action in @actionsArr
             # rectangular intersection test
             r1 =
@@ -255,6 +258,10 @@ window.Webbzeug.App = class App
               r2.top > r1.top + r1.height or
               r2.top + r2.height < r1.top
                 action.element.addClass('selected')
+                selectedElements.push action.element
+
+          if selectedElements.length > 0
+            @selectedElements = selectedElements
 
   handleElementDrag: (element) ->
     # Resize drag
@@ -287,7 +294,12 @@ window.Webbzeug.App = class App
     $(element).mousedown (e) =>
       e.preventDefault()
 
-      editingElement = element
+      initMousePos = { x: e.pageX, y: e.pageY }
+
+      # Bulk move
+      initPosHash = {}
+      for element in @selectedElements
+        initPosHash[element.attr('data-index')] = { x: element.position().left, y: element.position().top }
 
       handleMouseMove = (e) =>
         e.preventDefault()
@@ -295,21 +307,28 @@ window.Webbzeug.App = class App
         offsetX = $('.workspace').offset().left
         offsetY = $('.workspace').offset().top
 
-        editingElement.css
-          left: Math.floor((e.pageX - offsetX) / @gridWidth) * @gridWidth
-          top:  Math.floor((e.pageY - offsetY) / @gridHeight) * @gridHeight
+        distPos = { x: e.pageX - initMousePos.x , y: e.pageY - initMousePos.y }
+
+        for element in @selectedElements
+          newLeft = initPosHash[element.attr('data-index')].x + distPos.x
+          newTop  = initPosHash[element.attr('data-index')].y + distPos.y
+          element.css
+            left: Math.floor(newLeft / @gridWidth) * @gridWidth
+            top:  Math.floor(newTop / @gridHeight) * @gridHeight
 
       $(document).mousemove handleMouseMove
 
       $(document).mouseup (e) =>
         $(document).off 'mousemove', handleMouseMove
 
-        action = @actions[editingElement.attr('data-index')]
-        action.x = Math.round(editingElement.position().left / @gridWidth)
-        action.y = Math.round(editingElement.position().top  / @gridHeight)
+        for element in @selectedElements
+          action = @actions[element.attr('data-index')]
+          action.x = Math.round(element.position().left / @gridWidth)
+          action.y = Math.round(element.position().top  / @gridHeight)
 
   handleElementClick: (e, element) ->
     @selectedActionIndex = element.attr('data-index')
+    @selectedElements = [element]
 
     $('.workspace .action').removeClass('selected')
     $(element).addClass('selected')

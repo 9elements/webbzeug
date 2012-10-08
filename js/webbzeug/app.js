@@ -71,6 +71,7 @@
       this.watchedAction = null;
       this.watchedActionIndex = null;
       this.selectedElement = null;
+      this.selectedElements = [];
       this.selectedActionIndex = this.selectedActionId = this.selectedActionName = this.selectedActionType = null;
       return this.workspace.find('.action').remove();
     };
@@ -262,7 +263,7 @@
         };
         $(document).mousemove(handleMouseMove);
         return $(document).one('mouseup', function(e) {
-          var action, intersectingActions, offsetX, offsetY, r1, r2, _i, _len, _ref1, _results;
+          var action, intersectingActions, offsetX, offsetY, r1, r2, selectedElements, _i, _len, _ref1;
           $(document).off('mousemove', handleMouseMove);
           selectionRectEl.fadeOut('fast');
           /*
@@ -285,9 +286,10 @@
             r2.top = r2.top + selectionRect.height;
           }
           _this.workspace.find('.action').removeClass('selected');
+          _this.selectedElements = [];
           if (r2.width > 0 || r2.height > 0) {
+            selectedElements = [];
             _ref1 = _this.actionsArr;
-            _results = [];
             for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
               action = _ref1[_i];
               r1 = {
@@ -297,12 +299,13 @@
                 height: _this.gridHeight
               };
               if (!(r2.left > r1.left + r1.width || r2.left + r2.width < r1.left || r2.top > r1.top + r1.height || r2.top + r2.height < r1.top)) {
-                _results.push(action.element.addClass('selected'));
-              } else {
-                _results.push(void 0);
+                action.element.addClass('selected');
+                selectedElements.push(action.element);
               }
             }
-            return _results;
+            if (selectedElements.length > 0) {
+              return _this.selectedElements = selectedElements;
+            }
           }
         });
       });
@@ -335,32 +338,63 @@
         });
       });
       return $(element).mousedown(function(e) {
-        var editingElement, handleMouseMove;
+        var handleMouseMove, initMousePos, initPosHash, _i, _len, _ref1;
         e.preventDefault();
-        editingElement = element;
+        initMousePos = {
+          x: e.pageX,
+          y: e.pageY
+        };
+        initPosHash = {};
+        _ref1 = _this.selectedElements;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          element = _ref1[_i];
+          initPosHash[element.attr('data-index')] = {
+            x: element.position().left,
+            y: element.position().top
+          };
+        }
         handleMouseMove = function(e) {
-          var offsetX, offsetY;
+          var distPos, newLeft, newTop, offsetX, offsetY, _j, _len1, _ref2, _results;
           e.preventDefault();
           offsetX = $('.workspace').offset().left;
           offsetY = $('.workspace').offset().top;
-          return editingElement.css({
-            left: Math.floor((e.pageX - offsetX) / _this.gridWidth) * _this.gridWidth,
-            top: Math.floor((e.pageY - offsetY) / _this.gridHeight) * _this.gridHeight
-          });
+          distPos = {
+            x: e.pageX - initMousePos.x,
+            y: e.pageY - initMousePos.y
+          };
+          _ref2 = _this.selectedElements;
+          _results = [];
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            element = _ref2[_j];
+            newLeft = initPosHash[element.attr('data-index')].x + distPos.x;
+            newTop = initPosHash[element.attr('data-index')].y + distPos.y;
+            _results.push(element.css({
+              left: Math.floor(newLeft / _this.gridWidth) * _this.gridWidth,
+              top: Math.floor(newTop / _this.gridHeight) * _this.gridHeight
+            }));
+          }
+          return _results;
         };
         $(document).mousemove(handleMouseMove);
         return $(document).mouseup(function(e) {
-          var action;
+          var action, _j, _len1, _ref2, _results;
           $(document).off('mousemove', handleMouseMove);
-          action = _this.actions[editingElement.attr('data-index')];
-          action.x = Math.round(editingElement.position().left / _this.gridWidth);
-          return action.y = Math.round(editingElement.position().top / _this.gridHeight);
+          _ref2 = _this.selectedElements;
+          _results = [];
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            element = _ref2[_j];
+            action = _this.actions[element.attr('data-index')];
+            action.x = Math.round(element.position().left / _this.gridWidth);
+            _results.push(action.y = Math.round(element.position().top / _this.gridHeight));
+          }
+          return _results;
         });
       });
     };
 
     App.prototype.handleElementClick = function(e, element) {
       this.selectedActionIndex = element.attr('data-index');
+      this.selectedElements = [element];
       $('.workspace .action').removeClass('selected');
       $(element).addClass('selected');
       if (this.shiftPressed) {
