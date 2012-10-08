@@ -35,10 +35,10 @@ window.Webbzeug.ClassMap =
     name: 'Invert'
     type: 'processive'
     class: Webbzeug.Actions.Invert
-  contbri: 
-    name: 'Cont / Bri'
+  hscb: 
+    name: 'HSCB'
     type: 'processive'
-    class: Webbzeug.Actions.ContrastBrightness
+    class: Webbzeug.Actions.HSCB
   blur: 
     name: 'Blur'
     type: 'processive'

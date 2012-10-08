@@ -68,13 +68,13 @@ body {
     background: black;
     width: 256px;
     height: 256px;
-    margin-top: 40px;
-    margin-bottom: 10px; }
+    margin-top: 40px; }
   .right-wrapper .debug {
     font: normal 9px Verdana;
     color: white;
     text-transform: uppercase;
-    padding: 5px; }
+    padding: 5px;
+    margin-bottom: 10px; }
   .right-wrapper .save-link, .right-wrapper .open-link {
     padding: 5px 10px;
     font: normal 10px Verdana;
