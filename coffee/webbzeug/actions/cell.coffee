@@ -28,20 +28,20 @@ window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
   type: 'cell'
-  gridX: 8
-  gridY: 8
+  availableParameters: ->
+    {
+      gridSize: { name: 'Grid size', type: 'number', min: 2, max: 64, default: 2 },
+    }
   render: (contexts) ->
     super()
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
 
-    points = @generatePoints()
+    gridSize = parseInt @getParameter('gridSize')
 
-    # DEBUG
-    #
-    
+    points = @generatePoints gridSize   
 
-    gridW = @app.getWidth() / @gridX
-    gridH = @app.getHeight() / @gridY
+    gridW = @app.getWidth() / gridSize
+    gridH = @app.getHeight() / gridSize
 
     w = @app.getWidth()
     h = @app.getHeight()
@@ -58,17 +58,36 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
 
         for gx in [(cellX - 2)...(cellX + 2)]
           for gy in [(cellY - 2)...(cellY + 2)]
+            ogx = gx
+            ogy = gy
+
             # Tiling
-            if gy < 0 then gy = @gridY + gy
-            if gy >= @gridY then gy = Math.abs(@gridY - gy)
-            if gx < 0 then gx = @gridX + gx
-            if gx >= @gridX then gx = Math.abs(@gridX - gx)
+            if gx < 0
+              gx = gridSize + gx
+            if gx > gridSize - 1
+              gx = gx - gridSize
+
+            if gy < 0
+              gy = gridSize + gy
+            if gy > gridSize - 1
+              gy = gy - gridSize
 
             point = points[gx][gy]
-            if point
-              dist  = Math.sqrt( Math.pow(x - point.x, 2) + Math.pow(y - point.y, 2) )
-            else
-              dist = 10
+
+            px = point.x
+            py = point.y
+
+            if ogx < 0
+              px -= gridW * gridSize
+            if ogx > gridSize - 1
+              px += gridW * gridSize            
+
+            if ogy < 0
+              py -= gridH * gridSize
+            if ogy > gridSize - 1 
+              py += gridH * gridSize
+
+            dist  = Math.sqrt( Math.pow(x - px, 2) + Math.pow(y - py, 2) )
 
             minDist = Math.min(dist, minDist)
 
@@ -80,20 +99,25 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
         imageData.data[index + 2] = value
         imageData.data[index + 3] = 255
 
+    for point in _.flatten(points)
+      imageData.data[((point.y * 256) << 2) + (point.x << 2)] = 255
+      imageData.data[((point.y * 256) << 2) + (point.x << 2) + 3] = 255
+
+
     @context.putImageData imageData, 0, 0 
     return @context
 
-  generatePoints: ->
+  generatePoints: (gridSize) ->
     w = @app.getWidth()
     h = @app.getHeight()
 
-    gridW = @app.getWidth() / @gridX
-    gridH = @app.getHeight() / @gridY
+    gridW = @app.getWidth() / gridSize
+    gridH = @app.getHeight() / gridSize
 
     points = []
-    for x in [0...@gridX]
+    for x in [0...gridSize]
       pointsCol = []
-      for y in [0...@gridY]
+      for y in [0...gridSize]
         pointsCol.push { x: Math.ceil(x * gridW + Math.random() * gridW), y: Math.ceil(y * gridH + Math.random() * gridH) }
         # points.push { x: x * gridW + gridW, y: y * gridH + gridH / 3 }
 

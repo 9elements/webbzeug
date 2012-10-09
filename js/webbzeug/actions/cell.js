@@ -47,17 +47,26 @@
 
     CellAction.prototype.type = 'cell';
 
-    CellAction.prototype.gridX = 8;
-
-    CellAction.prototype.gridY = 8;
+    CellAction.prototype.availableParameters = function() {
+      return {
+        gridSize: {
+          name: 'Grid size',
+          type: 'number',
+          min: 2,
+          max: 64,
+          "default": 2
+        }
+      };
+    };
 
     CellAction.prototype.render = function(contexts) {
-      var cellX, cellY, dist, gridH, gridW, gx, gy, h, imageData, index, maxDist, minDist, point, points, value, w, x, y, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5;
+      var cellX, cellY, dist, gridH, gridSize, gridW, gx, gy, h, imageData, index, maxDist, minDist, ogx, ogy, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _len, _m, _ref2, _ref3, _ref4, _ref5, _ref6;
       CellAction.__super__.render.call(this);
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      points = this.generatePoints();
-      gridW = this.app.getWidth() / this.gridX;
-      gridH = this.app.getHeight() / this.gridY;
+      gridSize = parseInt(this.getParameter('gridSize'));
+      points = this.generatePoints(gridSize);
+      gridW = this.app.getWidth() / gridSize;
+      gridH = this.app.getHeight() / gridSize;
       w = this.app.getWidth();
       h = this.app.getHeight();
       for (y = _i = 0; 0 <= h ? _i < h : _i > h; y = 0 <= h ? ++_i : --_i) {
@@ -69,24 +78,36 @@
           minDist = maxDist;
           for (gx = _k = _ref2 = cellX - 2, _ref3 = cellX + 2; _ref2 <= _ref3 ? _k < _ref3 : _k > _ref3; gx = _ref2 <= _ref3 ? ++_k : --_k) {
             for (gy = _l = _ref4 = cellY - 2, _ref5 = cellY + 2; _ref4 <= _ref5 ? _l < _ref5 : _l > _ref5; gy = _ref4 <= _ref5 ? ++_l : --_l) {
-              if (gy < 0) {
-                gy = this.gridY + gy;
-              }
-              if (gy >= this.gridY) {
-                gy = Math.abs(this.gridY - gy);
-              }
+              ogx = gx;
+              ogy = gy;
               if (gx < 0) {
-                gx = this.gridX + gx;
+                gx = gridSize + gx;
               }
-              if (gx >= this.gridX) {
-                gx = Math.abs(this.gridX - gx);
+              if (gx > gridSize - 1) {
+                gx = gx - gridSize;
+              }
+              if (gy < 0) {
+                gy = gridSize + gy;
+              }
+              if (gy > gridSize - 1) {
+                gy = gy - gridSize;
               }
               point = points[gx][gy];
-              if (point) {
-                dist = Math.sqrt(Math.pow(x - point.x, 2) + Math.pow(y - point.y, 2));
-              } else {
-                dist = 10;
+              px = point.x;
+              py = point.y;
+              if (ogx < 0) {
+                px -= gridW * gridSize;
               }
+              if (ogx > gridSize - 1) {
+                px += gridW * gridSize;
+              }
+              if (ogy < 0) {
+                py -= gridH * gridSize;
+              }
+              if (ogy > gridSize - 1) {
+                py += gridH * gridSize;
+              }
+              dist = Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2));
               minDist = Math.min(dist, minDist);
             }
           }
@@ -97,20 +118,26 @@
           imageData.data[index + 3] = 255;
         }
       }
+      _ref6 = _.flatten(points);
+      for (_m = 0, _len = _ref6.length; _m < _len; _m++) {
+        point = _ref6[_m];
+        imageData.data[((point.y * 256) << 2) + (point.x << 2)] = 255;
+        imageData.data[((point.y * 256) << 2) + (point.x << 2) + 3] = 255;
+      }
       this.context.putImageData(imageData, 0, 0);
       return this.context;
     };
 
-    CellAction.prototype.generatePoints = function() {
-      var gridH, gridW, h, points, pointsCol, w, x, y, _i, _j, _ref2, _ref3;
+    CellAction.prototype.generatePoints = function(gridSize) {
+      var gridH, gridW, h, points, pointsCol, w, x, y, _i, _j;
       w = this.app.getWidth();
       h = this.app.getHeight();
-      gridW = this.app.getWidth() / this.gridX;
-      gridH = this.app.getHeight() / this.gridY;
+      gridW = this.app.getWidth() / gridSize;
+      gridH = this.app.getHeight() / gridSize;
       points = [];
-      for (x = _i = 0, _ref2 = this.gridX; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; x = 0 <= _ref2 ? ++_i : --_i) {
+      for (x = _i = 0; 0 <= gridSize ? _i < gridSize : _i > gridSize; x = 0 <= gridSize ? ++_i : --_i) {
         pointsCol = [];
-        for (y = _j = 0, _ref3 = this.gridY; 0 <= _ref3 ? _j < _ref3 : _j > _ref3; y = 0 <= _ref3 ? ++_j : --_j) {
+        for (y = _j = 0; 0 <= gridSize ? _j < gridSize : _j > gridSize; y = 0 <= gridSize ? ++_j : --_j) {
           pointsCol.push({
             x: Math.ceil(x * gridW + Math.random() * gridW),
             y: Math.ceil(y * gridH + Math.random() * gridH)
