@@ -52,7 +52,7 @@
     CellAction.prototype.gridY = 8;
 
     CellAction.prototype.render = function(contexts) {
-      var cellX, cellY, dist, gridH, gridW, gx, gy, h, imageData, index, maxDist, minDist, point, points, value, w, x, y, _i, _j, _k, _l, _len, _m, _ref2, _ref3, _ref4, _ref5;
+      var cellX, cellY, dist, gridH, gridW, gx, gy, h, imageData, index, maxDist, minDist, point, points, value, w, x, y, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5;
       CellAction.__super__.render.call(this);
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       points = this.generatePoints();
@@ -60,22 +60,28 @@
       gridH = this.app.getHeight() / this.gridY;
       w = this.app.getWidth();
       h = this.app.getHeight();
-      for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-        for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+      for (y = _i = 0; 0 <= h ? _i < h : _i > h; y = 0 <= h ? ++_i : --_i) {
+        for (x = _j = 0; 0 <= w ? _j < w : _j > w; x = 0 <= w ? ++_j : --_j) {
           index = ((y * w) << 2) + (x << 2);
           cellX = Math.floor(x / gridW);
           cellY = Math.floor(y / gridH);
-          minDist = 255;
-          maxDist = Math.sqrt(Math.pow(this.gridX, 2) + Math.pow(this.gridY, 2));
-          for (gx = _k = _ref2 = cellX - 1, _ref3 = cellX + 1; _ref2 <= _ref3 ? _k < _ref3 : _k > _ref3; gx = _ref2 <= _ref3 ? ++_k : --_k) {
-            for (gy = _l = _ref4 = cellY - 1, _ref5 = cellY + 1; _ref4 <= _ref5 ? _l < _ref5 : _l > _ref5; gy = _ref4 <= _ref5 ? ++_l : --_l) {
+          maxDist = Math.sqrt(Math.pow(gridW, 2) + Math.pow(gridH, 2)) * 2;
+          minDist = maxDist;
+          for (gx = _k = _ref2 = cellX - 2, _ref3 = cellX + 2; _ref2 <= _ref3 ? _k < _ref3 : _k > _ref3; gx = _ref2 <= _ref3 ? ++_k : --_k) {
+            for (gy = _l = _ref4 = cellY - 2, _ref5 = cellY + 2; _ref4 <= _ref5 ? _l < _ref5 : _l > _ref5; gy = _ref4 <= _ref5 ? ++_l : --_l) {
               if (gy < 0) {
-                gy = this.gridX + gy;
+                gy = this.gridY + gy;
+              }
+              if (gy >= this.gridY) {
+                gy = Math.abs(this.gridY - gy);
               }
               if (gx < 0) {
-                gx = this.gridY + gx;
+                gx = this.gridX + gx;
               }
-              point = points[(gy * this.gridX) + gx];
+              if (gx >= this.gridX) {
+                gx = Math.abs(this.gridX - gx);
+              }
+              point = points[gx][gy];
               if (point) {
                 dist = Math.sqrt(Math.pow(x - point.x, 2) + Math.pow(y - point.y, 2));
               } else {
@@ -91,31 +97,28 @@
           imageData.data[index + 3] = 255;
         }
       }
-      for (_m = 0, _len = points.length; _m < _len; _m++) {
-        point = points[_m];
-        imageData.data[((point.y * 256) << 2) + (point.x << 2)] = 255;
-        imageData.data[((point.y * 256) << 2) + (point.x << 2) + 3] = 255;
-      }
       this.context.putImageData(imageData, 0, 0);
       return this.context;
     };
 
     CellAction.prototype.generatePoints = function() {
-      var gridH, gridW, h, points, w, x, y, _i, _j, _ref2, _ref3;
+      var gridH, gridW, h, points, pointsCol, w, x, y, _i, _j, _ref2, _ref3;
       w = this.app.getWidth();
       h = this.app.getHeight();
       gridW = this.app.getWidth() / this.gridX;
       gridH = this.app.getHeight() / this.gridY;
       points = [];
       for (x = _i = 0, _ref2 = this.gridX; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; x = 0 <= _ref2 ? ++_i : --_i) {
+        pointsCol = [];
         for (y = _j = 0, _ref3 = this.gridY; 0 <= _ref3 ? _j < _ref3 : _j > _ref3; y = 0 <= _ref3 ? ++_j : --_j) {
-          points.push({
-            x: Math.round(x * gridW + Math.random() * gridW),
-            y: Math.round(y * gridH + Math.random() * gridH)
+          pointsCol.push({
+            x: Math.ceil(x * gridW + Math.random() * gridW),
+            y: Math.ceil(y * gridH + Math.random() * gridH)
           });
         }
+        points.push(pointsCol);
       }
-      console.log(points.length);
+      console.log(points);
       return points;
     };
 

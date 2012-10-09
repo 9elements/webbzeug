@@ -46,28 +46,30 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
     w = @app.getWidth()
     h = @app.getHeight()
 
-    for x in [0...w]
-      for y in [0...h]
+    for y in [0...h]
+      for x in [0...w]
         index = ((y * w) << 2) + (x << 2)
 
         cellX = Math.floor(x / gridW)
         cellY = Math.floor(y / gridH)
 
-        minDist = 255
-        maxDist = Math.sqrt(Math.pow(@gridX,2) + Math.pow(@gridY,2))
+        maxDist = Math.sqrt(Math.pow(gridW,2) + Math.pow(gridH,2)) * 2
+        minDist = maxDist
 
-        for gx in [(cellX - 1)...(cellX + 1)]
-          for gy in [(cellY - 1)...(cellY + 1)]
-
+        for gx in [(cellX - 2)...(cellX + 2)]
+          for gy in [(cellY - 2)...(cellY + 2)]
             # Tiling
-            if gy < 0 then gy = @gridX + gy
-            if gx < 0 then gx = @gridY + gx
+            if gy < 0 then gy = @gridY + gy
+            if gy >= @gridY then gy = Math.abs(@gridY - gy)
+            if gx < 0 then gx = @gridX + gx
+            if gx >= @gridX then gx = Math.abs(@gridX - gx)
 
-            point = points[(gy * @gridX) + gx]
+            point = points[gx][gy]
             if point
               dist  = Math.sqrt( Math.pow(x - point.x, 2) + Math.pow(y - point.y, 2) )
             else
               dist = 10
+
             minDist = Math.min(dist, minDist)
 
         # Normalize minDist
@@ -77,11 +79,6 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
         imageData.data[index + 1] = value
         imageData.data[index + 2] = value
         imageData.data[index + 3] = 255
-
-    for point in points
-      imageData.data[((point.y * 256) << 2) + (point.x << 2)] = 255
-      imageData.data[((point.y * 256) << 2) + (point.x << 2) + 3] = 255
-
 
     @context.putImageData imageData, 0, 0 
     return @context
@@ -95,10 +92,14 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
 
     points = []
     for x in [0...@gridX]
+      pointsCol = []
       for y in [0...@gridY]
-        points.push { x: Math.round(x * gridW + Math.random() * gridW), y: Math.round(y * gridH + Math.random() * gridH) }
+        pointsCol.push { x: Math.ceil(x * gridW + Math.random() * gridW), y: Math.ceil(y * gridH + Math.random() * gridH) }
+        # points.push { x: x * gridW + gridW, y: y * gridH + gridH / 3 }
 
-    console.log points.length
+      points.push pointsCol
+
+    console.log points
 
     return points
 
