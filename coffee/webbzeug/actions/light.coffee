@@ -10,6 +10,7 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
       lightX: { name: 'light X', type: 'number', min: 0, max: 256, default: 20 }
       lightY: { name: 'light Y', type: 'number', min: 0, max: 256, default: 20 }
       lightZ: { name: 'light Z', type: 'number', min: 0, max: 256, default: 20 }
+      power: { name: 'power', type: 'number', min: 0, max: 256, default: 20 }
     }
   
   magnitude: (x, y, z) ->
@@ -36,28 +37,36 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
     w = @app.getWidth()
     h = @app.getHeight()
 
-    eyeX = parseInt @getParameter('eyeX')
-    eyeY = -1 * parseInt @getParameter('eyeY')
-    eyeZ = -1 * parseInt @getParameter('eyeZ')
+    power = parseInt @getParameter('power') / 100
 
-    lightX = parseInt @getParameter('lightX')
-    lightY = -1 * parseInt @getParameter('lightY')
-    lightZ = -1 * parseInt @getParameter('lightZ')
-    lightLen = @magnitude  lightX , lightY , lightZ  
-    eyeLen = @magnitude  eyeX , eyeY , eyeZ 
-    lightX /= lightLen
-    lightY /= lightLen
-    lightZ /= lightLen
-    eyeX /= eyeLen
-    eyeY /= eyeLen
-    eyeZ /= eyeLen
- 
     #console.log eyeX, eyeY, eyeZ, lightX, lightY, lightZ
-
+    uinc = 1 / w
+    vinc = 1 / h
+    u = 0
+    v = 0
     for x in [0...w]
       for y in [0...h]
         rowLen = (w << 2)
         index = (x << 2) + y * rowLen
+        # ------------------------------------------------------------- calculate light
+        lightX = (( parseInt @getParameter('lightX') - 127 ) / 255 - uinc )
+        lightY = -1 * (( parseInt @getParameter('lightY') - 127 ) / 255 - vinc )
+        lightZ = -1 * (( parseInt @getParameter('lightZ') - 127 ) / 255 )
+        lightLen = @magnitude  lightX , lightY , lightZ  
+        lightX /= lightLen
+        lightY /= lightLen
+        lightZ /= lightLen
+
+        # ------------------------------------------------------------- calculate eye position
+        eyeX = (( parseInt @getParameter('eyeX') - 127 ) / 255 - uinc )
+        eyeY = -1 * (( parseInt @getParameter('eyeY') - 127 ) / 255 - vinc )
+        eyeZ = -1 * (( parseInt @getParameter('eyeZ') - 127 ) / 255 )
+        eyeLen = @magnitude  eyeX , eyeY , eyeZ 
+        eyeX /= eyeLen
+        eyeY /= eyeLen
+        eyeZ /= eyeLen
+ 
+        # ------------------------------------------------------------- calculate normal
         normalX = ( normalImageData.data[index] / 127 ) - 1
         normalY = ( normalImageData.data[index + 1] / 127 ) - 1 
         normalZ = ( normalImageData.data[index + 2] / 127 ) - 1
@@ -67,7 +76,6 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
         normalZ /= normalLen  
 
         nDotL = @dot normalX, normalY, normalZ, lightX, lightY, lightZ 
-        #console.log normalX, normalY, normalZ, lightX, lightY, lightZ
 
         reflectionX = ( 2 * normalX * nDotL ) - lightX
         reflectionY = ( 2 * normalY * nDotL ) - lightY
@@ -77,10 +85,13 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
         reflectionY /= reflectionLen
         reflectionZ /= reflectionLen
 
-        rDotV =  @dot reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ  
+        rDotV = @dot reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ 
+        rDotV = Math.max ( rDotV )
   # float4 fvTotalDiffuse   = fvDiffuse * fNDotL * fvBaseColor;
-        totalSpecular  = Math.pow( rDotV, 2 );
+        totalSpecular  = Math.pow( rDotV, power )
         totalSpecular *= 255
+        u += uinc
+        v += vinc
         #console.log totalSpecular
 
 
@@ -88,7 +99,7 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
 #   return( saturate( fvTotalAmbient + fvTotalDiffuse + fvTotalSpecular ) );
  
         for i in [0...3]
-          outputImageData.data[index + i] = Math.min( inputImageData.data[index + i]  + totalSpecular, 255 )
+          outputImageData.data[index + i] = Math.min( inputImageData.data[index + i]  + totalSpecular + inputImageData.data[index + i] * nDotL, 255 )
         outputImageData.data[index + 3] = 255
 
     @context.putImageData outputImageData, 0, 0

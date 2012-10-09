@@ -64,6 +64,13 @@
           min: 0,
           max: 256,
           "default": 20
+        },
+        power: {
+          name: 'power',
+          type: 'number',
+          min: 0,
+          max: 256,
+          "default": 20
         }
       };
     };
@@ -82,7 +89,7 @@
     };
 
     LightAction.prototype.render = function(contexts) {
-      var eyeLen, eyeX, eyeY, eyeZ, h, i, index, inputImageData, lightLen, lightX, lightY, lightZ, nDotL, normalImageData, normalLen, normalX, normalY, normalZ, outputImageData, rDotV, reflectionLen, reflectionX, reflectionY, reflectionZ, rowLen, totalSpecular, w, x, y, _i, _j, _k;
+      var eyeLen, eyeX, eyeY, eyeZ, h, i, index, inputImageData, lightLen, lightX, lightY, lightZ, nDotL, normalImageData, normalLen, normalX, normalY, normalZ, outputImageData, power, rDotV, reflectionLen, reflectionX, reflectionY, reflectionZ, rowLen, totalSpecular, u, uinc, v, vinc, w, x, y, _i, _j, _k;
       LightAction.__super__.render.call(this);
       if (contexts.length === 0) {
         console.log("Dude a light needs an input");
@@ -93,24 +100,29 @@
       outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       w = this.app.getWidth();
       h = this.app.getHeight();
-      eyeX = parseInt(this.getParameter('eyeX'));
-      eyeY = -1 * parseInt(this.getParameter('eyeY'));
-      eyeZ = -1 * parseInt(this.getParameter('eyeZ'));
-      lightX = parseInt(this.getParameter('lightX'));
-      lightY = -1 * parseInt(this.getParameter('lightY'));
-      lightZ = -1 * parseInt(this.getParameter('lightZ'));
-      lightLen = this.magnitude(lightX, lightY, lightZ);
-      eyeLen = this.magnitude(eyeX, eyeY, eyeZ);
-      lightX /= lightLen;
-      lightY /= lightLen;
-      lightZ /= lightLen;
-      eyeX /= eyeLen;
-      eyeY /= eyeLen;
-      eyeZ /= eyeLen;
+      power = parseInt(this.getParameter('power') / 100);
+      uinc = 1 / w;
+      vinc = 1 / h;
+      u = 0;
+      v = 0;
       for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
         for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
           rowLen = w << 2;
           index = (x << 2) + y * rowLen;
+          lightX = (parseInt(this.getParameter('lightX') - 127)) / 255 - uinc;
+          lightY = -1 * ((parseInt(this.getParameter('lightY') - 127)) / 255 - vinc);
+          lightZ = -1 * ((parseInt(this.getParameter('lightZ') - 127)) / 255);
+          lightLen = this.magnitude(lightX, lightY, lightZ);
+          lightX /= lightLen;
+          lightY /= lightLen;
+          lightZ /= lightLen;
+          eyeX = (parseInt(this.getParameter('eyeX') - 127)) / 255 - uinc;
+          eyeY = -1 * ((parseInt(this.getParameter('eyeY') - 127)) / 255 - vinc);
+          eyeZ = -1 * ((parseInt(this.getParameter('eyeZ') - 127)) / 255);
+          eyeLen = this.magnitude(eyeX, eyeY, eyeZ);
+          eyeX /= eyeLen;
+          eyeY /= eyeLen;
+          eyeZ /= eyeLen;
           normalX = (normalImageData.data[index] / 127) - 1;
           normalY = (normalImageData.data[index + 1] / 127) - 1;
           normalZ = (normalImageData.data[index + 2] / 127) - 1;
@@ -127,10 +139,13 @@
           reflectionY /= reflectionLen;
           reflectionZ /= reflectionLen;
           rDotV = this.dot(reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ);
-          totalSpecular = Math.pow(rDotV, 2);
+          rDotV = Math.max(rDotV);
+          totalSpecular = Math.pow(rDotV, power);
           totalSpecular *= 255;
+          u += uinc;
+          v += vinc;
           for (i = _k = 0; _k < 3; i = ++_k) {
-            outputImageData.data[index + i] = Math.min(inputImageData.data[index + i] + totalSpecular, 255);
+            outputImageData.data[index + i] = Math.min(inputImageData.data[index + i] + totalSpecular + inputImageData.data[index + i] * nDotL, 255);
           }
           outputImageData.data[index + 3] = 255;
         }

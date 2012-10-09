@@ -7,37 +7,37 @@
 
   window.Webbzeug.ClassMap = {
     /*
-        Procedural actions
+        generative actions
     */
 
     rectangle: {
       name: 'Rectangle',
-      type: 'procedural',
+      type: 'generative',
       "class": Webbzeug.Actions.Rectangle
     },
     circle: {
       name: 'Circle',
-      type: 'procedural',
+      type: 'generative',
       "class": Webbzeug.Actions.Circle
     },
     fractal: {
       name: 'Fractal',
-      type: 'procedural',
+      type: 'generative',
       "class": Webbzeug.Actions.Fractal
     },
     pixels: {
       name: 'Pixels',
-      type: 'procedural',
+      type: 'generative',
       "class": Webbzeug.Actions.Pixels
     },
     flat: {
       name: 'Flat',
-      type: 'procedural',
+      type: 'generative',
       "class": Webbzeug.Actions.Flat
     },
     cell: {
       name: 'Cell',
-      type: 'procedural',
+      type: 'generative',
       "class": Webbzeug.Actions.Cell
     },
     /*
