@@ -30,7 +30,6 @@
     };
 
     Action.prototype.render = function(contexts) {
-      console.log("rendering...", this.index, ":", this.constructor.name, "x", this.x, "y", this.y);
       this.canvas = $('<canvas>').get(0);
       this.canvas.width = this.app.getWidth();
       this.canvas.height = this.app.getHeight();

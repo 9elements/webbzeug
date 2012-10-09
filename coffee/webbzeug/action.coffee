@@ -11,8 +11,6 @@ window.Webbzeug.Action = class Action
   availableParameters: -> {}
 
   render: (contexts) ->
-    console.log "rendering...", @index, ":", @constructor.name, "x", @x, "y", @y
-
     @canvas = $('<canvas>').get(0)
 
     @canvas.width = @app.getWidth()

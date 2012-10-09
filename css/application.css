@@ -144,7 +144,7 @@ header {
     margin-right: 10px;
     cursor: pointer;
     position: relative; }
-    .navigation .type.generative {
+    .navigation .type.procedural {
       background: #3e92f7;
       background: -moz-linear-gradient(top, #3e92f7 0%, #0458bd 100%);
       background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #3e92f7), color-stop(100%, #0458bd));
@@ -277,7 +277,7 @@ header {
       position: absolute;
       right: 10px;
       top: 8px; }
-    .workspace-wrapper .action.generative {
+    .workspace-wrapper .action.procedural {
       background: #1d71d6;
       box-shadow: 0 2px 0 #094893; }
     .workspace-wrapper .action.processive {
