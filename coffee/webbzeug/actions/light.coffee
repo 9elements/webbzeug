@@ -4,13 +4,15 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
   type: 'light'
   availableParameters: ->
     {
-      eyeX: { name: 'eye X', type: 'number', min: 0, max: 256, default: 128 },
-      eyeY: { name: 'eye Y', type: 'number', min: 0, max: 256, default: 128 }
-      eyeZ: { name: 'eye Z', type: 'number', min: 0, max: 256, default: 128 }
-      lightX: { name: 'light X', type: 'number', min: 0, max: 256, default: 20 }
-      lightY: { name: 'light Y', type: 'number', min: 0, max: 256, default: 20 }
-      lightZ: { name: 'light Z', type: 'number', min: 0, max: 256, default: 20 }
-      power: { name: 'power', type: 'number', min: 0, max: 256, default: 20 }
+      eyeX: { name: 'eye X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 },
+      eyeY: { name: 'eye Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      eyeZ: { name: 'eye Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightX: { name: 'light X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightY: { name: 'light Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightZ: { name: 'light Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      power: { name: 'power', type: 'number', min: 0.1, max: 100, default: 20 },
+      diffuseColor: { name: 'diffuse', type: 'color', default: '#000000' },
+      reflectionColor: { name: 'reflection', type: 'color', default: '#000000' }
     }
   
   magnitude: (x, y, z) ->
@@ -20,8 +22,19 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
     len = x + y + z 
     return Math.sqrt ( len )
 
-  dot: (x1, y1, z1, x2, y2, z2) ->
-    return x1 * x2 + y1 * y2 + z1 * z2 
+  normalize: (v) ->
+    mag = @magnitude(v.x, v.y, v.z)
+    return {
+      x: v.x / mag,
+      y: v.y / mag,
+      z: v.z / mag
+    }
+
+  # dot: (x1, y1, z1, x2, y2, z2) ->
+  #   return x1 * x2 + y1 * y2 + z1 * z2 
+
+  dot: (v1, v2) ->
+    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
 
   render: (contexts) ->
     super()
@@ -37,18 +50,99 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
     w = @app.getWidth()
     h = @app.getHeight()
 
-    power = parseInt @getParameter('power') / 100
+    power = parseInt(@getParameter('power')) / 100
+
+    normal = 
+      x: 0
+      y: 0
+      z: 1
+
+    binormal =
+      x: 0
+      y: -1
+      z: 0
+
+    tangent = 
+      x: -1
+      y: 0
+      z: 0    
 
     #console.log eyeX, eyeY, eyeZ, lightX, lightY, lightZ
-    uinc = 1 / w
-    vinc = 1 / h
-    u = 0
-    v = 0
+    uinc = 2 / w
+    vinc = 2 / h
+    u = -1
+    v = -1
     for x in [0...w]
       for y in [0...h]
         rowLen = (w << 2)
         index = (x << 2) + y * rowLen
-        # ------------------------------------------------------------- calculate light
+        
+        light = 
+          x: parseFloat(@getParameter('lightX')) - u
+          y: parseFloat(@getParameter('lightY')) - v
+          z: parseFloat(@getParameter('lightZ'))
+
+        view = 
+          x: parseFloat(@getParameter('eyeX')) - u
+          y: parseFloat(@getParameter('eyeY')) - v
+          z: parseFloat(@getParameter('eyeZ'))
+
+        lightDirection = @normalize
+          x: @dot(tangent, light)
+          y: @dot(binormal, light)
+          z: @dot(normal, light)
+
+        viewDirection = @normalize
+          x: @dot(tangent, view)
+          y: @dot(binormal, view)
+          z: @dot(normal, view)
+
+        pixel = @normalize
+          x: (normalImageData.data[index] / 127) - 1
+          y: (normalImageData.data[index + 1] / 127) - 1
+          z: (normalImageData.data[index + 2] / 127) - 1
+
+        NDotL = @dot pixel, lightDirection
+
+        reflection = @normalize
+          x: ((pixel.x * 2) * NDotL) - lightDirection.x
+          y: ((pixel.y * 2) * NDotL) - lightDirection.y
+          z: ((pixel.z * 2) * NDotL) - lightDirection.z
+
+        RDotV = Math.max 0, @dot(reflection, viewDirection)
+
+        baseColor =
+          r: inputImageData.data[index] / 255
+          g: inputImageData.data[index + 1] / 255
+          b: inputImageData.data[index + 2] / 255
+
+        diffuseColor = 
+          r: NDotL * baseColor.r
+          g: NDotL * baseColor.g
+          b: NDotL * baseColor.b
+
+        specularColor = Math.pow RDotV, power
+
+        if x is 127 and y is 127
+          console.log diffuseColor.r, specularColor
+
+        outputImageData.data[index] = Math.max 0, Math.min( (0.5 * baseColor.r + diffuseColor.r + specularColor) * 255, 255)
+        outputImageData.data[index + 1] = Math.max 0, Math.min( (0.5 * baseColor.g + diffuseColor.g + specularColor) * 255, 255)
+        outputImageData.data[index + 2] = Math.max 0, Math.min( (0.5 * baseColor.b + diffuseColor.b + specularColor) * 255, 255)
+        outputImageData.data[index + 3] = 255
+
+        v += vinc
+      v = 0
+      u += uinc
+
+
+    @context.putImageData outputImageData, 0, 0
+    return @context
+
+
+
+###
+# ------------------------------------------------------------- calculate light
         lightX = (( parseInt @getParameter('lightX') - 127 ) / 255 - uinc )
         lightY = -1 * (( parseInt @getParameter('lightY') - 127 ) / 255 - vinc )
         lightZ = -1 * (( parseInt @getParameter('lightZ') - 127 ) / 255 )
@@ -101,7 +195,4 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
         for i in [0...3]
           outputImageData.data[index + i] = Math.min( inputImageData.data[index + i]  + totalSpecular + inputImageData.data[index + i] * nDotL, 255 )
         outputImageData.data[index + 3] = 255
-
-    @context.putImageData outputImageData, 0, 0
-    return @context
-
+###

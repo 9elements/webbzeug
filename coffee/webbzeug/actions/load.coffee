@@ -4,7 +4,7 @@ window.Webbzeug.Actions.Load = class LoadAction extends Webbzeug.Action
   type: 'load'
   availableParameters: ->
     {
-      id: { name: 'ID', type: 'number', min: 0, max: 255, default: 0 }
+      id: { name: 'ID', type: 'number', min: 0, max: 50, default: 0 }
     }
 
   render: (contexts) ->

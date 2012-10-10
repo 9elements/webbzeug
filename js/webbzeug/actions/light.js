@@ -26,51 +26,67 @@
         eyeX: {
           name: 'eye X',
           type: 'number',
-          min: 0,
-          max: 256,
-          "default": 128
+          min: -1,
+          max: 1,
+          "default": 0.5,
+          step: 0.001
         },
         eyeY: {
           name: 'eye Y',
           type: 'number',
-          min: 0,
-          max: 256,
-          "default": 128
+          min: -1,
+          max: 1,
+          "default": 0.5,
+          step: 0.001
         },
         eyeZ: {
           name: 'eye Z',
           type: 'number',
-          min: 0,
-          max: 256,
-          "default": 128
+          min: -1,
+          max: 1,
+          "default": 0.5,
+          step: 0.001
         },
         lightX: {
           name: 'light X',
           type: 'number',
-          min: 0,
-          max: 256,
-          "default": 20
+          min: -1,
+          max: 1,
+          "default": 0.5,
+          step: 0.001
         },
         lightY: {
           name: 'light Y',
           type: 'number',
-          min: 0,
-          max: 256,
-          "default": 20
+          min: -1,
+          max: 1,
+          "default": 0.5,
+          step: 0.001
         },
         lightZ: {
           name: 'light Z',
           type: 'number',
-          min: 0,
-          max: 256,
-          "default": 20
+          min: -1,
+          max: 1,
+          "default": 0.5,
+          step: 0.001
         },
         power: {
           name: 'power',
           type: 'number',
-          min: 0,
-          max: 256,
+          min: 0.1,
+          max: 100,
           "default": 20
+        },
+        diffuseColor: {
+          name: 'diffuse',
+          type: 'color',
+          "default": '#000000'
+        },
+        reflectionColor: {
+          name: 'reflection',
+          type: 'color',
+          "default": '#000000'
         }
       };
     };
@@ -84,12 +100,22 @@
       return Math.sqrt(len);
     };
 
-    LightAction.prototype.dot = function(x1, y1, z1, x2, y2, z2) {
-      return x1 * x2 + y1 * y2 + z1 * z2;
+    LightAction.prototype.normalize = function(v) {
+      var mag;
+      mag = this.magnitude(v.x, v.y, v.z);
+      return {
+        x: v.x / mag,
+        y: v.y / mag,
+        z: v.z / mag
+      };
+    };
+
+    LightAction.prototype.dot = function(v1, v2) {
+      return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
     };
 
     LightAction.prototype.render = function(contexts) {
-      var eyeLen, eyeX, eyeY, eyeZ, h, i, index, inputImageData, lightLen, lightX, lightY, lightZ, nDotL, normalImageData, normalLen, normalX, normalY, normalZ, outputImageData, power, rDotV, reflectionLen, reflectionX, reflectionY, reflectionZ, rowLen, totalSpecular, u, uinc, v, vinc, w, x, y, _i, _j, _k;
+      var NDotL, RDotV, baseColor, binormal, diffuseColor, h, index, inputImageData, light, lightDirection, normal, normalImageData, outputImageData, pixel, power, reflection, rowLen, specularColor, tangent, u, uinc, v, view, viewDirection, vinc, w, x, y, _i, _j;
       LightAction.__super__.render.call(this);
       if (contexts.length === 0) {
         console.log("Dude a light needs an input");
@@ -100,55 +126,84 @@
       outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       w = this.app.getWidth();
       h = this.app.getHeight();
-      power = parseInt(this.getParameter('power') / 100);
-      uinc = 1 / w;
-      vinc = 1 / h;
-      u = 0;
-      v = 0;
+      power = parseInt(this.getParameter('power')) / 100;
+      normal = {
+        x: 0,
+        y: 0,
+        z: 1
+      };
+      binormal = {
+        x: 0,
+        y: -1,
+        z: 0
+      };
+      tangent = {
+        x: -1,
+        y: 0,
+        z: 0
+      };
+      uinc = 2 / w;
+      vinc = 2 / h;
+      u = -1;
+      v = -1;
       for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
         for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
           rowLen = w << 2;
           index = (x << 2) + y * rowLen;
-          lightX = (parseInt(this.getParameter('lightX') - 127)) / 255 - uinc;
-          lightY = -1 * ((parseInt(this.getParameter('lightY') - 127)) / 255 - vinc);
-          lightZ = -1 * ((parseInt(this.getParameter('lightZ') - 127)) / 255);
-          lightLen = this.magnitude(lightX, lightY, lightZ);
-          lightX /= lightLen;
-          lightY /= lightLen;
-          lightZ /= lightLen;
-          eyeX = (parseInt(this.getParameter('eyeX') - 127)) / 255 - uinc;
-          eyeY = -1 * ((parseInt(this.getParameter('eyeY') - 127)) / 255 - vinc);
-          eyeZ = -1 * ((parseInt(this.getParameter('eyeZ') - 127)) / 255);
-          eyeLen = this.magnitude(eyeX, eyeY, eyeZ);
-          eyeX /= eyeLen;
-          eyeY /= eyeLen;
-          eyeZ /= eyeLen;
-          normalX = (normalImageData.data[index] / 127) - 1;
-          normalY = (normalImageData.data[index + 1] / 127) - 1;
-          normalZ = (normalImageData.data[index + 2] / 127) - 1;
-          normalLen = this.magnitude(normalX, normalY, normalZ);
-          normalX /= normalLen;
-          normalY /= normalLen;
-          normalZ /= normalLen;
-          nDotL = this.dot(normalX, normalY, normalZ, lightX, lightY, lightZ);
-          reflectionX = (2 * normalX * nDotL) - lightX;
-          reflectionY = (2 * normalY * nDotL) - lightY;
-          reflectionZ = (2 * normalZ * nDotL) - lightZ;
-          reflectionLen = this.magnitude(reflectionX, reflectionY, reflectionZ);
-          reflectionX /= reflectionLen;
-          reflectionY /= reflectionLen;
-          reflectionZ /= reflectionLen;
-          rDotV = this.dot(reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ);
-          rDotV = Math.max(rDotV);
-          totalSpecular = Math.pow(rDotV, power);
-          totalSpecular *= 255;
-          u += uinc;
-          v += vinc;
-          for (i = _k = 0; _k < 3; i = ++_k) {
-            outputImageData.data[index + i] = Math.min(inputImageData.data[index + i] + totalSpecular + inputImageData.data[index + i] * nDotL, 255);
+          light = {
+            x: parseFloat(this.getParameter('lightX')) - u,
+            y: parseFloat(this.getParameter('lightY')) - v,
+            z: parseFloat(this.getParameter('lightZ'))
+          };
+          view = {
+            x: parseFloat(this.getParameter('eyeX')) - u,
+            y: parseFloat(this.getParameter('eyeY')) - v,
+            z: parseFloat(this.getParameter('eyeZ'))
+          };
+          lightDirection = this.normalize({
+            x: this.dot(tangent, light),
+            y: this.dot(binormal, light),
+            z: this.dot(normal, light)
+          });
+          viewDirection = this.normalize({
+            x: this.dot(tangent, view),
+            y: this.dot(binormal, view),
+            z: this.dot(normal, view)
+          });
+          pixel = this.normalize({
+            x: (normalImageData.data[index] / 127) - 1,
+            y: (normalImageData.data[index + 1] / 127) - 1,
+            z: (normalImageData.data[index + 2] / 127) - 1
+          });
+          NDotL = this.dot(pixel, lightDirection);
+          reflection = this.normalize({
+            x: ((pixel.x * 2) * NDotL) - lightDirection.x,
+            y: ((pixel.y * 2) * NDotL) - lightDirection.y,
+            z: ((pixel.z * 2) * NDotL) - lightDirection.z
+          });
+          RDotV = Math.max(0, this.dot(reflection, viewDirection));
+          baseColor = {
+            r: inputImageData.data[index] / 255,
+            g: inputImageData.data[index + 1] / 255,
+            b: inputImageData.data[index + 2] / 255
+          };
+          diffuseColor = {
+            r: NDotL * baseColor.r,
+            g: NDotL * baseColor.g,
+            b: NDotL * baseColor.b
+          };
+          specularColor = Math.pow(RDotV, power);
+          if (x === 127 && y === 127) {
+            console.log(diffuseColor.r, specularColor);
           }
+          outputImageData.data[index] = Math.max(0, Math.min((0.5 * baseColor.r + diffuseColor.r + specularColor) * 255, 255));
+          outputImageData.data[index + 1] = Math.max(0, Math.min((0.5 * baseColor.g + diffuseColor.g + specularColor) * 255, 255));
+          outputImageData.data[index + 2] = Math.max(0, Math.min((0.5 * baseColor.b + diffuseColor.b + specularColor) * 255, 255));
           outputImageData.data[index + 3] = 255;
+          v += vinc;
         }
+        v = 0;
+        u += uinc;
       }
       this.context.putImageData(outputImageData, 0, 0);
       return this.context;
@@ -157,5 +212,62 @@
     return LightAction;
 
   })(Webbzeug.Action);
+
+  /*
+  # ------------------------------------------------------------- calculate light
+          lightX = (( parseInt @getParameter('lightX') - 127 ) / 255 - uinc )
+          lightY = -1 * (( parseInt @getParameter('lightY') - 127 ) / 255 - vinc )
+          lightZ = -1 * (( parseInt @getParameter('lightZ') - 127 ) / 255 )
+          lightLen = @magnitude  lightX , lightY , lightZ  
+          lightX /= lightLen
+          lightY /= lightLen
+          lightZ /= lightLen
+  
+          # ------------------------------------------------------------- calculate eye position
+          eyeX = (( parseInt @getParameter('eyeX') - 127 ) / 255 - uinc )
+          eyeY = -1 * (( parseInt @getParameter('eyeY') - 127 ) / 255 - vinc )
+          eyeZ = -1 * (( parseInt @getParameter('eyeZ') - 127 ) / 255 )
+          eyeLen = @magnitude  eyeX , eyeY , eyeZ 
+          eyeX /= eyeLen
+          eyeY /= eyeLen
+          eyeZ /= eyeLen
+   
+          # ------------------------------------------------------------- calculate normal
+          normalX = ( normalImageData.data[index] / 127 ) - 1
+          normalY = ( normalImageData.data[index + 1] / 127 ) - 1 
+          normalZ = ( normalImageData.data[index + 2] / 127 ) - 1
+          normalLen = @magnitude normalX, normalY, normalZ 
+          normalX /= normalLen  
+          normalY /= normalLen  
+          normalZ /= normalLen  
+  
+          nDotL = @dot normalX, normalY, normalZ, lightX, lightY, lightZ 
+  
+          reflectionX = ( 2 * normalX * nDotL ) - lightX
+          reflectionY = ( 2 * normalY * nDotL ) - lightY
+          reflectionZ = ( 2 * normalZ * nDotL ) - lightZ
+          reflectionLen = @magnitude  reflectionX, reflectionY, reflectionZ 
+          reflectionX /= reflectionLen
+          reflectionY /= reflectionLen
+          reflectionZ /= reflectionLen
+  
+          rDotV = @dot reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ 
+          rDotV = Math.max ( rDotV )
+    # float4 fvTotalDiffuse   = fvDiffuse * fNDotL * fvBaseColor;
+          totalSpecular  = Math.pow( rDotV, power )
+          totalSpecular *= 255
+          u += uinc
+          v += vinc
+          #console.log totalSpecular
+  
+  
+          
+  #   return( saturate( fvTotalAmbient + fvTotalDiffuse + fvTotalSpecular ) );
+   
+          for i in [0...3]
+            outputImageData.data[index + i] = Math.min( inputImageData.data[index + i]  + totalSpecular + inputImageData.data[index + i] * nDotL, 255 )
+          outputImageData.data[index + 3] = 255
+  */
+
 
 }).call(this);

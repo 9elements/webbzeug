@@ -33,7 +33,7 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
   type: 'cell'
   availableParameters: ->
     {
-      gridSize: { name: 'Grid size', type: 'number', min: 2, max: 64, default: 8 },
+      gridSize: { name: 'Grid size', type: 'number', min: 2, max: 1000, default: 8 },
       seed: { name: 'Seed', type: 'number', min: 0, max: 255, default: Math.round(Math.random() * 255) },
       type: { name: 'Type', type: 'enum', values: { balls: 'Balls', mosaic: 'Mosaic' }, default: 'balls' }
     }

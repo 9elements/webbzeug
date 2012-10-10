@@ -15,18 +15,21 @@ window.Webbzeug.Actions.Normal = class NormalAction extends Webbzeug.Action
 
     w = @app.getWidth()
     h = @app.getHeight()
-    for y in [1...h - 1]
-      for x in [1...w - 1]
+    for y in [1..h - 1]
+      for x in [1..w - 1]
         rowLen = (w << 2)
         index = (x << 2) + y * rowLen
+        
         tl = inputImageData.data[index - rowLen - 4]  
         l = inputImageData.data[index - 4] 
         bl = inputImageData.data[index + rowLen - 4] 
+
         t = inputImageData.data[index  - rowLen ]  
         b = inputImageData.data[index + rowLen ] 
+
         tr = inputImageData.data[index - rowLen + 4]  
         r = inputImageData.data[index + 4]  
-        br = inputImageData.data[index + rowLen - 4] 
+        br = inputImageData.data[index + rowLen + 4] 
       
         # Compute dx using Sobel:  
         #           -1 0 1   

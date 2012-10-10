@@ -27,7 +27,7 @@
           name: 'ID',
           type: 'number',
           min: 0,
-          max: 255,
+          max: 50,
           "default": 0
         }
       };

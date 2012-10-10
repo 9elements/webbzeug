@@ -56,7 +56,7 @@
           name: 'Grid size',
           type: 'number',
           min: 2,
-          max: 64,
+          max: 1000,
           "default": 8
         },
         seed: {

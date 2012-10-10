@@ -32,8 +32,8 @@
       outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       w = this.app.getWidth();
       h = this.app.getHeight();
-      for (y = _i = 1, _ref2 = h - 1; 1 <= _ref2 ? _i < _ref2 : _i > _ref2; y = 1 <= _ref2 ? ++_i : --_i) {
-        for (x = _j = 1, _ref3 = w - 1; 1 <= _ref3 ? _j < _ref3 : _j > _ref3; x = 1 <= _ref3 ? ++_j : --_j) {
+      for (y = _i = 1, _ref2 = h - 1; 1 <= _ref2 ? _i <= _ref2 : _i >= _ref2; y = 1 <= _ref2 ? ++_i : --_i) {
+        for (x = _j = 1, _ref3 = w - 1; 1 <= _ref3 ? _j <= _ref3 : _j >= _ref3; x = 1 <= _ref3 ? ++_j : --_j) {
           rowLen = w << 2;
           index = (x << 2) + y * rowLen;
           tl = inputImageData.data[index - rowLen - 4];
@@ -43,7 +43,7 @@
           b = inputImageData.data[index + rowLen];
           tr = inputImageData.data[index - rowLen + 4];
           r = inputImageData.data[index + 4];
-          br = inputImageData.data[index + rowLen - 4];
+          br = inputImageData.data[index + rowLen + 4];
           dX = tr + 2.0 * r + br - tl - 2.0 * l - bl;
           dY = bl + 2.0 * b + br - tl - 2.0 * t - tr;
           outputImageData.data[index] = (dX + 255) / 2;
