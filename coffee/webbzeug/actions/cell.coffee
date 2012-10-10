@@ -35,6 +35,7 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
     {
       gridSize: { name: 'Grid size', type: 'number', min: 2, max: 64, default: 8 },
       seed: { name: 'Seed', type: 'number', min: 0, max: 255, default: Math.round(Math.random() * 255) },
+      type: { name: 'Type', type: 'enum', values: { balls: 'Balls', mosaic: 'Mosaic' }, default: 'balls' }
     }
 
   render: (contexts) ->
@@ -58,7 +59,10 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
         gridPosX = Math.floor(x / gridPxSize)
         gridPosY = Math.floor(y / gridPxSize)
 
+        distances = []
+
         minDist = maxDist
+
         for gridX in [(gridPosX - 1)..(gridPosX + 1)]
           originalGridX = gridX
 
@@ -88,21 +92,33 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
             # / Fixing overlapped positions
 
             dist = Math.sqrt(Math.pow(x - px,2) + Math.pow(y - py,2))
+            distances.push dist
 
             minDist = Math.min(minDist, dist)
 
+        if @getParameter('type') is 'mosaic'
+          distances.sort (a, b) =>
+            if a > b
+              return 1
+            if a < b
+              return -1
+            return 0
+
+          lastMinDist = distances[1]
+
+          value = (lastMinDist - minDist) / maxDist * 255
+        else if @getParameter('type') is 'balls'
+          value = minDist / maxDist * 255
+
         index = ((y * w) << 2) + (x << 2)
-
-        value = minDist / maxDist * 255
-
         imageData.data[index] = value
         imageData.data[index + 1] = value
         imageData.data[index + 2] = value
         imageData.data[index + 3] = 255
 
-    for point in _.flatten(points)
-      imageData.data[((point.y * 256) << 2) + (point.x << 2)] = 255
-      imageData.data[((point.y * 256) << 2) + (point.x << 2) + 3] = 255
+    # for point in _.flatten(points)
+    #   imageData.data[((point.y * 256) << 2) + (point.x << 2)] = 255
+    #   imageData.data[((point.y * 256) << 2) + (point.x << 2) + 3] = 255
 
 
     @context.putImageData imageData, 0, 0 

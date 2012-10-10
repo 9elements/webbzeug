@@ -65,12 +65,22 @@
           min: 0,
           max: 255,
           "default": Math.round(Math.random() * 255)
+        },
+        type: {
+          name: 'Type',
+          type: 'enum',
+          values: {
+            balls: 'Balls',
+            mosaic: 'Mosaic'
+          },
+          "default": 'balls'
         }
       };
     };
 
     CellAction.prototype.render = function(contexts) {
-      var dist, gridPosX, gridPosY, gridPxSize, gridSize, gridX, gridY, h, imageData, index, maxDist, minDist, originalGridX, originalGridY, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _len, _m, _ref2, _ref3, _ref4, _ref5, _ref6;
+      var dist, distances, gridPosX, gridPosY, gridPxSize, gridSize, gridX, gridY, h, imageData, index, lastMinDist, maxDist, minDist, originalGridX, originalGridY, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5,
+        _this = this;
       CellAction.__super__.render.call(this);
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       gridSize = parseInt(this.getParameter('gridSize'));
@@ -83,6 +93,7 @@
         for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
           gridPosX = Math.floor(x / gridPxSize);
           gridPosY = Math.floor(y / gridPxSize);
+          distances = [];
           minDist = maxDist;
           for (gridX = _k = _ref2 = gridPosX - 1, _ref3 = gridPosX + 1; _ref2 <= _ref3 ? _k <= _ref3 : _k >= _ref3; gridX = _ref2 <= _ref3 ? ++_k : --_k) {
             originalGridX = gridX;
@@ -114,22 +125,31 @@
                 py += h;
               }
               dist = Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2));
+              distances.push(dist);
               minDist = Math.min(minDist, dist);
             }
           }
+          if (this.getParameter('type') === 'mosaic') {
+            distances.sort(function(a, b) {
+              if (a > b) {
+                return 1;
+              }
+              if (a < b) {
+                return -1;
+              }
+              return 0;
+            });
+            lastMinDist = distances[1];
+            value = (lastMinDist - minDist) / maxDist * 255;
+          } else if (this.getParameter('type') === 'balls') {
+            value = minDist / maxDist * 255;
+          }
           index = ((y * w) << 2) + (x << 2);
-          value = minDist / maxDist * 255;
           imageData.data[index] = value;
           imageData.data[index + 1] = value;
           imageData.data[index + 2] = value;
           imageData.data[index + 3] = 255;
         }
-      }
-      _ref6 = _.flatten(points);
-      for (_m = 0, _len = _ref6.length; _m < _len; _m++) {
-        point = _ref6[_m];
-        imageData.data[((point.y * 256) << 2) + (point.x << 2)] = 255;
-        imageData.data[((point.y * 256) << 2) + (point.x << 2) + 3] = 255;
       }
       this.context.putImageData(imageData, 0, 0);
       return this.context;
