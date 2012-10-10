@@ -21,6 +21,9 @@
             seed %= maximum;
             
             return seed;
+        },
+        next01: function() {
+          return this.next() / maximum;
         }
     }
 };
@@ -54,63 +57,67 @@
           type: 'number',
           min: 2,
           max: 64,
-          "default": 2
+          "default": 8
+        },
+        seed: {
+          name: 'Seed',
+          type: 'number',
+          min: 0,
+          max: 255,
+          "default": Math.round(Math.random() * 255)
         }
       };
     };
 
     CellAction.prototype.render = function(contexts) {
-      var cellX, cellY, dist, gridH, gridSize, gridW, gx, gy, h, imageData, index, maxDist, minDist, ogx, ogy, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _len, _m, _ref2, _ref3, _ref4, _ref5, _ref6;
+      var dist, gridPosX, gridPosY, gridPxSize, gridSize, gridX, gridY, h, imageData, index, maxDist, minDist, originalGridX, originalGridY, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _len, _m, _ref2, _ref3, _ref4, _ref5, _ref6;
       CellAction.__super__.render.call(this);
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       gridSize = parseInt(this.getParameter('gridSize'));
       points = this.generatePoints(gridSize);
-      gridW = this.app.getWidth() / gridSize;
-      gridH = this.app.getHeight() / gridSize;
+      gridPxSize = this.app.getWidth() / gridSize;
       w = this.app.getWidth();
       h = this.app.getHeight();
-      for (y = _i = 0; 0 <= h ? _i < h : _i > h; y = 0 <= h ? ++_i : --_i) {
-        for (x = _j = 0; 0 <= w ? _j < w : _j > w; x = 0 <= w ? ++_j : --_j) {
-          index = ((y * w) << 2) + (x << 2);
-          cellX = Math.floor(x / gridW);
-          cellY = Math.floor(y / gridH);
-          maxDist = Math.sqrt(Math.pow(gridW, 2) + Math.pow(gridH, 2)) * 2;
+      maxDist = Math.sqrt(Math.pow(gridPxSize, 2) + Math.pow(gridPxSize, 2)) * 2;
+      for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+        for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+          gridPosX = Math.floor(x / gridPxSize);
+          gridPosY = Math.floor(y / gridPxSize);
           minDist = maxDist;
-          for (gx = _k = _ref2 = cellX - 2, _ref3 = cellX + 2; _ref2 <= _ref3 ? _k < _ref3 : _k > _ref3; gx = _ref2 <= _ref3 ? ++_k : --_k) {
-            for (gy = _l = _ref4 = cellY - 2, _ref5 = cellY + 2; _ref4 <= _ref5 ? _l < _ref5 : _l > _ref5; gy = _ref4 <= _ref5 ? ++_l : --_l) {
-              ogx = gx;
-              ogy = gy;
-              if (gx < 0) {
-                gx = gridSize + gx;
+          for (gridX = _k = _ref2 = gridPosX - 1, _ref3 = gridPosX + 1; _ref2 <= _ref3 ? _k <= _ref3 : _k >= _ref3; gridX = _ref2 <= _ref3 ? ++_k : --_k) {
+            originalGridX = gridX;
+            if (gridX < 0) {
+              gridX = gridSize + gridX;
+            }
+            if (gridX > gridSize - 1) {
+              gridX = gridX - gridSize;
+            }
+            for (gridY = _l = _ref4 = gridPosY - 1, _ref5 = gridPosY + 1; _ref4 <= _ref5 ? _l <= _ref5 : _l >= _ref5; gridY = _ref4 <= _ref5 ? ++_l : --_l) {
+              originalGridY = gridY;
+              if (gridY < 0) {
+                gridY = gridSize + gridY;
               }
-              if (gx > gridSize - 1) {
-                gx = gx - gridSize;
+              if (gridY > gridSize - 1) {
+                gridY = gridY - gridSize;
               }
-              if (gy < 0) {
-                gy = gridSize + gy;
-              }
-              if (gy > gridSize - 1) {
-                gy = gy - gridSize;
-              }
-              point = points[gx][gy];
+              point = points[gridX][gridY];
               px = point.x;
               py = point.y;
-              if (ogx < 0) {
-                px -= gridW * gridSize;
+              if (originalGridX < 0) {
+                px -= w;
+              } else if (originalGridX > gridSize - 1) {
+                px += w;
               }
-              if (ogx > gridSize - 1) {
-                px += gridW * gridSize;
-              }
-              if (ogy < 0) {
-                py -= gridH * gridSize;
-              }
-              if (ogy > gridSize - 1) {
-                py += gridH * gridSize;
+              if (originalGridY < 0) {
+                py -= h;
+              } else if (originalGridY > gridSize - 1) {
+                py += h;
               }
               dist = Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2));
-              minDist = Math.min(dist, minDist);
+              minDist = Math.min(minDist, dist);
             }
           }
+          index = ((y * w) << 2) + (x << 2);
           value = minDist / maxDist * 255;
           imageData.data[index] = value;
           imageData.data[index + 1] = value;
@@ -129,23 +136,23 @@
     };
 
     CellAction.prototype.generatePoints = function(gridSize) {
-      var gridH, gridW, h, points, pointsCol, w, x, y, _i, _j;
+      var custRnd, gridH, gridW, h, points, pointsCol, w, x, y, _i, _j;
       w = this.app.getWidth();
       h = this.app.getHeight();
-      gridW = this.app.getWidth() / gridSize;
-      gridH = this.app.getHeight() / gridSize;
+      gridW = w / gridSize;
+      gridH = h / gridSize;
+      custRnd = CustomRandom(this.getParameter('seed'));
       points = [];
       for (x = _i = 0; 0 <= gridSize ? _i < gridSize : _i > gridSize; x = 0 <= gridSize ? ++_i : --_i) {
         pointsCol = [];
         for (y = _j = 0; 0 <= gridSize ? _j < gridSize : _j > gridSize; y = 0 <= gridSize ? ++_j : --_j) {
           pointsCol.push({
-            x: Math.ceil(x * gridW + Math.random() * gridW),
-            y: Math.ceil(y * gridH + Math.random() * gridH)
+            x: Math.ceil(x * gridW + custRnd.next01() * gridW),
+            y: Math.ceil(y * gridH + custRnd.next01() * gridH)
           });
         }
         points.push(pointsCol);
       }
-      console.log(points);
       return points;
     };
 

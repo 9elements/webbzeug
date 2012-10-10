@@ -20,6 +20,9 @@
             seed %= maximum;
             
             return seed;
+        },
+        next01: function() {
+          return this.next() / maximum;
         }
     }
 }`
@@ -30,8 +33,10 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
   type: 'cell'
   availableParameters: ->
     {
-      gridSize: { name: 'Grid size', type: 'number', min: 2, max: 64, default: 2 },
+      gridSize: { name: 'Grid size', type: 'number', min: 2, max: 64, default: 8 },
+      seed: { name: 'Seed', type: 'number', min: 0, max: 255, default: Math.round(Math.random() * 255) },
     }
+
   render: (contexts) ->
     super()
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
@@ -40,58 +45,54 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
 
     points = @generatePoints gridSize   
 
-    gridW = @app.getWidth() / gridSize
-    gridH = @app.getHeight() / gridSize
+    gridPxSize = @app.getWidth() / gridSize
 
     w = @app.getWidth()
     h = @app.getHeight()
 
-    for y in [0...h]
-      for x in [0...w]
-        index = ((y * w) << 2) + (x << 2)
+    maxDist = Math.sqrt(Math.pow(gridPxSize, 2) + Math.pow(gridPxSize, 2)) * 2
 
-        cellX = Math.floor(x / gridW)
-        cellY = Math.floor(y / gridH)
+    for x in [0...w]
+      for y in [0...h]
 
-        maxDist = Math.sqrt(Math.pow(gridW,2) + Math.pow(gridH,2)) * 2
+        gridPosX = Math.floor(x / gridPxSize)
+        gridPosY = Math.floor(y / gridPxSize)
+
         minDist = maxDist
+        for gridX in [(gridPosX - 1)..(gridPosX + 1)]
+          originalGridX = gridX
 
-        for gx in [(cellX - 2)...(cellX + 2)]
-          for gy in [(cellY - 2)...(cellY + 2)]
-            ogx = gx
-            ogy = gy
+          if gridX < 0            then gridX = gridSize + gridX
+          if gridX > gridSize - 1 then gridX = gridX - gridSize
 
-            # Tiling
-            if gx < 0
-              gx = gridSize + gx
-            if gx > gridSize - 1
-              gx = gx - gridSize
+          for gridY in [(gridPosY - 1)..(gridPosY + 1)]
+            # Overlap
+            originalGridY = gridY
 
-            if gy < 0
-              gy = gridSize + gy
-            if gy > gridSize - 1
-              gy = gy - gridSize
+            # Overlapping
+            if gridY < 0            then gridY = gridSize + gridY
+            if gridY > gridSize - 1 then gridY = gridY - gridSize
+            # / Overlapping
 
-            point = points[gx][gy]
+            point = points[gridX][gridY]
 
             px = point.x
             py = point.y
 
-            if ogx < 0
-              px -= gridW * gridSize
-            if ogx > gridSize - 1
-              px += gridW * gridSize            
+            # Fixing overlapped positions
+            if originalGridX < 0                 then px -= w
+            else if originalGridX > gridSize - 1 then px += w
 
-            if ogy < 0
-              py -= gridH * gridSize
-            if ogy > gridSize - 1 
-              py += gridH * gridSize
+            if originalGridY < 0                 then py -= h
+            else if originalGridY > gridSize - 1 then py += h
+            # / Fixing overlapped positions
 
-            dist  = Math.sqrt( Math.pow(x - px, 2) + Math.pow(y - py, 2) )
+            dist = Math.sqrt(Math.pow(x - px,2) + Math.pow(y - py,2))
 
-            minDist = Math.min(dist, minDist)
+            minDist = Math.min(minDist, dist)
 
-        # Normalize minDist
+        index = ((y * w) << 2) + (x << 2)
+
         value = minDist / maxDist * 255
 
         imageData.data[index] = value
@@ -111,19 +112,18 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
     w = @app.getWidth()
     h = @app.getHeight()
 
-    gridW = @app.getWidth() / gridSize
-    gridH = @app.getHeight() / gridSize
+    gridW = w / gridSize
+    gridH = h / gridSize
+
+    custRnd = CustomRandom(@getParameter('seed'))
 
     points = []
     for x in [0...gridSize]
       pointsCol = []
       for y in [0...gridSize]
-        pointsCol.push { x: Math.ceil(x * gridW + Math.random() * gridW), y: Math.ceil(y * gridH + Math.random() * gridH) }
-        # points.push { x: x * gridW + gridW, y: y * gridH + gridH / 3 }
+        pointsCol.push { x: Math.ceil(x * gridW + custRnd.next01() * gridW), y: Math.ceil(y * gridH + custRnd.next01() * gridH) }
 
       points.push pointsCol
-
-    console.log points
 
     return points
 
