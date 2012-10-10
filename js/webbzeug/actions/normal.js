@@ -26,24 +26,40 @@
     };
 
     NormalAction.prototype.render = function(contexts) {
-      var b, bl, br, dX, dY, h, index, inputImageData, l, outputImageData, r, rowLen, t, tl, tr, w, x, y, _i, _j, _ref2, _ref3;
+      var b, bl, br, dX, dY, h, index, inputImageData, l, negPixelLen, negRowLen, outputImageData, posPixelLen, posRowLen, r, rowLen, t, tl, tr, w, x, y, _i, _j;
       NormalAction.__super__.render.call(this);
       inputImageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       w = this.app.getWidth();
       h = this.app.getHeight();
-      for (y = _i = 1, _ref2 = h - 1; 1 <= _ref2 ? _i <= _ref2 : _i >= _ref2; y = 1 <= _ref2 ? ++_i : --_i) {
-        for (x = _j = 1, _ref3 = w - 1; 1 <= _ref3 ? _j <= _ref3 : _j >= _ref3; x = 1 <= _ref3 ? ++_j : --_j) {
+      for (y = _i = 0; 0 <= h ? _i < h : _i > h; y = 0 <= h ? ++_i : --_i) {
+        for (x = _j = 0; 0 <= w ? _j < w : _j > w; x = 0 <= w ? ++_j : --_j) {
           rowLen = w << 2;
           index = (x << 2) + y * rowLen;
-          tl = inputImageData.data[index - rowLen - 4];
-          l = inputImageData.data[index - 4];
-          bl = inputImageData.data[index + rowLen - 4];
-          t = inputImageData.data[index - rowLen];
-          b = inputImageData.data[index + rowLen];
-          tr = inputImageData.data[index - rowLen + 4];
-          r = inputImageData.data[index + 4];
-          br = inputImageData.data[index + rowLen + 4];
+          negRowLen = -rowLen;
+          posRowLen = rowLen;
+          negPixelLen = -4;
+          posPixelLen = 4;
+          if (x === 0) {
+            negPixelLen = 0;
+          }
+          if (x === w - 1) {
+            posPixelLen = 0;
+          }
+          if (y === 0) {
+            negRowLen = 0;
+          }
+          if (y === h - 1) {
+            posRowLen = 0;
+          }
+          tl = inputImageData.data[index + negRowLen + negPixelLen];
+          l = inputImageData.data[index + negPixelLen];
+          bl = inputImageData.data[index + posPixelLen + negPixelLen];
+          t = inputImageData.data[index + negPixelLen];
+          b = inputImageData.data[index + posRowLen];
+          tr = inputImageData.data[index + negRowLen + posPixelLen];
+          r = inputImageData.data[index + posPixelLen];
+          br = inputImageData.data[index + posRowLen + posPixelLen];
           dX = tr + 2.0 * r + br - tl - 2.0 * l - bl;
           dY = bl + 2.0 * b + br - tl - 2.0 * t - tr;
           outputImageData.data[index] = (dX + 255) / 2;
