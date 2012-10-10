@@ -4,15 +4,15 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
   type: 'light'
   availableParameters: ->
     {
-      eyeX: { name: 'eye X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 },
-      eyeY: { name: 'eye Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      eyeZ: { name: 'eye Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      lightX: { name: 'light X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      lightY: { name: 'light Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      lightZ: { name: 'light Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      power: { name: 'power', type: 'number', min: 0.1, max: 100, default: 20 },
-      diffuseColor: { name: 'diffuse', type: 'color', default: '#000000' },
-      reflectionColor: { name: 'reflection', type: 'color', default: '#000000' }
+      eyeX: { name: 'Eye X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 },
+      eyeY: { name: 'Eye Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      eyeZ: { name: 'Eye Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightX: { name: 'Light X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightY: { name: 'Light Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightZ: { name: 'Light Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      power: { name: 'Power', type: 'number', min: 0.1, max: 100, default: 20 },
+      diffuseColor: { name: 'Diffuse', type: 'color', default: '#000000' },
+      reflectionColor: { name: 'Reflection', type: 'color', default: '#000000' }
     }
   
   magnitude: (x, y, z) ->

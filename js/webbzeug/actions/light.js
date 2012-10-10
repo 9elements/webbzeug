@@ -24,7 +24,7 @@
     LightAction.prototype.availableParameters = function() {
       return {
         eyeX: {
-          name: 'eye X',
+          name: 'Eye X',
           type: 'number',
           min: -1,
           max: 1,
@@ -32,7 +32,7 @@
           step: 0.001
         },
         eyeY: {
-          name: 'eye Y',
+          name: 'Eye Y',
           type: 'number',
           min: -1,
           max: 1,
@@ -40,7 +40,7 @@
           step: 0.001
         },
         eyeZ: {
-          name: 'eye Z',
+          name: 'Eye Z',
           type: 'number',
           min: -1,
           max: 1,
@@ -48,7 +48,7 @@
           step: 0.001
         },
         lightX: {
-          name: 'light X',
+          name: 'Light X',
           type: 'number',
           min: -1,
           max: 1,
@@ -56,7 +56,7 @@
           step: 0.001
         },
         lightY: {
-          name: 'light Y',
+          name: 'Light Y',
           type: 'number',
           min: -1,
           max: 1,
@@ -64,7 +64,7 @@
           step: 0.001
         },
         lightZ: {
-          name: 'light Z',
+          name: 'Light Z',
           type: 'number',
           min: -1,
           max: 1,
@@ -72,19 +72,19 @@
           step: 0.001
         },
         power: {
-          name: 'power',
+          name: 'Power',
           type: 'number',
           min: 0.1,
           max: 100,
           "default": 20
         },
         diffuseColor: {
-          name: 'diffuse',
+          name: 'Diffuse',
           type: 'color',
           "default": '#000000'
         },
         reflectionColor: {
-          name: 'reflection',
+          name: 'Reflection',
           type: 'color',
           "default": '#000000'
         }
