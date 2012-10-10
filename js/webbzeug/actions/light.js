@@ -24,7 +24,7 @@
     LightAction.prototype.availableParameters = function() {
       return {
         eyeX: {
-          name: 'eye X',
+          name: 'Eye X',
           type: 'number',
           min: -1,
           max: 1,
@@ -32,7 +32,7 @@
           step: 0.001
         },
         eyeY: {
-          name: 'eye Y',
+          name: 'Eye Y',
           type: 'number',
           min: -1,
           max: 1,
@@ -40,7 +40,7 @@
           step: 0.001
         },
         eyeZ: {
-          name: 'eye Z',
+          name: 'Eye Z',
           type: 'number',
           min: -1,
           max: 1,
@@ -48,7 +48,7 @@
           step: 0.001
         },
         lightX: {
-          name: 'light X',
+          name: 'Light X',
           type: 'number',
           min: -1,
           max: 1,
@@ -56,7 +56,7 @@
           step: 0.001
         },
         lightY: {
-          name: 'light Y',
+          name: 'Light Y',
           type: 'number',
           min: -1,
           max: 1,
@@ -64,7 +64,7 @@
           step: 0.001
         },
         lightZ: {
-          name: 'light Z',
+          name: 'Light Z',
           type: 'number',
           min: -1,
           max: 1,
@@ -72,19 +72,19 @@
           step: 0.001
         },
         power: {
-          name: 'power',
+          name: 'Power',
           type: 'number',
           min: 0.1,
           max: 100,
           "default": 20
         },
         diffuseColor: {
-          name: 'diffuse',
+          name: 'Diffuse',
           type: 'color',
           "default": '#000000'
         },
         reflectionColor: {
-          name: 'reflection',
+          name: 'Reflection',
           type: 'color',
           "default": '#000000'
         }
@@ -115,12 +115,24 @@
     };
 
     LightAction.prototype.render = function(contexts) {
-      var NDotL, RDotV, baseColor, binormal, diffuseColor, h, index, inputImageData, light, lightDirection, normal, normalImageData, outputImageData, pixel, power, reflection, rowLen, specularColor, tangent, u, uinc, v, view, viewDirection, vinc, w, x, y, _i, _j;
+      var NDotL, RDotV, baseColor, binormal, diffuseColor, diffuseRGB, h, index, inputImageData, light, lightDirection, normal, normalImageData, outputImageData, pixel, power, reflection, reflectionRGB, rowLen, specularColor, tangent, u, uinc, v, view, viewDirection, vinc, w, x, y, _i, _j;
       LightAction.__super__.render.call(this);
       if (contexts.length === 0) {
         console.log("Dude a light needs an input");
         return;
       }
+      diffuseRGB = Webbzeug.Utilities.getRgb2(this.getParameter('diffuseColor'));
+      diffuseRGB = {
+        r: diffuseRGB[0],
+        g: diffuseRGB[1],
+        b: diffuseRGB[2]
+      };
+      reflectionRGB = Webbzeug.Utilities.getRgb2(this.getParameter('reflectionColor'));
+      reflectionRGB = {
+        r: reflectionRGB[0],
+        g: reflectionRGB[1],
+        b: reflectionRGB[2]
+      };
       inputImageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       normalImageData = contexts[1].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
@@ -188,17 +200,14 @@
             b: inputImageData.data[index + 2] / 255
           };
           diffuseColor = {
-            r: NDotL * baseColor.r,
-            g: NDotL * baseColor.g,
-            b: NDotL * baseColor.b
+            r: NDotL * baseColor.r * diffuseRGB.r / 255,
+            g: NDotL * baseColor.g * diffuseRGB.g / 255,
+            b: NDotL * baseColor.b * diffuseRGB.b / 255
           };
           specularColor = Math.pow(RDotV, power);
-          if (x === 127 && y === 127) {
-            console.log(diffuseColor.r, specularColor);
-          }
-          outputImageData.data[index] = Math.max(0, Math.min((0.5 * baseColor.r + diffuseColor.r + specularColor) * 255, 255));
-          outputImageData.data[index + 1] = Math.max(0, Math.min((0.5 * baseColor.g + diffuseColor.g + specularColor) * 255, 255));
-          outputImageData.data[index + 2] = Math.max(0, Math.min((0.5 * baseColor.b + diffuseColor.b + specularColor) * 255, 255));
+          outputImageData.data[index] = Math.max(0, Math.min((0.5 * baseColor.r + diffuseColor.r + specularColor * reflectionRGB.r / 255) * 255, 255));
+          outputImageData.data[index + 1] = Math.max(0, Math.min((0.5 * baseColor.g + diffuseColor.g + specularColor * reflectionRGB.g / 255) * 255, 255));
+          outputImageData.data[index + 2] = Math.max(0, Math.min((0.5 * baseColor.b + diffuseColor.b + specularColor * reflectionRGB.b / 255) * 255, 255));
           outputImageData.data[index + 3] = 255;
           v += vinc;
         }

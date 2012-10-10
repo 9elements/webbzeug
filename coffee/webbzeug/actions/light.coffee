@@ -4,15 +4,15 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
   type: 'light'
   availableParameters: ->
     {
-      eyeX: { name: 'eye X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 },
-      eyeY: { name: 'eye Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      eyeZ: { name: 'eye Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      lightX: { name: 'light X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      lightY: { name: 'light Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      lightZ: { name: 'light Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
-      power: { name: 'power', type: 'number', min: 0.1, max: 100, default: 20 },
-      diffuseColor: { name: 'diffuse', type: 'color', default: '#000000' },
-      reflectionColor: { name: 'reflection', type: 'color', default: '#000000' }
+      eyeX: { name: 'Eye X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 },
+      eyeY: { name: 'Eye Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      eyeZ: { name: 'Eye Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightX: { name: 'Light X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightY: { name: 'Light Y', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      lightZ: { name: 'Light Z', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 }
+      power: { name: 'Power', type: 'number', min: 0.1, max: 100, default: 20 },
+      diffuseColor: { name: 'Diffuse', type: 'color', default: '#000000' },
+      reflectionColor: { name: 'Reflection', type: 'color', default: '#000000' }
     }
   
   magnitude: (x, y, z) ->
@@ -41,6 +41,17 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
     if contexts.length == 0
       console.log "Dude a light needs an input"
       return
+
+    diffuseRGB = Webbzeug.Utilities.getRgb2 @getParameter('diffuseColor')
+    diffuseRGB = 
+      r: diffuseRGB[0]
+      g: diffuseRGB[1]
+      b: diffuseRGB[2]
+    reflectionRGB = Webbzeug.Utilities.getRgb2 @getParameter('reflectionColor')
+    reflectionRGB = 
+      r: reflectionRGB[0]
+      g: reflectionRGB[1]
+      b: reflectionRGB[2]
 
     # How to copy the image data from one context to another
     inputImageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
@@ -117,18 +128,15 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
           b: inputImageData.data[index + 2] / 255
 
         diffuseColor = 
-          r: NDotL * baseColor.r
-          g: NDotL * baseColor.g
-          b: NDotL * baseColor.b
+          r: NDotL * baseColor.r * diffuseRGB.r / 255
+          g: NDotL * baseColor.g * diffuseRGB.g / 255
+          b: NDotL * baseColor.b * diffuseRGB.b / 255
 
         specularColor = Math.pow RDotV, power
 
-        if x is 127 and y is 127
-          console.log diffuseColor.r, specularColor
-
-        outputImageData.data[index] = Math.max 0, Math.min( (0.5 * baseColor.r + diffuseColor.r + specularColor) * 255, 255)
-        outputImageData.data[index + 1] = Math.max 0, Math.min( (0.5 * baseColor.g + diffuseColor.g + specularColor) * 255, 255)
-        outputImageData.data[index + 2] = Math.max 0, Math.min( (0.5 * baseColor.b + diffuseColor.b + specularColor) * 255, 255)
+        outputImageData.data[index] = Math.max 0, Math.min( (0.5 * baseColor.r + diffuseColor.r + specularColor * reflectionRGB.r / 255) * 255, 255)
+        outputImageData.data[index + 1] = Math.max 0, Math.min( (0.5 * baseColor.g + diffuseColor.g + specularColor * reflectionRGB.g / 255) * 255, 255)
+        outputImageData.data[index + 2] = Math.max 0, Math.min( (0.5 * baseColor.b + diffuseColor.b + specularColor * reflectionRGB.b / 255) * 255, 255)
         outputImageData.data[index + 3] = 255
 
         v += vinc
