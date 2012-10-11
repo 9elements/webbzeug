@@ -19,6 +19,7 @@
       splitData = data.split('base64,');
       b64encodedData = splitData[1];
       this.data = Base64.decode(b64encodedData);
+      this.maxIndex = 0;
       this.debugPrint(this.data);
       this.actions = [];
       identifier = this.readBytes(2);
@@ -45,6 +46,7 @@
           this.readAction();
         }
       }
+      this.app.incrementalIndex = this.maxIndex + 1;
       return true;
     };
 
@@ -67,6 +69,7 @@
       }
       el = this.app.newActionElement(x * this.app.gridWidth, y * this.app.gridHeight, Webbzeug.ClassMap[type].name, width, Webbzeug.ClassMap[type].type);
       action = this.app.applyActionToElement(type, x, y, width, index, el);
+      this.maxIndex = Math.max(index, this.maxIndex);
       parameterKey = null;
       parameterVal = null;
       _results = [];

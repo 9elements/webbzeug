@@ -7,6 +7,8 @@ window.Webbzeug.Importer = class Importer
     b64encodedData = splitData[1]
     @data          = Base64.decode b64encodedData
 
+    @maxIndex = 0
+
     @debugPrint @data
 
     @actions = []
@@ -35,7 +37,8 @@ window.Webbzeug.Importer = class Importer
       if byte is '\x03'
         # new action starts
         @readAction()
-        
+
+    @app.incrementalIndex = @maxIndex + 1
 
     return true
 
@@ -62,6 +65,8 @@ window.Webbzeug.Importer = class Importer
 
     el = @app.newActionElement x * @app.gridWidth, y * @app.gridHeight, Webbzeug.ClassMap[type].name, width, Webbzeug.ClassMap[type].type
     action = @app.applyActionToElement type, x, y, width, index, el
+
+    @maxIndex = Math.max(index, @maxIndex)
 
     parameterKey = null
     parameterVal = null
