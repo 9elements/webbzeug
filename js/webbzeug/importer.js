@@ -14,11 +14,9 @@
       return;
     }
 
-    Importer.prototype.importDataURL = function(data) {
-      var b64encodedData, byte, i, identifier, splitData, version, _i, _ref1;
-      splitData = data.split('base64,');
-      b64encodedData = splitData[1];
-      this.data = Base64.decode(b64encodedData);
+    Importer.prototype.loadData = function(data) {
+      var byte, i, identifier, version, _i, _ref1;
+      this.data = data;
       this.maxIndex = 0;
       this.debugPrint(this.data);
       this.actions = [];
@@ -46,7 +44,15 @@
           this.readAction();
         }
       }
-      this.app.incrementalIndex = this.maxIndex + 1;
+      return this.app.incrementalIndex = this.maxIndex + 1;
+    };
+
+    Importer.prototype.importDataURL = function(data) {
+      var b64encodedData, splitData;
+      splitData = data.split('base64,');
+      b64encodedData = splitData[1];
+      data = Base64.decode(b64encodedData);
+      this.loadData(data);
       return true;
     };
 

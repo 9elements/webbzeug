@@ -2,11 +2,7 @@ window.Webbzeug ?= {}
 window.Webbzeug.Importer = class Importer
   debug: false
   constructor: (@app) -> return
-  importDataURL: (data) ->
-    splitData      = data.split 'base64,'
-    b64encodedData = splitData[1]
-    @data          = Base64.decode b64encodedData
-
+  loadData: (@data) ->
     @maxIndex = 0
 
     @debugPrint @data
@@ -39,6 +35,13 @@ window.Webbzeug.Importer = class Importer
         @readAction()
 
     @app.incrementalIndex = @maxIndex + 1
+
+  importDataURL: (data) ->
+    splitData      = data.split 'base64,'
+    b64encodedData = splitData[1]
+    data          = Base64.decode b64encodedData
+
+    @loadData data
 
     return true
 

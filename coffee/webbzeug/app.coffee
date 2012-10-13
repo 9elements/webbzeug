@@ -10,11 +10,26 @@ window.Webbzeug.App = class App
     @buildGrid()
     @reset()
 
+    @loadSamples()
+
     @loadSaveHandler = new Webbzeug.LoadSaveHandler this, $('.save-link'), $('input#file'), $('.export-link')
 
     @handleNavigation()
     @handleMultipleSelection()  
     @handleKeyboardInput()
+
+  loadSamples: ->
+    samplesSelect = $('select.samples')
+    $.getJSON '/samples.json', (samples) =>
+      for sample in samples
+        $('<option>').attr(value: sample.file).text(sample.name + ' (' + sample.file + ')').appendTo samplesSelect
+
+      samplesSelect.removeAttr 'disabled'
+
+    samplesSelect.change =>
+      value = samplesSelect.val()
+      $.get '/samples/' + value, (data) =>
+        @loadSaveHandler.openData data
 
   ###
     Setup

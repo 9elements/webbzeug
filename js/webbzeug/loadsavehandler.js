@@ -60,6 +60,10 @@
       });
     }
 
+    LoadSaveHandler.prototype.openData = function(data) {
+      return this.importer.loadData(data);
+    };
+
     return LoadSaveHandler;
 
   })();

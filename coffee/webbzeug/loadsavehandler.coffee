@@ -43,3 +43,5 @@ window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
       )(file)
       reader.readAsDataURL(file)
   
+  openData: (data) ->
+    @importer.loadData data

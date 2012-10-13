@@ -21,11 +21,35 @@
       this.setupCanvas();
       this.buildGrid();
       this.reset();
+      this.loadSamples();
       this.loadSaveHandler = new Webbzeug.LoadSaveHandler(this, $('.save-link'), $('input#file'), $('.export-link'));
       this.handleNavigation();
       this.handleMultipleSelection();
       this.handleKeyboardInput();
     }
+
+    App.prototype.loadSamples = function() {
+      var samplesSelect,
+        _this = this;
+      samplesSelect = $('select.samples');
+      $.getJSON('/samples.json', function(samples) {
+        var sample, _i, _len;
+        for (_i = 0, _len = samples.length; _i < _len; _i++) {
+          sample = samples[_i];
+          $('<option>').attr({
+            value: sample.file
+          }).text(sample.name + ' (' + sample.file + ')').appendTo(samplesSelect);
+        }
+        return samplesSelect.removeAttr('disabled');
+      });
+      return samplesSelect.change(function() {
+        var value;
+        value = samplesSelect.val();
+        return $.get('/samples/' + value, function(data) {
+          return _this.loadSaveHandler.openData(data);
+        });
+      });
+    };
 
     /*
         Setup

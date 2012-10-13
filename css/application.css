@@ -79,6 +79,8 @@ strong {
     padding: 5px;
     margin-bottom: 10px;
     height: 11px; }
+  .right-wrapper .samples {
+    margin-top: 20px; }
   .right-wrapper .save-link, .right-wrapper .open-link, .right-wrapper .export-link {
     padding: 5px 10px;
     font: normal 10px Verdana;
