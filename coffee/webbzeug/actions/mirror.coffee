@@ -7,11 +7,18 @@ window.Webbzeug.Actions.Mirror = class MirrorAction extends Webbzeug.Action
       direction: { name: "Direction", type: 'enum', values: { vertical: 'Vertical', horizontal: 'Horizontal'}, default: 'horizontal' }  
     }
 
+  validations: (contexts) ->
+    errors = []
+    warnings = []
+    if contexts.length > 1
+      warnings.push 'Mirror will only use the first input.'
+    if contexts.length < 1
+      errors.push 'Mirror needs exactly 1 input.'
+    
+    return { errors: errors, warnings: warnings }
+
   render: (contexts) ->
     super()
-    if contexts.length == 0
-      console.log "Dude a mirror needs an input"
-      return false
 
     # How to copy the image data from one context to another
     imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()

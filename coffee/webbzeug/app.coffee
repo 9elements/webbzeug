@@ -118,6 +118,20 @@ window.Webbzeug.App = class App
   ###
     Action creation / handling / dragging / resizing
   ###
+  displayWarnings: (action, warnings) ->
+    action.element.data 'warnings', warnings
+    action.element.addClass 'warning'
+  removeWarnings: (action) ->
+    action.element.removeData 'warnings'
+    action.element.removeClass 'warning'
+
+  displayErrors: (action, errors) ->
+    action.element.data 'errors', errors
+    action.element.addClass 'error'
+  removeErrors: (action) ->
+    action.element.removeData 'errors'
+    action.element.removeClass 'error'
+
   removeElements: (elements) ->
     for element in elements
       action = @actions[element.attr('data-index')]
@@ -167,9 +181,41 @@ window.Webbzeug.App = class App
     element.on 'mouseenter', =>
       if action.renderTime
         $('.debug').text action.constructor.name + ': rendered in ' + action.renderTime + 'ms'
+
+      if warnings = action.element.data 'warnings'
+        popup = @workspace.parent().find('.popup')
+        popup.removeClass('errors').addClass('warnings').html ""
+
+        warningsUl = $('<ul>').appendTo popup
+        for warning in warnings
+          li = $('<li>').text(warning).appendTo warningsUl
+
+        popup.css
+          left: element.position().left
+          top:  element.position().top + @gridHeight
+
+        popup.stop().fadeIn 'fast'
+
+      if errors = action.element.data 'errors'
+        popup = @workspace.parent().find('.popup')
+        popup.addClass('errors').removeClass('warnings').html ""
+
+        errorsUl = $('<ul>').appendTo popup
+        for error in errors
+          li = $('<li>').text(error).appendTo errorsUl
+
+        popup.css
+          left: element.position().left
+          top:  element.position().top + @gridHeight
+
+        popup.stop().fadeIn 'fast'
+
     element.on 'mouseleave', =>
       if @renderTime
         $('.debug').text 'rendered in ' + @renderTime + 'ms'
+
+      popup = @workspace.parent().find('.popup')
+      popup.stop().fadeOut 'fast'
 
     return action
 
@@ -285,10 +331,6 @@ window.Webbzeug.App = class App
             @selectedElements = selectedElements
 
   handleElementDrag: (element) ->
-    # Resize drag
-    $(element).mousedown (e) =>
-      e.stopPropagation()
-
     $(element).find('.dragger').mousedown (e) =>
       e.stopPropagation()
       e.preventDefault()
@@ -314,6 +356,15 @@ window.Webbzeug.App = class App
     # Move drag
     $(element).mousedown (e) =>
       e.preventDefault()
+      e.stopPropagation()
+
+      console.log "element mousedown!"
+      unless $(element).hasClass('selected')
+        for otherElement in @selectedElements
+          $(otherElement).removeClass 'selected'
+
+        @selectedElements = [element]
+        $(element).addClass 'selected'
 
       initMousePos = { x: e.pageX, y: e.pageY }
 

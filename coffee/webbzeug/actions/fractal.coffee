@@ -38,6 +38,13 @@ window.Webbzeug.Actions.Fractal = class FractalAction extends Webbzeug.Action
       seed: { name: 'Seed', type: 'number', min: 1, max: 255, default: Math.round(Math.random() * 255) }
     }
 
+  validations: (contexts) ->
+    warnings = []
+    if contexts.length > 1
+      warnings.push 'Fractal will only use the first input.'
+    
+    return { warnings: warnings }
+
   render: (contexts) ->
     super()
 

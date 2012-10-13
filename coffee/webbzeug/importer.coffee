@@ -135,6 +135,9 @@ window.Webbzeug.Importer = class Importer
     return bytes
 
   debugPrint: (str) ->
+    unless @debug
+      return false
+    
     r = ""
     e = str.length
     c = 0

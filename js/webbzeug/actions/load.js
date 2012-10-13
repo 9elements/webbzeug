@@ -33,6 +33,22 @@
       };
     };
 
+    LoadAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      errors = [];
+      warnings = [];
+      if (contexts.length < 1) {
+        errors.push('Load needs exactly 1 input.');
+      }
+      if (contexts.length > 1) {
+        warnings.push('Load will only use the first input.');
+      }
+      return {
+        errors: errors,
+        warnings: warnings
+      };
+    };
+
     LoadAction.prototype.render = function(contexts) {
       LoadAction.__super__.render.call(this);
       this.context = this.app.memory[this.getParameter('id')];

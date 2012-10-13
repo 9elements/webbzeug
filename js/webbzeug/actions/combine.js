@@ -39,6 +39,22 @@
       };
     };
 
+    CombineAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      errors = [];
+      warnings = [];
+      if (contexts.length < 2) {
+        errors.push('Combine needs exactly 2 inputs.');
+      }
+      if (contexts.length > 2) {
+        warnings.push('Combine will only use the first 2 inputs.');
+      }
+      return {
+        warnings: warnings,
+        errors: errors
+      };
+    };
+
     CombineAction.prototype.render = function(contexts) {
       var applyingContext, i, imageData, _i, _ref2;
       CombineAction.__super__.render.call(this);

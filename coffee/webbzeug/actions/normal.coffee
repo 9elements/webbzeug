@@ -2,10 +2,15 @@ window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Normal = class NormalAction extends Webbzeug.Action
   type: 'normal'
-  availableParameters: ->
-    {
- 
-    }
+  validations: (contexts) ->
+    errors = []
+    warnings = []
+    if contexts.length > 1
+      warnings.push 'Normal will only use the first input.'
+    if contexts.length < 1
+      errors.push 'Normal needs exactly 1 input.'
+    
+    return { errors: errors, warnings: warnings }
 
   render: (contexts) ->
     super()

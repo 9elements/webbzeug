@@ -59,6 +59,17 @@
       };
     };
 
+    RectangleAction.prototype.validations = function(contexts) {
+      var warnings;
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Rectangle will only use the first input.');
+      }
+      return {
+        warnings: warnings
+      };
+    };
+
     RectangleAction.prototype.render = function(contexts) {
       var h, imageData, w, x, y;
       RectangleAction.__super__.render.call(this);

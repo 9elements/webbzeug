@@ -11,6 +11,13 @@ window.Webbzeug.Actions.Rectangle = class RectangleAction extends Webbzeug.Actio
       color: { name: 'Color', type: 'color', default: 'rgba(255,255,255,1)' }
     }
 
+  validations: (contexts) ->
+    warnings = []
+    if contexts.length > 1
+      warnings.push 'Rectangle will only use the first input.'
+  
+    return { warnings: warnings }
+
   render: (contexts) ->
     super()
 
@@ -19,7 +26,6 @@ window.Webbzeug.Actions.Rectangle = class RectangleAction extends Webbzeug.Actio
     w = @getParameter('width')
     h = @getParameter('height')
 
-    # no children ? -> clear context, otherwise copy what has been rendered so far
     if contexts.length is 0
       @context.fillStyle = 'black'
       @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()

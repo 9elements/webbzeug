@@ -59,6 +59,17 @@
       };
     };
 
+    PixelsAction.prototype.validations = function(contexts) {
+      var warnings;
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Pixels will only use the first input.');
+      }
+      return {
+        warnings: warnings
+      };
+    };
+
     PixelsAction.prototype.render = function(contexts) {
       var custRnd, i, imageData, index, rand, _i, _ref2;
       PixelsAction.__super__.render.call(this);

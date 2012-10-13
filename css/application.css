@@ -240,6 +240,18 @@ header {
       position: absolute;
       top: 0;
       border-right: 1px solid rgba(255, 255, 255, 0.05); }
+  .workspace-wrapper .popup {
+    border-radius: 3px;
+    position: absolute;
+    width: 200px;
+    display: none;
+    background: white;
+    padding: 5px;
+    font: normal 11px Verdana; }
+    .workspace-wrapper .popup.errors {
+      border: 3px solid #db2222; }
+    .workspace-wrapper .popup.warnings {
+      border: 3px solid #a08116; }
   .workspace-wrapper .action {
     position: absolute;
     z-index: 4;
@@ -290,6 +302,10 @@ header {
     .workspace-wrapper .action.memory {
       background: #bd7a04;
       box-shadow: 0 2px 0 #7f550d; }
+    .workspace-wrapper .action.warning .wrapper {
+      color: #a08116; }
+    .workspace-wrapper .action.error .wrapper {
+      color: #db2222; }
 
 .colorpicker {
   z-index: 10; }

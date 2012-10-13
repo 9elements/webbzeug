@@ -31,6 +31,17 @@
       };
     };
 
+    FlatAction.prototype.validations = function(contexts) {
+      var warnings;
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Flat will only use the first input.');
+      }
+      return {
+        warnings: warnings
+      };
+    };
+
     FlatAction.prototype.render = function(contexts) {
       FlatAction.__super__.render.call(this);
       this.context.fillStyle = this.getParameter('color');

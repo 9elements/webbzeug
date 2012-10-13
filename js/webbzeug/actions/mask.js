@@ -25,6 +25,21 @@
       return {};
     };
 
+    MaskAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      errors = [];
+      warnings = [];
+      if (contexts.length > 3) {
+        warnings.push('Mask will only use the first 3 inputs.');
+      }
+      if (contexts.length < 3) {
+        errors.push('Mask needs exactly 3 inputs.');
+      }
+      return {
+        warnings: warnings
+      };
+    };
+
     MaskAction.prototype.render = function(contexts) {
       var avg, bd, gd, i, imageData, imgA, imgB, index, maskData, rd, _i, _ref2;
       MaskAction.__super__.render.call(this);

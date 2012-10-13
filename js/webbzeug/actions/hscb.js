@@ -54,13 +54,25 @@
       };
     };
 
+    HSCBAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      warnings = [];
+      errors = [];
+      if (contexts.length > 1) {
+        warnings.push('HSCB will only use the first input.');
+      }
+      if (contexts.length < 1) {
+        errors.push('HSCB needs exactly 1 input.');
+      }
+      return {
+        errors: errors,
+        warnings: warnings
+      };
+    };
+
     HSCBAction.prototype.render = function(contexts) {
       var b, brightness, contrast, g, hsv, i, imageData, index, j, r, rgb, _i, _j, _ref2;
       HSCBAction.__super__.render.call(this);
-      if (contexts.length === 0) {
-        console.log("Dude an hscb needs an input");
-        return;
-      }
       contrast = this.getParameter('contrast');
       contrast = contrast / 128;
       brightness = this.getParameter('brightness') - 127;

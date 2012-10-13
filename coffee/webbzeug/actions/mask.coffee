@@ -3,6 +3,17 @@ window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Mask = class MaskAction extends Webbzeug.Action
   type: 'mask'
   availableParameters: -> {}
+
+  validations: (contexts) ->
+    errors = []
+    warnings = []
+    if contexts.length > 3
+      warnings.push 'Mask will only use the first 3 inputs.'
+    if contexts.length < 3
+      errors.push 'Mask needs exactly 3 inputs.'
+    
+    return { warnings: warnings }
+
   render: (contexts) ->
     super()
     if contexts.length isnt 3

@@ -153,6 +153,9 @@
 
     Importer.prototype.debugPrint = function(str) {
       var c, e, h, r;
+      if (!this.debug) {
+        return false;
+      }
       r = "";
       e = str.length;
       c = 0;

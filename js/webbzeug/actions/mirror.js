@@ -35,13 +35,25 @@
       };
     };
 
+    MirrorAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      errors = [];
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Mirror will only use the first input.');
+      }
+      if (contexts.length < 1) {
+        errors.push('Mirror needs exactly 1 input.');
+      }
+      return {
+        errors: errors,
+        warnings: warnings
+      };
+    };
+
     MirrorAction.prototype.render = function(contexts) {
       var destIndex, imageData, srcIndex, x, y, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5;
       MirrorAction.__super__.render.call(this);
-      if (contexts.length === 0) {
-        console.log("Dude a mirror needs an input");
-        return false;
-      }
       imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       if (this.getParameter('direction') === 'horizontal') {
         for (y = _i = 0, _ref2 = imageData.height; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; y = 0 <= _ref2 ? ++_i : --_i) {

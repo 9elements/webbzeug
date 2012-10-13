@@ -2,11 +2,20 @@ window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Invert = class InvertAction extends Webbzeug.Action
   type: 'invert'
+
+  validations: (contexts) ->
+    warnings = []
+    errors = []
+    if contexts.length > 1
+      warnings.push 'Invert will only use the first input.'
+    if contexts.length < 1
+      errors.push 'Invert needs exactly one input.'
+    
+    return { errors: errors, warnings: warnings }
+
+
   render: (contexts) ->
     super()
-    if contexts.length == 0
-      console.log "Dude an inverter needs an input"
-      return
 
     # How to copy the image data from one context to another
     imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()

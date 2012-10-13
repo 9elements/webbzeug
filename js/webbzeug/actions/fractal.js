@@ -71,6 +71,17 @@
       };
     };
 
+    FractalAction.prototype.validations = function(contexts) {
+      var warnings;
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Fractal will only use the first input.');
+      }
+      return {
+        warnings: warnings
+      };
+    };
+
     FractalAction.prototype.render = function(contexts) {
       var center, color, h, imageData, imagePixelData, index, ll, lr, map, roughness, ul, ur, w, x, y, _i, _j, _k, _ref2, _ref3, _ref4;
       FractalAction.__super__.render.call(this);

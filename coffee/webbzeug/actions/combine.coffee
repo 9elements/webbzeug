@@ -14,6 +14,16 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
       }, default: 'add' }
     }
 
+  validations: (contexts) ->
+    errors = []
+    warnings = []
+    if contexts.length < 2
+      errors.push 'Combine needs exactly 2 inputs.'
+    if contexts.length > 2
+      warnings.push 'Combine will only use the first 2 inputs.'
+    
+    return { warnings: warnings, errors: errors }
+
   render: (contexts) ->
     super()
 

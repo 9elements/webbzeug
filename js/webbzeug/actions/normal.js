@@ -21,8 +21,20 @@
 
     NormalAction.prototype.type = 'normal';
 
-    NormalAction.prototype.availableParameters = function() {
-      return {};
+    NormalAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      errors = [];
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Normal will only use the first input.');
+      }
+      if (contexts.length < 1) {
+        errors.push('Normal needs exactly 1 input.');
+      }
+      return {
+        errors: errors,
+        warnings: warnings
+      };
     };
 
     NormalAction.prototype.render = function(contexts) {

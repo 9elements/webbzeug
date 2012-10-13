@@ -42,13 +42,24 @@
       };
     };
 
+    BlurAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      warnings = [];
+      errors = [];
+      if (contexts.length > 1) {
+        warnings.push('Blur will only use the first input.');
+      }
+      if (contexts.length < 1) {
+        errors.push('Blur needs exactly 1 input.');
+      }
+      return {
+        errors: errors,
+        warnings: warnings
+      };
+    };
+
     BlurAction.prototype.linearBlur = function(contexts) {
       var i, imageData, index, n, outputData, pixelCount, rowLength, strength, value, x, y, _i, _j, _k, _l, _ref2, _ref3, _results;
-      console.log("linear");
-      if (contexts.length === 0) {
-        console.log("Dude an blur needs an input");
-        return;
-      }
       strength = parseInt(this.getParameter('strength'));
       _results = [];
       for (n = _i = 0; 0 <= strength ? _i < strength : _i > strength; n = 0 <= strength ? ++_i : --_i) {
@@ -117,11 +128,6 @@
 
     BlurAction.prototype.gaussBlur = function(contexts) {
       var i, imageData, index, n, outputData, pixelCount, rowLength, strength, value, x, y, _i, _j, _k, _l, _ref2, _ref3, _results;
-      console.log("Gauss");
-      if (contexts.length === 0) {
-        console.log("Dude an blur needs an input");
-        return;
-      }
       strength = parseInt(this.getParameter('strength'));
       _results = [];
       for (n = _i = 0; 0 <= strength ? _i < strength : _i > strength; n = 0 <= strength ? ++_i : --_i) {

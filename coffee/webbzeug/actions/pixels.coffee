@@ -33,20 +33,17 @@ window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
       seed: { name: 'Seed', type: 'number', min: 0, max: 255, default: Math.round(Math.random() * 255) },
     }
 
+  validations: (contexts) ->
+    warnings = []
+    if contexts.length > 1
+      warnings.push 'Pixels will only use the first input.'
+
+    return { warnings: warnings }
+
   render: (contexts) ->
     super()
 
-    # How to copy the image data from one context to another
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    # @context.putImageData imageData, 0, 0
-
-    # Pixel manipulation
-    
-    # imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    # imageData.data[1] = 255
-    # imageData.data[2] = 255
-
-    # @context.putImageData imageData, 0, 0 
 
     custRnd = CustomRandom(@getParameter('seed'))
     for i in [0...imageData.data.length / 4]

@@ -38,6 +38,13 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
       type: { name: 'Type', type: 'enum', values: { balls: 'Balls', mosaic: 'Mosaic' }, default: 'balls' }
     }
 
+  validations: (contexts) ->
+    warnings = []
+    if contexts.length > 1
+      warnings.push 'Cell will only use the first input.'
+
+    return { warnings: warnings }
+
   render: (contexts) ->
     super()
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()

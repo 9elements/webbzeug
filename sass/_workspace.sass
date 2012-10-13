@@ -46,6 +46,23 @@
       top: 0
       border-right: 1px solid rgba(white, 0.05)
 
+  .popup
+    border-radius: 3px
+    position: absolute
+    width: 200px
+
+    display: none
+
+    background: white
+    padding: 5px
+
+    font: normal 11px Verdana
+
+    &.errors
+      border: 3px solid #db2222
+    &.warnings
+      border: 3px solid #a08116
+
   .action
     position: absolute
 
@@ -121,3 +138,11 @@
     &.memory
       background: #bd7a04
       box-shadow: 0 2px 0 #7f550d
+
+    &.warning
+      .wrapper
+        color: #a08116
+
+    &.error
+      .wrapper
+        color: #db2222

@@ -52,6 +52,17 @@
       };
     };
 
+    CircleAction.prototype.validations = function(contexts) {
+      var warnings;
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Circle will only use the first input.');
+      }
+      return {
+        warnings: warnings
+      };
+    };
+
     CircleAction.prototype.render = function(contexts) {
       var imageData;
       CircleAction.__super__.render.call(this);
@@ -61,7 +72,6 @@
       } else {
         imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
         this.context.putImageData(imageData, 0, 0);
-        console.log(imageData.data);
       }
       this.context.beginPath();
       this.context.arc(this.getParameter('x'), this.getParameter('y'), this.getParameter('radiusX'), 0, 2 * Math.PI, false);

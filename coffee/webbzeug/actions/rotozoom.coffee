@@ -7,6 +7,14 @@ window.Webbzeug.Actions.RotoZoom = class RotoZoomAction extends Webbzeug.Action
       rotation: { name: 'Rotation', type: 'number', min: 0, max: Math.PI * 2, default: 0, step: 0.01},
       zoom: { name: 'Zoom', type: 'number', min: 1, max: 255, default: 10}
     }
+
+  validations: (contexts) ->
+    warnings = []
+    if contexts.length > 1
+      warnings.push 'Rotozoom will only use the first input.'
+
+    return { warnings: warnings }
+
   render: (contexts) ->
     super()
     if contexts.length == 0

@@ -9,11 +9,19 @@ window.Webbzeug.Actions.HSCB = class HSCBAction extends Webbzeug.Action
       contrast: { name: "Contrast", type: 'number', min: 0, max: 255, default: 127 },
       brightness: { name: "Brightness", type: 'number', min: 0, max: 255, default: 127 }
     }
+
+  validations: (contexts) ->
+    warnings = []
+    errors   = []
+    if contexts.length > 1
+      warnings.push 'HSCB will only use the first input.'
+    if contexts.length < 1
+      errors.push 'HSCB needs exactly 1 input.'
+    
+    return { errors: errors, warnings: warnings }
+
   render: (contexts) ->
     super()
-    if contexts.length == 0
-      console.log "Dude an hscb needs an input"
-      return
 
     contrast = @getParameter('contrast')
     contrast = contrast / 128

@@ -21,13 +21,25 @@
 
     InvertAction.prototype.type = 'invert';
 
+    InvertAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      warnings = [];
+      errors = [];
+      if (contexts.length > 1) {
+        warnings.push('Invert will only use the first input.');
+      }
+      if (contexts.length < 1) {
+        errors.push('Invert needs exactly one input.');
+      }
+      return {
+        errors: errors,
+        warnings: warnings
+      };
+    };
+
     InvertAction.prototype.render = function(contexts) {
       var i, imageData, _i, _ref2;
       InvertAction.__super__.render.call(this);
-      if (contexts.length === 0) {
-        console.log("Dude an inverter needs an input");
-        return;
-      }
       imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       for (i = _i = 0, _ref2 = imageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
         if ((i % 4) !== 3) {

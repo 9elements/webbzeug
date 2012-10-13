@@ -13,8 +13,22 @@ window.Webbzeug.Action = class Action
       @parameters[parameter] = info.default
 
   availableParameters: -> {}
+  validations: -> return {}
 
   doRender: (contexts) ->
+    valid = @validations contexts
+
+    if valid.warnings?.length > 0
+      @app.displayWarnings this, valid.warnings
+    else
+      @app.removeWarnings this
+
+    if valid.errors?.length > 0
+      @app.displayErrors this, valid.errors
+      return false
+    else
+      @app.removeErrors this
+
     if @willRender()
       @render contexts
 

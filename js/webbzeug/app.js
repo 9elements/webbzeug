@@ -158,6 +158,26 @@
     */
 
 
+    App.prototype.displayWarnings = function(action, warnings) {
+      action.element.data('warnings', warnings);
+      return action.element.addClass('warning');
+    };
+
+    App.prototype.removeWarnings = function(action) {
+      action.element.removeData('warnings');
+      return action.element.removeClass('warning');
+    };
+
+    App.prototype.displayErrors = function(action, errors) {
+      action.element.data('errors', errors);
+      return action.element.addClass('error');
+    };
+
+    App.prototype.removeErrors = function(action) {
+      action.element.removeData('errors');
+      return action.element.removeClass('error');
+    };
+
     App.prototype.removeElements = function(elements) {
       var action, element, _i, _j, _len, _len1;
       for (_i = 0, _len = elements.length; _i < _len; _i++) {
@@ -207,14 +227,46 @@
       });
       this.handleElementDrag(element);
       element.on('mouseenter', function() {
+        var error, errors, errorsUl, li, popup, warning, warnings, warningsUl, _i, _j, _len, _len1;
         if (action.renderTime) {
-          return $('.debug').text(action.constructor.name + ': rendered in ' + action.renderTime + 'ms');
+          $('.debug').text(action.constructor.name + ': rendered in ' + action.renderTime + 'ms');
+        }
+        if (warnings = action.element.data('warnings')) {
+          popup = _this.workspace.parent().find('.popup');
+          popup.removeClass('errors').addClass('warnings').html("");
+          warningsUl = $('<ul>').appendTo(popup);
+          for (_i = 0, _len = warnings.length; _i < _len; _i++) {
+            warning = warnings[_i];
+            li = $('<li>').text(warning).appendTo(warningsUl);
+          }
+          popup.css({
+            left: element.position().left,
+            top: element.position().top + _this.gridHeight
+          });
+          popup.stop().fadeIn('fast');
+        }
+        if (errors = action.element.data('errors')) {
+          popup = _this.workspace.parent().find('.popup');
+          popup.addClass('errors').removeClass('warnings').html("");
+          errorsUl = $('<ul>').appendTo(popup);
+          for (_j = 0, _len1 = errors.length; _j < _len1; _j++) {
+            error = errors[_j];
+            li = $('<li>').text(error).appendTo(errorsUl);
+          }
+          popup.css({
+            left: element.position().left,
+            top: element.position().top + _this.gridHeight
+          });
+          return popup.stop().fadeIn('fast');
         }
       });
       element.on('mouseleave', function() {
+        var popup;
         if (_this.renderTime) {
-          return $('.debug').text('rendered in ' + _this.renderTime + 'ms');
+          $('.debug').text('rendered in ' + _this.renderTime + 'ms');
         }
+        popup = _this.workspace.parent().find('.popup');
+        return popup.stop().fadeOut('fast');
       });
       return action;
     };
@@ -340,9 +392,6 @@
 
     App.prototype.handleElementDrag = function(element) {
       var _this = this;
-      $(element).mousedown(function(e) {
-        return e.stopPropagation();
-      });
       $(element).find('.dragger').mousedown(function(e) {
         var editingElement, handleMouseMove;
         e.stopPropagation();
@@ -365,23 +414,34 @@
         });
       });
       return $(element).mousedown(function(e) {
-        var handleMouseMove, initMousePos, initPosHash, _i, _len, _ref1;
+        var handleMouseMove, initMousePos, initPosHash, otherElement, _i, _j, _len, _len1, _ref1, _ref2;
         e.preventDefault();
+        e.stopPropagation();
+        console.log("element mousedown!");
+        if (!$(element).hasClass('selected')) {
+          _ref1 = _this.selectedElements;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            otherElement = _ref1[_i];
+            $(otherElement).removeClass('selected');
+          }
+          _this.selectedElements = [element];
+          $(element).addClass('selected');
+        }
         initMousePos = {
           x: e.pageX,
           y: e.pageY
         };
         initPosHash = {};
-        _ref1 = _this.selectedElements;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          element = _ref1[_i];
+        _ref2 = _this.selectedElements;
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          element = _ref2[_j];
           initPosHash[element.attr('data-index')] = {
             x: element.position().left,
             y: element.position().top
           };
         }
         handleMouseMove = function(e) {
-          var distPos, newLeft, newTop, offsetX, offsetY, _j, _len1, _ref2, _results;
+          var distPos, newLeft, newTop, offsetX, offsetY, _k, _len2, _ref3, _results;
           e.preventDefault();
           offsetX = $('.workspace').offset().left;
           offsetY = $('.workspace').offset().top;
@@ -389,10 +449,10 @@
             x: e.pageX - initMousePos.x,
             y: e.pageY - initMousePos.y
           };
-          _ref2 = _this.selectedElements;
+          _ref3 = _this.selectedElements;
           _results = [];
-          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-            element = _ref2[_j];
+          for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
+            element = _ref3[_k];
             newLeft = initPosHash[element.attr('data-index')].x + distPos.x;
             newTop = initPosHash[element.attr('data-index')].y + distPos.y;
             _results.push(element.css({
@@ -404,12 +464,12 @@
         };
         $(document).mousemove(handleMouseMove);
         return $(document).mouseup(function(e) {
-          var action, _j, _len1, _ref2, _results;
+          var action, _k, _len2, _ref3, _results;
           $(document).off('mousemove', handleMouseMove);
-          _ref2 = _this.selectedElements;
+          _ref3 = _this.selectedElements;
           _results = [];
-          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-            element = _ref2[_j];
+          for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
+            element = _ref3[_k];
             action = _this.actions[element.attr('data-index')];
             action.x = Math.round(element.position().left / _this.gridWidth);
             _results.push(action.y = Math.round(element.position().top / _this.gridHeight));

@@ -41,6 +41,17 @@
       };
     };
 
+    RotoZoomAction.prototype.validations = function(contexts) {
+      var warnings;
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Rotozoom will only use the first input.');
+      }
+      return {
+        warnings: warnings
+      };
+    };
+
     RotoZoomAction.prototype.render = function(contexts) {
       var cosrot, cosx, cosy, inputImageData, k, offsetInput, offsetOutput, outputImageData, rotation, sinrot, sinx, siny, x, xsrc, y, ysrc, zoom, _i, _j, _k;
       RotoZoomAction.__super__.render.call(this);

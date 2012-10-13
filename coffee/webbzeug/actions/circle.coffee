@@ -10,6 +10,13 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
       color: { name: 'Color', type: 'color', default: 'rgba(255,0,0,1)' }
     }
 
+  validations: (contexts) ->
+    warnings = []
+    if contexts.length > 1
+      warnings.push 'Circle will only use the first input.'
+    
+    return { warnings: warnings }
+
   render: (contexts) ->
     super()
     # no children ? -> clear context, otherwise copy what has been rendered so far
@@ -19,7 +26,6 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
     else
       imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
       @context.putImageData imageData, 0, 0
-      console.log imageData.data
 
     @context.beginPath()
     @context.arc @getParameter('x'), @getParameter('y'), @getParameter('radiusX'), 0, 2*Math.PI, false

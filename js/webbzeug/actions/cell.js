@@ -78,6 +78,17 @@
       };
     };
 
+    CellAction.prototype.validations = function(contexts) {
+      var warnings;
+      warnings = [];
+      if (contexts.length > 1) {
+        warnings.push('Cell will only use the first input.');
+      }
+      return {
+        warnings: warnings
+      };
+    };
+
     CellAction.prototype.render = function(contexts) {
       var dist, distances, gridPosX, gridPosY, gridPxSize, gridSize, gridX, gridY, h, imageData, index, lastMinDist, maxDist, minDist, originalGridX, originalGridY, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5,
         _this = this;

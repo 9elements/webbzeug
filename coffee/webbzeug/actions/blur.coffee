@@ -8,12 +8,17 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
       type: { name: 'Type', type: 'enum', values: { linear: 'Linear', gauss: 'Gauss' }, default: 'linear' }
     }
 
-  linearBlur: (contexts) ->
-    console.log "linear"
-    if contexts.length == 0
-      console.log "Dude an blur needs an input"
-      return
+  validations: (contexts) ->
+    warnings = []
+    errors   = []
+    if contexts.length > 1
+      warnings.push 'Blur will only use the first input.'
+    if contexts.length < 1
+      errors.push 'Blur needs exactly 1 input.'
+    
+    return { errors: errors, warnings: warnings }
 
+  linearBlur: (contexts) ->
     strength = parseInt @getParameter('strength')
     
     # How to copy the image data from one context to another
@@ -76,11 +81,6 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
      
 
   gaussBlur: (contexts) ->
-    console.log "Gauss"
-    if contexts.length == 0
-      console.log "Dude an blur needs an input"
-      return
-
     strength = parseInt @getParameter('strength')
     
     # How to copy the image data from one context to another

@@ -114,6 +114,22 @@
       return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
     };
 
+    LightAction.prototype.validations = function(contexts) {
+      var errors, warnings;
+      errors = [];
+      warnings = [];
+      if (contexts.length < 2) {
+        errors.push('Light needs exactly 2 inputs.');
+      }
+      if (contexts.length > 2) {
+        warnings.push('Light will only use the first 2 inputs.');
+      }
+      return {
+        errors: errors,
+        warnings: warnings
+      };
+    };
+
     LightAction.prototype.render = function(contexts) {
       var NDotL, RDotV, baseColor, binormal, diffuseColor, diffuseRGB, h, index, inputImageData, light, lightDirection, normal, normalImageData, outputImageData, pixel, power, reflection, reflectionRGB, rowLen, specularColor, tangent, u, uinc, v, view, viewDirection, vinc, w, x, y, _i, _j;
       LightAction.__super__.render.call(this);
@@ -221,62 +237,5 @@
     return LightAction;
 
   })(Webbzeug.Action);
-
-  /*
-  # ------------------------------------------------------------- calculate light
-          lightX = (( parseInt @getParameter('lightX') - 127 ) / 255 - uinc )
-          lightY = -1 * (( parseInt @getParameter('lightY') - 127 ) / 255 - vinc )
-          lightZ = -1 * (( parseInt @getParameter('lightZ') - 127 ) / 255 )
-          lightLen = @magnitude  lightX , lightY , lightZ  
-          lightX /= lightLen
-          lightY /= lightLen
-          lightZ /= lightLen
-  
-          # ------------------------------------------------------------- calculate eye position
-          eyeX = (( parseInt @getParameter('eyeX') - 127 ) / 255 - uinc )
-          eyeY = -1 * (( parseInt @getParameter('eyeY') - 127 ) / 255 - vinc )
-          eyeZ = -1 * (( parseInt @getParameter('eyeZ') - 127 ) / 255 )
-          eyeLen = @magnitude  eyeX , eyeY , eyeZ 
-          eyeX /= eyeLen
-          eyeY /= eyeLen
-          eyeZ /= eyeLen
-   
-          # ------------------------------------------------------------- calculate normal
-          normalX = ( normalImageData.data[index] / 127 ) - 1
-          normalY = ( normalImageData.data[index + 1] / 127 ) - 1 
-          normalZ = ( normalImageData.data[index + 2] / 127 ) - 1
-          normalLen = @magnitude normalX, normalY, normalZ 
-          normalX /= normalLen  
-          normalY /= normalLen  
-          normalZ /= normalLen  
-  
-          nDotL = @dot normalX, normalY, normalZ, lightX, lightY, lightZ 
-  
-          reflectionX = ( 2 * normalX * nDotL ) - lightX
-          reflectionY = ( 2 * normalY * nDotL ) - lightY
-          reflectionZ = ( 2 * normalZ * nDotL ) - lightZ
-          reflectionLen = @magnitude  reflectionX, reflectionY, reflectionZ 
-          reflectionX /= reflectionLen
-          reflectionY /= reflectionLen
-          reflectionZ /= reflectionLen
-  
-          rDotV = @dot reflectionX, reflectionY, reflectionZ, eyeX, eyeY, eyeZ 
-          rDotV = Math.max ( rDotV )
-    # float4 fvTotalDiffuse   = fvDiffuse * fNDotL * fvBaseColor;
-          totalSpecular  = Math.pow( rDotV, power )
-          totalSpecular *= 255
-          u += uinc
-          v += vinc
-          #console.log totalSpecular
-  
-  
-          
-  #   return( saturate( fvTotalAmbient + fvTotalDiffuse + fvTotalSpecular ) );
-   
-          for i in [0...3]
-            outputImageData.data[index + i] = Math.min( inputImageData.data[index + i]  + totalSpecular + inputImageData.data[index + i] * nDotL, 255 )
-          outputImageData.data[index + 3] = 255
-  */
-
 
 }).call(this);

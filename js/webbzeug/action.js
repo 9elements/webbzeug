@@ -32,7 +32,24 @@
       return {};
     };
 
+    Action.prototype.validations = function() {
+      return {};
+    };
+
     Action.prototype.doRender = function(contexts) {
+      var valid, _ref1, _ref2;
+      valid = this.validations(contexts);
+      if (((_ref1 = valid.warnings) != null ? _ref1.length : void 0) > 0) {
+        this.app.displayWarnings(this, valid.warnings);
+      } else {
+        this.app.removeWarnings(this);
+      }
+      if (((_ref2 = valid.errors) != null ? _ref2.length : void 0) > 0) {
+        this.app.displayErrors(this, valid.errors);
+        return false;
+      } else {
+        this.app.removeErrors(this);
+      }
       if (this.willRender()) {
         this.render(contexts);
       }
