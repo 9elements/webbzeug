@@ -21,7 +21,7 @@
       this.setupCanvas();
       this.buildGrid();
       this.reset();
-      this.loadSaveHandler = new Webbzeug.LoadSaveHandler(this, $('.save-link'), $('input#file'));
+      this.loadSaveHandler = new Webbzeug.LoadSaveHandler(this, $('.save-link'), $('input#file'), $('.export-link'));
       this.handleNavigation();
       this.handleMultipleSelection();
       this.handleKeyboardInput();

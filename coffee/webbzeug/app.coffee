@@ -10,7 +10,7 @@ window.Webbzeug.App = class App
     @buildGrid()
     @reset()
 
-    @loadSaveHandler = new Webbzeug.LoadSaveHandler this, $('.save-link'), $('input#file')
+    @loadSaveHandler = new Webbzeug.LoadSaveHandler this, $('.save-link'), $('input#file'), $('.export-link')
 
     @handleNavigation()
     @handleMultipleSelection()  

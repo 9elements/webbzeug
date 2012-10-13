@@ -1,6 +1,6 @@
 window.Webbzeug ?= {}
 window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
-  constructor: (@app, saveLink, loadInput) ->
+  constructor: (@app, saveLink, loadInput, exportLink) ->
     @exporter = new Webbzeug.Exporter
     @importer = new Webbzeug.Importer @app
     saveLink.click =>
@@ -10,6 +10,18 @@ window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
           filename = filename + '.webb'
 
         url = @exporter.actionsToDataURL @app.actions
+        if url?
+          downloadDataURI
+            filename: filename
+            data: url
+
+    exportLink.click =>
+      if filename = prompt('Please enter a filename:', 'workspace.png')
+
+        unless filename.match /\.png$/i
+          filename = filename + '.png'
+
+        url = @exporter.renderedToDataURL()
         if url?
           downloadDataURI
             filename: filename

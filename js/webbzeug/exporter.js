@@ -40,6 +40,10 @@
       return "data:application/octet-stream;base64," + Base64.encode(this.output);
     };
 
+    Exporter.prototype.renderedToDataURL = function() {
+      return $('canvas#canvas').get(0).toDataURL('image/png');
+    };
+
     Exporter.prototype.writeData = function(data) {
       var stringifiedObj;
       console.log("WRITIN DATA", data);

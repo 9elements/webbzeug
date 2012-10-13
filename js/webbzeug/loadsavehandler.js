@@ -7,7 +7,7 @@
 
   window.Webbzeug.LoadSaveHandler = LoadSaveHandler = (function() {
 
-    function LoadSaveHandler(app, saveLink, loadInput) {
+    function LoadSaveHandler(app, saveLink, loadInput, exportLink) {
       var _this = this;
       this.app = app;
       this.exporter = new Webbzeug.Exporter;
@@ -19,6 +19,21 @@
             filename = filename + '.webb';
           }
           url = _this.exporter.actionsToDataURL(_this.app.actions);
+          if (url != null) {
+            return downloadDataURI({
+              filename: filename,
+              data: url
+            });
+          }
+        }
+      });
+      exportLink.click(function() {
+        var filename, url;
+        if (filename = prompt('Please enter a filename:', 'workspace.png')) {
+          if (!filename.match(/\.png$/i)) {
+            filename = filename + '.png';
+          }
+          url = _this.exporter.renderedToDataURL();
           if (url != null) {
             return downloadDataURI({
               filename: filename,

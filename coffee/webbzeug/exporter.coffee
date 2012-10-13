@@ -36,6 +36,8 @@ window.Webbzeug.Exporter = class Exporter
 
     return "data:application/octet-stream;base64," + Base64.encode(@output)
 
+  renderedToDataURL: -> return $('canvas#canvas').get(0).toDataURL 'image/png'
+
   writeData: (data) ->
     console.log "WRITIN DATA", data
     if typeof data is 'number' and parseInt(data) == data

@@ -75,7 +75,7 @@ body {
     text-transform: uppercase;
     padding: 5px;
     margin-bottom: 10px; }
-  .right-wrapper .save-link, .right-wrapper .open-link {
+  .right-wrapper .save-link, .right-wrapper .open-link, .right-wrapper .export-link {
     padding: 5px 10px;
     font: normal 10px Verdana;
     color: white;
@@ -85,7 +85,7 @@ body {
     border-radius: 2px;
     border: 1px solid rgba(255, 255, 255, 0.4);
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5); }
-    .right-wrapper .save-link:hover, .right-wrapper .open-link:hover {
+    .right-wrapper .save-link:hover, .right-wrapper .open-link:hover, .right-wrapper .export-link:hover {
       background: rgba(255, 255, 255, 0.5); }
   .right-wrapper input#file {
     position: absolute;
