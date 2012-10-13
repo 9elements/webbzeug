@@ -258,7 +258,7 @@ header {
     width: 112px;
     font: bold 10px Verdana;
     color: black;
-    text-shadow: 1px 1px 0 white;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     border-radius: 2px;
     padding-bottom: 2px;
@@ -283,8 +283,6 @@ header {
         height: 15px;
         padding: 5px;
         cursor: ew-resize; }
-    .workspace-wrapper .action.selected .wrapper {
-      box-shadow: 0px 0px 0px 2px white inset; }
     .workspace-wrapper .action.watched .wrapper .watched-icon {
       display: block;
       background: url("/images/icon-watched.png") no-repeat center center;
@@ -296,12 +294,18 @@ header {
     .workspace-wrapper .action.generative {
       background: #1d71d6;
       box-shadow: 0 2px 0 #094893; }
+      .workspace-wrapper .action.generative.selected .wrapper {
+        box-shadow: 0px 0px 0px 30px rgba(29, 113, 214, 0.3) inset; }
     .workspace-wrapper .action.processive {
       background: #db2222;
       box-shadow: 0 2px 0 #831010; }
+      .workspace-wrapper .action.processive.selected .wrapper {
+        box-shadow: 0px 0px 0px 30px rgba(219, 34, 34, 0.3) inset; }
     .workspace-wrapper .action.memory {
       background: #bd7a04;
       box-shadow: 0 2px 0 #7f550d; }
+      .workspace-wrapper .action.memory.selected .wrapper {
+        box-shadow: 0px 0px 0px 30px rgba(189, 122, 4, 0.3) inset; }
     .workspace-wrapper .action.warning .wrapper {
       color: #a08116; }
     .workspace-wrapper .action.error .wrapper {

@@ -72,7 +72,7 @@
 
     font: bold 10px Verdana
     color: black
-    text-shadow: 1px 1px 0 white
+    text-shadow: 1px 1px 0 rgba(white, 0.5)
 
     text-transform: uppercase
 
@@ -110,10 +110,6 @@
 
         cursor: ew-resize
 
-    &.selected
-      .wrapper
-        box-shadow: 0px 0px 0px 2px white inset
-
     &.watched
       .wrapper
         .watched-icon
@@ -131,13 +127,25 @@
       background: #1d71d6
       box-shadow: 0 2px 0 #094893
 
+      &.selected
+        .wrapper
+          box-shadow: 0px 0px 0px 30px rgba(#1d71d6, 0.3) inset
+
     &.processive
       background: #db2222
       box-shadow: 0 2px 0 #831010
 
+      &.selected
+        .wrapper
+          box-shadow: 0px 0px 0px 30px rgba(#db2222, 0.3) inset
+
     &.memory
       background: #bd7a04
       box-shadow: 0 2px 0 #7f550d
+
+      &.selected
+        .wrapper
+          box-shadow: 0px 0px 0px 30px rgba(#bd7a04, 0.3) inset
 
     &.warning
       .wrapper
