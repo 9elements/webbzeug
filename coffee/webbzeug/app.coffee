@@ -358,7 +358,6 @@ window.Webbzeug.App = class App
       e.preventDefault()
       e.stopPropagation()
 
-      console.log "element mousedown!"
       unless $(element).hasClass('selected')
         for otherElement in @selectedElements
           $(otherElement).removeClass 'selected'
@@ -397,6 +396,9 @@ window.Webbzeug.App = class App
           action = @actions[element.attr('data-index')]
           action.x = Math.round(element.position().left / @gridWidth)
           action.y = Math.round(element.position().top  / @gridHeight)
+
+          action.updatedAt = +new Date()
+          @updateParentsRecursively action
 
   handleElementClick: (e, element) ->
     @selectedActionIndex = element.attr('data-index')
@@ -544,7 +546,7 @@ window.Webbzeug.App = class App
 
 
   findChildrenRecursively: (action) ->
-    children = []
+    action.children = []
     for possibleChildAction in @actionsArr
       if possibleChildAction is action
         continue
@@ -552,12 +554,10 @@ window.Webbzeug.App = class App
       # console.log possibleChildAction.x, action.x + action.width, "///", action.x + action.width, possibleChildAction.x
       if possibleChildAction.y is action.y - 1
         if !(possibleChildAction.x >= action.x + action.width or possibleChildAction.x + possibleChildAction.width <= action.x)
-          children.push possibleChildAction
+          action.children.push possibleChildAction
           possibleChildAction.parent = action
 
           @findChildrenRecursively possibleChildAction
-
-    action.children = children
 
   updateParentsRecursively: (action) ->
     if action.parent?

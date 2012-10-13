@@ -71,19 +71,13 @@
     };
 
     RectangleAction.prototype.render = function(contexts) {
-      var h, imageData, w, x, y;
+      var h, w, x, y;
       RectangleAction.__super__.render.call(this);
       x = this.getParameter('x');
       y = this.getParameter('y');
       w = this.getParameter('width');
       h = this.getParameter('height');
-      if (contexts.length === 0) {
-        this.context.fillStyle = 'black';
-        this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
-      } else {
-        imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        this.context.putImageData(imageData, 0, 0);
-      }
+      this.copyRendered(contexts);
       this.context.fillStyle = this.getParameter('color');
       this.context.fillRect(x, y, w, h);
       return this.context;

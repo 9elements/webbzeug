@@ -36,6 +36,17 @@
       return {};
     };
 
+    Action.prototype.copyRendered = function(contexts) {
+      var imageData;
+      if (contexts.length === 0) {
+        this.context.fillStyle = 'black';
+        return this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
+      } else {
+        imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+        return this.context.putImageData(imageData, 0, 0);
+      }
+    };
+
     Action.prototype.doRender = function(contexts) {
       var valid, _ref1, _ref2;
       valid = this.validations(contexts);

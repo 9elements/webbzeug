@@ -26,12 +26,7 @@ window.Webbzeug.Actions.Rectangle = class RectangleAction extends Webbzeug.Actio
     w = @getParameter('width')
     h = @getParameter('height')
 
-    if contexts.length is 0
-      @context.fillStyle = 'black'
-      @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
-    else 
-      imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
-      @context.putImageData imageData, 0, 0
+    @copyRendered contexts
 
     @context.fillStyle = @getParameter('color')
     @context.fillRect x, y, w, h

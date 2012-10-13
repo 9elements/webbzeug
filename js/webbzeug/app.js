@@ -417,7 +417,6 @@
         var handleMouseMove, initMousePos, initPosHash, otherElement, _i, _j, _len, _len1, _ref1, _ref2;
         e.preventDefault();
         e.stopPropagation();
-        console.log("element mousedown!");
         if (!$(element).hasClass('selected')) {
           _ref1 = _this.selectedElements;
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -472,7 +471,9 @@
             element = _ref3[_k];
             action = _this.actions[element.attr('data-index')];
             action.x = Math.round(element.position().left / _this.gridWidth);
-            _results.push(action.y = Math.round(element.position().top / _this.gridHeight));
+            action.y = Math.round(element.position().top / _this.gridHeight);
+            action.updatedAt = +new Date();
+            _results.push(_this.updateParentsRecursively(action));
           }
           return _results;
         });
@@ -654,9 +655,10 @@
     };
 
     App.prototype.findChildrenRecursively = function(action) {
-      var children, possibleChildAction, _i, _len, _ref1;
-      children = [];
+      var possibleChildAction, _i, _len, _ref1, _results;
+      action.children = [];
       _ref1 = this.actionsArr;
+      _results = [];
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         possibleChildAction = _ref1[_i];
         if (possibleChildAction === action) {
@@ -664,13 +666,17 @@
         }
         if (possibleChildAction.y === action.y - 1) {
           if (!(possibleChildAction.x >= action.x + action.width || possibleChildAction.x + possibleChildAction.width <= action.x)) {
-            children.push(possibleChildAction);
+            action.children.push(possibleChildAction);
             possibleChildAction.parent = action;
-            this.findChildrenRecursively(possibleChildAction);
+            _results.push(this.findChildrenRecursively(possibleChildAction));
+          } else {
+            _results.push(void 0);
           }
+        } else {
+          _results.push(void 0);
         }
       }
-      return action.children = children;
+      return _results;
     };
 
     App.prototype.updateParentsRecursively = function(action) {

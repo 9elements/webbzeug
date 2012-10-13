@@ -19,13 +19,7 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
 
   render: (contexts) ->
     super()
-    # no children ? -> clear context, otherwise copy what has been rendered so far
-    if contexts.length is 0
-      @context.fillStyle = 'black'
-      @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
-    else
-      imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
-      @context.putImageData imageData, 0, 0
+    @copyRendered contexts
 
     @context.beginPath()
     @context.arc @getParameter('x'), @getParameter('y'), @getParameter('radiusX'), 0, 2*Math.PI, false

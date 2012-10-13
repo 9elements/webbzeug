@@ -15,6 +15,14 @@ window.Webbzeug.Action = class Action
   availableParameters: -> {}
   validations: -> return {}
 
+  copyRendered: (contexts) ->
+    if contexts.length is 0
+      @context.fillStyle = 'black'
+      @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
+    else
+      imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
+      @context.putImageData imageData, 0, 0
+
   doRender: (contexts) ->
     valid = @validations contexts
 

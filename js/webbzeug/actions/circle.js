@@ -64,15 +64,8 @@
     };
 
     CircleAction.prototype.render = function(contexts) {
-      var imageData;
       CircleAction.__super__.render.call(this);
-      if (contexts.length === 0) {
-        this.context.fillStyle = 'black';
-        this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
-      } else {
-        imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        this.context.putImageData(imageData, 0, 0);
-      }
+      this.copyRendered(contexts);
       this.context.beginPath();
       this.context.arc(this.getParameter('x'), this.getParameter('y'), this.getParameter('radiusX'), 0, 2 * Math.PI, false);
       this.context.closePath();
