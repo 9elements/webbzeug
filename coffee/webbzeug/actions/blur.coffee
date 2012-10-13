@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
-  type: 'blur'
+  type: 'processive'
+  name: 'Blur'
   availableParameters: ->
     {
       strength: { name: 'Strength', type: 'number', default: 1, min: 1 , max: 30 }

@@ -48,7 +48,9 @@
       return CellAction.__super__.constructor.apply(this, arguments);
     }
 
-    CellAction.prototype.type = 'cell';
+    CellAction.prototype.type = 'generative';
+
+    CellAction.prototype.name = 'Cell';
 
     CellAction.prototype.availableParameters = function() {
       return {

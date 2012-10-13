@@ -19,7 +19,9 @@
       return SaveAction.__super__.constructor.apply(this, arguments);
     }
 
-    SaveAction.prototype.type = 'save';
+    SaveAction.prototype.type = 'memory';
+
+    SaveAction.prototype.name = 'Save';
 
     SaveAction.prototype.availableParameters = function() {
       return {
@@ -48,6 +50,10 @@
       var context;
       context = this.render(contexts);
       return context;
+    };
+
+    SaveAction.prototype.caption = function() {
+      return 'Save (' + this.getParameter('id') + ')';
     };
 
     return SaveAction;

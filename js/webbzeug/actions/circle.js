@@ -19,7 +19,9 @@
       return CircleAction.__super__.constructor.apply(this, arguments);
     }
 
-    CircleAction.prototype.type = 'circle';
+    CircleAction.prototype.type = 'generative';
+
+    CircleAction.prototype.name = 'Circle';
 
     CircleAction.prototype.availableParameters = function() {
       return {

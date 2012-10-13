@@ -19,7 +19,9 @@
       return CombineAction.__super__.constructor.apply(this, arguments);
     }
 
-    CombineAction.prototype.type = 'combine';
+    CombineAction.prototype.type = 'processive';
+
+    CombineAction.prototype.name = 'Combine';
 
     CombineAction.prototype.availableParameters = function() {
       return {

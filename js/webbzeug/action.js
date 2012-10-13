@@ -95,7 +95,16 @@
       this.parameters[parameter] = value;
       this.updatedAt = +new Date();
       this.app.buildTree();
-      return this.app.updateParentsRecursively(this);
+      this.app.updateParentsRecursively(this);
+      return this.setCaption(this.caption());
+    };
+
+    Action.prototype.setCaption = function(caption) {
+      return this.element.find('.wrapper').contents().first().get(0).data = caption || this.caption();
+    };
+
+    Action.prototype.caption = function() {
+      return this.name;
     };
 
     return Action;

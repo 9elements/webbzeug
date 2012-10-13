@@ -19,7 +19,9 @@
       return FlatAction.__super__.constructor.apply(this, arguments);
     }
 
-    FlatAction.prototype.type = 'flat';
+    FlatAction.prototype.type = 'generative';
+
+    FlatAction.prototype.name = 'Flat';
 
     FlatAction.prototype.availableParameters = function() {
       return {

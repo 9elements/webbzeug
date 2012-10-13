@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Save = class SaveAction extends Webbzeug.Action
-  type: 'save'
+  type: 'memory'
+  name: 'Save'
   availableParameters: ->
     {
       id: { name: 'ID', type: 'number', min: 0, max: 50, default: 0 }
@@ -22,3 +23,5 @@ window.Webbzeug.Actions.Save = class SaveAction extends Webbzeug.Action
   doRender: (contexts) ->
     context = @render contexts
     return context
+
+  caption: -> 'Save (' + @getParameter('id') + ')'

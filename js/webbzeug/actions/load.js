@@ -19,7 +19,9 @@
       return LoadAction.__super__.constructor.apply(this, arguments);
     }
 
-    LoadAction.prototype.type = 'load';
+    LoadAction.prototype.type = 'memory';
+
+    LoadAction.prototype.name = 'Load';
 
     LoadAction.prototype.availableParameters = function() {
       return {
@@ -59,6 +61,10 @@
       var context;
       context = this.render(contexts);
       return context;
+    };
+
+    LoadAction.prototype.caption = function() {
+      return 'Load (' + this.getParameter('id') + ')';
     };
 
     return LoadAction;

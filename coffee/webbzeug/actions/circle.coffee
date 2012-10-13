@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
-  type: 'circle'
+  type: 'generative'
+  name: 'Circle'
   availableParameters: ->
     {
       x: { name: 'X', type: 'number', min: 0, max: 255, default: 128 },

@@ -45,7 +45,9 @@
       return PixelsAction.__super__.constructor.apply(this, arguments);
     }
 
-    PixelsAction.prototype.type = 'pixels';
+    PixelsAction.prototype.type = 'generative';
+
+    PixelsAction.prototype.name = 'Pixels';
 
     PixelsAction.prototype.availableParameters = function() {
       return {

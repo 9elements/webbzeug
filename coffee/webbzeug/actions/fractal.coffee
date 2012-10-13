@@ -30,7 +30,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Fractal = class FractalAction extends Webbzeug.Action
-  type: 'fractal'
+  type: 'generative'
+  name: 'Fractal'
   unitSize: 1
   availableParameters: ->
     {

@@ -19,7 +19,9 @@
       return InvertAction.__super__.constructor.apply(this, arguments);
     }
 
-    InvertAction.prototype.type = 'invert';
+    InvertAction.prototype.type = 'processive';
+
+    InvertAction.prototype.name = 'Invert';
 
     InvertAction.prototype.validations = function(contexts) {
       var errors, warnings;

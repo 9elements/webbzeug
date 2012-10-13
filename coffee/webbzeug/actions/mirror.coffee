@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Mirror = class MirrorAction extends Webbzeug.Action
-  type: 'mirror'
+  type: 'processive'
+  name: 'Mirror'
   availableParameters: ->
     {
       direction: { name: "Direction", type: 'enum', values: { vertical: 'Vertical', horizontal: 'Horizontal'}, default: 'horizontal' }  

@@ -169,6 +169,8 @@ window.Webbzeug.App = class App
 
     action.element = element
 
+    action.setCaption()
+
     @actions[index] = action
     @actionsArr.push action
 

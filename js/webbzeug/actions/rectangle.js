@@ -19,7 +19,9 @@
       return RectangleAction.__super__.constructor.apply(this, arguments);
     }
 
-    RectangleAction.prototype.type = 'rectangle';
+    RectangleAction.prototype.type = 'generative';
+
+    RectangleAction.prototype.name = 'Rect';
 
     RectangleAction.prototype.availableParameters = function() {
       return {

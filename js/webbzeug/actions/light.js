@@ -19,7 +19,9 @@
       return LightAction.__super__.constructor.apply(this, arguments);
     }
 
-    LightAction.prototype.type = 'light';
+    LightAction.prototype.type = 'processive';
+
+    LightAction.prototype.name = 'Light';
 
     LightAction.prototype.availableParameters = function() {
       return {

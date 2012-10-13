@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.HSCB = class HSCBAction extends Webbzeug.Action
-  type: 'hscb'
+  type: 'processive'
+  name: 'HSCB'
   availableParameters: ->
     {
       hue: { name: "Hue", type: 'number', min: -180, max: 180, default: 0 },

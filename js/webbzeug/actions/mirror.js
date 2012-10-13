@@ -19,7 +19,9 @@
       return MirrorAction.__super__.constructor.apply(this, arguments);
     }
 
-    MirrorAction.prototype.type = 'mirror';
+    MirrorAction.prototype.type = 'processive';
+
+    MirrorAction.prototype.name = 'Mirror';
 
     MirrorAction.prototype.availableParameters = function() {
       return {

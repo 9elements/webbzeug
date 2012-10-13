@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
-  type: 'light'
+  type: 'processive'
+  name: 'Light'
   availableParameters: ->
     {
       eyeX: { name: 'Eye X', type: 'number', min: -1, max: 1, default: 0.5, step: 0.001 },

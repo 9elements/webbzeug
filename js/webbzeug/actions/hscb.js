@@ -19,7 +19,9 @@
       return HSCBAction.__super__.constructor.apply(this, arguments);
     }
 
-    HSCBAction.prototype.type = 'hscb';
+    HSCBAction.prototype.type = 'processive';
+
+    HSCBAction.prototype.name = 'HSCB';
 
     HSCBAction.prototype.availableParameters = function() {
       return {

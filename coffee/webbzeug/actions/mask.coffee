@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Mask = class MaskAction extends Webbzeug.Action
-  type: 'mask'
+  type: 'processive'
+  name: 'Mask'
   availableParameters: -> {}
 
   validations: (contexts) ->

@@ -65,3 +65,10 @@ window.Webbzeug.Action = class Action
     # Recursively build tree to find parents that should be rendered as well
     @app.buildTree()
     @app.updateParentsRecursively this
+
+    @setCaption @caption()
+
+  setCaption: (caption) ->
+    @element.find('.wrapper').contents().first().get(0).data = caption or @caption()
+
+  caption: -> return @name

@@ -30,7 +30,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
-  type: 'cell'
+  type: 'generative'
+  name: 'Cell'
   availableParameters: ->
     {
       gridSize: { name: 'Grid size', type: 'number', min: 2, max: 1000, default: 8 },

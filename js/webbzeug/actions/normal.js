@@ -19,7 +19,9 @@
       return NormalAction.__super__.constructor.apply(this, arguments);
     }
 
-    NormalAction.prototype.type = 'normal';
+    NormalAction.prototype.type = 'processive';
+
+    NormalAction.prototype.name = 'Normal';
 
     NormalAction.prototype.validations = function(contexts) {
       var errors, warnings;

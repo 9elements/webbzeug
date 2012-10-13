@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Invert = class InvertAction extends Webbzeug.Action
-  type: 'invert'
+  type: 'processive'
+  name: 'Invert'
 
   validations: (contexts) ->
     warnings = []

@@ -19,7 +19,9 @@
       return BlurAction.__super__.constructor.apply(this, arguments);
     }
 
-    BlurAction.prototype.type = 'blur';
+    BlurAction.prototype.type = 'processive';
+
+    BlurAction.prototype.name = 'Blur';
 
     BlurAction.prototype.availableParameters = function() {
       return {

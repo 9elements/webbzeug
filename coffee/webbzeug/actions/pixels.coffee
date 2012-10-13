@@ -27,7 +27,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
-  type: 'pixels'
+  type: 'generative'
+  name: 'Pixels'
   availableParameters: ->
     {
       seed: { name: 'Seed', type: 'number', min: 0, max: 255, default: Math.round(Math.random() * 255) },

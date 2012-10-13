@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Normal = class NormalAction extends Webbzeug.Action
-  type: 'normal'
+  type: 'processive'
+  name: 'Normal'
   validations: (contexts) ->
     errors = []
     warnings = []

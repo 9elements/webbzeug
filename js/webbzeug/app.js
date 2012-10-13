@@ -219,6 +219,7 @@
         'data-index': index
       });
       action.element = element;
+      action.setCaption();
       this.actions[index] = action;
       this.actionsArr.push(action);
       this.handleElementClick(null, element);

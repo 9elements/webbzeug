@@ -1,7 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Load = class LoadAction extends Webbzeug.Action
-  type: 'load'
+  type: 'memory'
+  name: 'Load'
   availableParameters: ->
     {
       id: { name: 'ID', type: 'number', min: 0, max: 50, default: 0 }
@@ -27,3 +28,5 @@ window.Webbzeug.Actions.Load = class LoadAction extends Webbzeug.Action
   doRender: (contexts) ->
     context = @render contexts
     return context
+
+  caption: -> 'Load (' + @getParameter('id') + ')'

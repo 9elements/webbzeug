@@ -19,7 +19,9 @@
       return RotoZoomAction.__super__.constructor.apply(this, arguments);
     }
 
-    RotoZoomAction.prototype.type = 'rotozoom';
+    RotoZoomAction.prototype.type = 'processive';
+
+    RotoZoomAction.prototype.name = 'Rotozoom';
 
     RotoZoomAction.prototype.availableParameters = function() {
       return {
