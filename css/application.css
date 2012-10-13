@@ -49,6 +49,9 @@ body {
   background-color: #333333;
   width: 100%; }
 
+strong {
+  font-weight: bold; }
+
 * {
   -webkit-font-smoothing: antialiased; }
 
@@ -74,7 +77,8 @@ body {
     color: white;
     text-transform: uppercase;
     padding: 5px;
-    margin-bottom: 10px; }
+    margin-bottom: 10px;
+    height: 11px; }
   .right-wrapper .save-link, .right-wrapper .open-link, .right-wrapper .export-link {
     padding: 5px 10px;
     font: normal 10px Verdana;
@@ -90,37 +94,38 @@ body {
   .right-wrapper input#file {
     position: absolute;
     left: 52px;
-    top: 313px;
+    top: 323px;
     width: 50px;
     height: 22px;
+    overflow: hidden;
     opacity: 0; }
 
-header {
+header, .sidebar {
   background: rgba(0, 0, 0, 0.3);
   width: 100%;
   height: 50px; }
-  header .header-wrapper {
+  header .header-wrapper, header.sidebar, .sidebar .header-wrapper, .sidebar.sidebar {
     width: 980px;
     margin: auto; }
-    header .header-wrapper .logo {
+    header .header-wrapper .logo, header.sidebar .logo, .sidebar .header-wrapper .logo, .sidebar.sidebar .logo {
       width: 100px;
       height: 50px;
       background: url("/images/logo.png") no-repeat center center;
       display: block;
       float: left;
       margin-right: 10px; }
-    header .header-wrapper .claim, header .header-wrapper .authors {
+    header .header-wrapper .claim, header .header-wrapper .authors, header.sidebar .claim, header.sidebar .authors, .sidebar .header-wrapper .claim, .sidebar .header-wrapper .authors, .sidebar.sidebar .claim, .sidebar.sidebar .authors {
       float: left;
       font: normal 9px Verdana;
       color: white;
       margin-top: 19px;
       opacity: 0.7; }
-    header .header-wrapper .authors {
+    header .header-wrapper .authors, header.sidebar .authors, .sidebar .header-wrapper .authors, .sidebar.sidebar .authors {
       float: right; }
-      header .header-wrapper .authors a {
+      header .header-wrapper .authors a, header.sidebar .authors a, .sidebar .header-wrapper .authors a, .sidebar.sidebar .authors a {
         color: #398cf2;
         text-decoration: none; }
-        header .header-wrapper .authors a:hover {
+        header .header-wrapper .authors a:hover, header.sidebar .authors a:hover, .sidebar .header-wrapper .authors a:hover, .sidebar.sidebar .authors a:hover {
           color: #70b0ff; }
 
 .navigation {
@@ -346,3 +351,63 @@ header {
       border-radius: 3px;
       border: 3px solid rgba(0, 0, 0, 0.3);
       cursor: pointer; }
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 200px !important;
+  height: 100%;
+  padding-left: 20px;
+  box-shadow: 0px 0 10px rgba(0, 0, 0, 0.5);
+  overflow-y: auto; }
+  .sidebar .logo, .sidebar .authors {
+    float: none !important; }
+  .sidebar .sidebar-contents {
+    padding-left: 10px;
+    padding-top: 50px; }
+    .sidebar .sidebar-contents .group {
+      font: bold 14px Helvetica Neue, Helvetica, Arial;
+      color: white; }
+    .sidebar .sidebar-contents ul {
+      padding: 10px; }
+      .sidebar .sidebar-contents ul li a {
+        font: normal 12px Helvetica Neue, Helvetica, Arial;
+        color: white; }
+        .sidebar .sidebar-contents ul li a:hover {
+          text-decoration: none; }
+
+.content {
+  margin-left: 250px;
+  padding: 20px;
+  color: white; }
+  .content .logo {
+    display: block;
+    margin: auto;
+    margin-bottom: 50px; }
+  .content h2, .content h3 {
+    font-weight: bold;
+    font-family: Helvetica Neue, Helvetica, Arial;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5); }
+  .content h2 {
+    font-size: 24px; }
+  .content h3 {
+    font-size: 16px;
+    margin-bottom: 5px; }
+  .content section {
+    font: normal 13px Helvetica Neue, Helvetica, Arial;
+    color: white;
+    width: 500px;
+    margin-bottom: 30px; }
+    .content section a {
+      color: white; }
+      .content section a:hover {
+        text-decoration: none; }
+    .content section .source {
+      display: block;
+      margin-top: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 3px;
+      padding: 4px; }

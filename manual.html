@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>.webbzeug documentation</title>
+    <meta charset='utf-8' />
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />
+    <meta content='' name='description' />
+    <meta content='width=device-width' name='viewport' />
+    <link href='/css/application.css' rel='stylesheet' />
+    <link href='/css/colorpicker.css' rel='stylesheet' />
+    <script src='/js/vendor/modernizr-2.6.1.min.js'></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+    <script src='js/plugins.js'></script>
+    <script src='http://download-data-uri.appspot.com/js/download-data-uri.js'></script>
+    <script src='js/manual.js'></script>
+  </head>
+  <body>
+    <div class='sidebar'>
+      <div class='sidebar-contents'>
+        <div class='group'>General</div>
+        <ul>
+          <li>
+            <a href='#about'>About .webbzeug</a>
+          </li>
+        </ul>
+        <div class='group'>Generative Actions</div>
+        <ul>
+          <li>
+            <a href='#cell'>Cell</a>
+          </li>
+          <li>
+            <a href='#circle'>Circle</a>
+          </li>
+          <li>
+            <a href='#flat'>Flat</a>
+          </li>
+          <li>
+            <a href='#fractal'>Fractal</a>
+          </li>
+          <li>
+            <a href='#pixels'>Pixels</a>
+          </li>
+          <li>
+            <a href='#rect'>Rectangle</a>
+          </li>
+        </ul>
+        <div class='group'>Processive Actions</div>
+        <ul>
+          <li>
+            <a href='#blur'>Blur</a>
+          </li>
+          <li>
+            <a href='#combine'>Combine</a>
+          </li>
+          <li>
+            <a href='#hscb'>HSCB</a>
+          </li>
+          <li>
+            <a href='#invert'>Invert</a>
+          </li>
+          <li>
+            <a href='#light'>Light</a>
+          </li>
+          <li>
+            <a href='#mask'>Mask</a>
+          </li>
+          <li>
+            <a href='#mirror'>Mirror</a>
+          </li>
+          <li>
+            <a href='#normal'>Normal</a>
+          </li>
+          <li>
+            <a href='#rotozoom'>Rotozoom</a>
+          </li>
+        </ul>
+        <div class='group'>Memory Actions</div>
+        <ul>
+          <li>
+            <a href='#load'>Load</a>
+          </li>
+          <li>
+            <a href='#save'>Save</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+  <div class='content'>
+    <img alt='.webbzeug - procedural graphics in your browser' class='logo' src='/images/logo-large.png' />
+    <h2>General</h2>
+    <section>
+      <a name='about'></a>
+      <h3>About .webbzeug</h3>
+      .webbzeug is a web-based tool that allows you to create procedural textures by stacking and rendering actions. The idea is based on
+      <a href='http://www.farb-rausch.de/prod.py?which=113' target='_blank'>farbrausch's werkkzeug tool.</a>
+      Actions are seperated into three groups:
+      <strong>Generative, Processive and Memory</strong>
+      actions. This manual explains all actions and how they should be used.
+    </section>
+    <h2>Generative Actions</h2>
+    <section>
+      <a name='cell'></a>
+      <h3>Cell</h3>
+      The cell action generates cell textures based on the
+      <a href='http://en.wikipedia.org/wiki/Voronoi_diagram' target='_blank'>Voronoi diagram</a>
+      using the given cell size, type and seed. There are two types of cells: Balls and Mosaic. The generated texture is tileable. All inputs are overwritten.
+      <a class='source' data-file='coffee/webbzeug/actions/cell.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='circle'></a>
+      <h3>Circle</h3>
+      The circle action draws a circle in the given color with the given size and position. The circle is drawn on the first input, if given.
+      <a class='source' data-file='coffee/webbzeug/actions/circle.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='flat'></a>
+      <h3>Flat</h3>
+      The flat action fills the image with the given color. All inputs are overwritten.
+      <a class='source' data-file='coffee/webbzeug/actions/flat.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='fractal'></a>
+      <h3>Fractal</h3>
+      The fractal action fills the image with a fractal noise using the given seed and roughness. All inputs are overwritten.
+      <a class='source' data-file='coffee/webbzeug/actions/fractal.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='pixels'></a>
+      <h3>Pixels</h3>
+      The pixels action fills the image with random grayscale pixels based on the given seed. All inputs are overwritten.
+      <a class='source' data-file='coffee/webbzeug/actions/pixels.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='rect'></a>
+      <h3>Rectangle</h3>
+      The rectangle action draws a rectangle in the given color with the given size and position. The rectangle is drawn on the first input, if given.
+      <a class='source' data-file='coffee/webbzeug/actions/rect.coffee'>View source on Github.com</a>
+    </section>
+    <h2>Processive Actions</h2>
+    <section>
+      <a name='blur'></a>
+      <h3>Blur</h3>
+      The blur action blurs the input using the given strength and type. The blur action needs exactly one input.
+      <a class='source' data-file='coffee/webbzeug/actions/blur.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='combine'></a>
+      <h3>Combine</h3>
+      The combine action combines two inputs using the given blend mode. Available blend modes are Darken, Lighten, Multiply, Add, Substract, Divide. The combine action needs exactly two inputs.
+      <a class='source' data-file='coffee/webbzeug/actions/combine.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='hscb'></a>
+      <h3>HSCB</h3>
+      The HSCB action changes the hue, saturation, contrast and brightness of the first input. It needs exactly one input.
+      <a class='source' data-file='coffee/webbzeug/actions/hscb.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='invert'></a>
+      <h3>Invert</h3>
+      The invert action inverts all colors of the input. It needs exactly one input.
+      <a class='source' data-file='coffee/webbzeug/actions/invert.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='light'></a>
+      <h3>Light</h3>
+      The light action uses two inputs to generate lighting. The first input is the image the light is applied on, the second input is the normal map. The light action needs exactly two inputs.
+      <a class='source' data-file='coffee/webbzeug/actions/light.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='mask'></a>
+      <h3>Mask</h3>
+      The mask action uses the first input as a mask to combine the second and third input. The first input should be a grayscale image. The mask action needs exactly three inputs.
+      <a class='source' data-file='coffee/webbzeug/actions/mask.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='mirror'></a>
+      <h3>Mirror</h3>
+      The mirror action mirrors the image vertically or horizontically at the given point / offset. It needs exactly one input.
+      <a class='source' data-file='coffee/webbzeug/actions/mirror.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='normal'></a>
+      <h3>Normal</h3>
+      The normal action creates a normal map for the given input. It needs exactly one input.
+      <a class='source' data-file='coffee/webbzeug/actions/normal.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='rotozoom'></a>
+      <h3>Rotozoom</h3>
+      The rotozoom action rotates and zooms the input using the given parameters. It needs exactly one input.
+      <a class='source' data-file='coffee/webbzeug/actions/rotozoom.coffee'>View source on Github.com</a>
+    </section>
+    <h3>Memory Actinos</h3>
+    <section>
+      <a name='load'></a>
+      <h3>Load</h3>
+      The load action loads the input with the given ID. It needs exactly one input.
+      <a class='source' data-file='coffee/webbzeug/actions/load.coffee'>View source on Github.com</a>
+    </section>
+    <section>
+      <a name='save'></a>
+      <h3>Save</h3>
+      The save action saves the input with the given ID. It can later be loaded using the load action. It needs exactly one input.
+      <a class='source' data-file='coffee/webbzeug/actions/save.coffee'>View source on Github.com</a>
+    </section>
+  </div>
+</html>

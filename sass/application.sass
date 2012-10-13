@@ -6,6 +6,9 @@ body
   background-color: #333
   width: 100%
 
+strong
+  font-weight: bold
+
 *
   -webkit-font-smoothing: antialiased
 
@@ -34,6 +37,8 @@ body
     padding: 5px
     margin-bottom: 10px
 
+    height: 11px
+
   .save-link, .open-link, .export-link
     padding: 5px 10px
     font: normal 10px Verdana
@@ -51,9 +56,11 @@ body
   input#file
     position: absolute
     left: 52px
-    top: 313px
+    top: 323px
     width: 50px
     height: 22px
+
+    overflow: hidden
 
     opacity: 0
 
@@ -62,3 +69,4 @@ body
 @import "navigation"
 @import "workspace"
 @import "parameters"
+@import "manual"
