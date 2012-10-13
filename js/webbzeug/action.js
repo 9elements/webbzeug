@@ -17,6 +17,9 @@
       this.width = width;
       this.index = index;
       this.children = [];
+      this.parent = null;
+      this.updatedAt = +new Date();
+      this.renderedAt = 0;
       this.parameters = {};
       _ref1 = this.availableParameters();
       for (parameter in _ref1) {
@@ -29,11 +32,23 @@
       return {};
     };
 
+    Action.prototype.doRender = function(contexts) {
+      if (this.willRender()) {
+        this.render(contexts);
+      }
+      return this.context;
+    };
+
     Action.prototype.render = function(contexts) {
+      this.renderedAt = +new Date();
       this.canvas = $('<canvas>').get(0);
       this.canvas.width = this.app.getWidth();
       this.canvas.height = this.app.getHeight();
       return this.context = this.canvas.getContext('2d');
+    };
+
+    Action.prototype.willRender = function() {
+      return this.updatedAt > this.renderedAt;
     };
 
     Action.prototype.deleteChildren = function() {
@@ -49,7 +64,10 @@
     };
 
     Action.prototype.setParameter = function(parameter, value) {
-      return this.parameters[parameter] = value;
+      this.parameters[parameter] = value;
+      this.updatedAt = +new Date();
+      this.app.buildTree();
+      return this.app.updateParentsRecursively(this);
     };
 
     return Action;

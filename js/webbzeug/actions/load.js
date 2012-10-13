@@ -35,7 +35,14 @@
 
     LoadAction.prototype.render = function(contexts) {
       LoadAction.__super__.render.call(this);
-      return this.app.memory[this.getParameter('id')];
+      this.context = this.app.memory[this.getParameter('id')];
+      return this.context;
+    };
+
+    LoadAction.prototype.doRender = function(contexts) {
+      var context;
+      context = this.render(contexts);
+      return context;
     };
 
     return LoadAction;

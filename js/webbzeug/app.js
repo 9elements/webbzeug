@@ -602,11 +602,19 @@
         if (possibleChildAction.y === action.y - 1) {
           if (!(possibleChildAction.x >= action.x + action.width || possibleChildAction.x + possibleChildAction.width <= action.x)) {
             children.push(possibleChildAction);
+            possibleChildAction.parent = action;
             this.findChildrenRecursively(possibleChildAction);
           }
         }
       }
       return action.children = children;
+    };
+
+    App.prototype.updateParentsRecursively = function(action) {
+      if (action.parent != null) {
+        action.parent.updatedAt = +new Date();
+        return this.updateParentsRecursively(action.parent);
+      }
     };
 
     /*
@@ -643,7 +651,7 @@
         contexts.push(context);
       }
       startTime = +new Date();
-      context = action.render(contexts);
+      context = action.doRender(contexts);
       action.renderTime = (+new Date()) - startTime;
       return context;
     };

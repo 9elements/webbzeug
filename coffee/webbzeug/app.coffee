@@ -501,10 +501,16 @@ window.Webbzeug.App = class App
       if possibleChildAction.y is action.y - 1
         if !(possibleChildAction.x >= action.x + action.width or possibleChildAction.x + possibleChildAction.width <= action.x)
           children.push possibleChildAction
+          possibleChildAction.parent = action
 
           @findChildrenRecursively possibleChildAction
 
     action.children = children
+
+  updateParentsRecursively: (action) ->
+    if action.parent?
+      action.parent.updatedAt = +new Date()
+      @updateParentsRecursively action.parent
 
   ###
     Rendering
@@ -537,6 +543,6 @@ window.Webbzeug.App = class App
       contexts.push context
 
     startTime = +new Date()
-    context = action.render(contexts)
+    context = action.doRender(contexts)
     action.renderTime = (+new Date()) - startTime
     return context

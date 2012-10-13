@@ -40,7 +40,14 @@
         return false;
       }
       this.app.memory[this.getParameter('id')] = contexts[0];
-      return contexts[0];
+      this.context = contexts[0];
+      return this.context;
+    };
+
+    SaveAction.prototype.doRender = function(contexts) {
+      var context;
+      context = this.render(contexts);
+      return context;
     };
 
     return SaveAction;

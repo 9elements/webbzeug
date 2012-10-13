@@ -15,5 +15,10 @@ window.Webbzeug.Actions.Save = class SaveAction extends Webbzeug.Action
       return false
 
     @app.memory[@getParameter('id')] = contexts[0]
-    
-    return contexts[0]
+
+    @context = contexts[0]
+    return @context
+
+  doRender: (contexts) ->
+    context = @render contexts
+    return context

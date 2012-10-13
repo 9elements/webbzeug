@@ -10,4 +10,10 @@ window.Webbzeug.Actions.Load = class LoadAction extends Webbzeug.Action
   render: (contexts) ->
     super()
 
-    return @app.memory[@getParameter('id')]
+    @context = @app.memory[@getParameter('id')]
+
+    return @context
+
+  doRender: (contexts) ->
+    context = @render contexts
+    return context
