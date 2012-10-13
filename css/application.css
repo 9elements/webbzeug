@@ -144,6 +144,10 @@ header {
     margin-right: 10px;
     cursor: pointer;
     position: relative; }
+    .navigation .type .arrow {
+      position: absolute;
+      right: 10px;
+      top: 12px; }
     .navigation .type.generative {
       background: #3e92f7;
       background: -moz-linear-gradient(top, #3e92f7 0%, #0458bd 100%);
@@ -283,6 +287,9 @@ header {
     .workspace-wrapper .action.processive {
       background: #db2222;
       box-shadow: 0 2px 0 #831010; }
+    .workspace-wrapper .action.memory {
+      background: #bd7a04;
+      box-shadow: 0 2px 0 #7f550d; }
 
 .colorpicker {
   z-index: 10; }

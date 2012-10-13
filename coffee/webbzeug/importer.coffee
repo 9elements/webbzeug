@@ -1,6 +1,6 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Importer = class Importer
-  debug: true
+  debug: false
   constructor: (@app) -> return
   importDataURL: (data) ->
     splitData      = data.split 'base64,'

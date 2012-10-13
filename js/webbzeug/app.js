@@ -116,7 +116,7 @@
 
 
     App.prototype.handleNavigation = function() {
-      var action, actionLi, actions, actionsUl, name, navigationWrapper, self, type, typeLi, types, _i, _len, _name, _ref1, _ref2;
+      var action, actionLi, actions, actionsUl, dropdownImg, name, navigationWrapper, self, type, typeLi, types, _i, _len, _name, _ref1, _ref2;
       types = {};
       _ref1 = Webbzeug.ClassMap;
       for (name in _ref1) {
@@ -131,6 +131,9 @@
       for (type in types) {
         actions = types[type];
         typeLi = $('<li>').addClass('type ' + type).text(_.str.classify(type)).appendTo(navigationWrapper);
+        dropdownImg = $('<img>').addClass('arrow').attr({
+          src: '/images/dropdown-arrow.png'
+        }).appendTo(typeLi);
         actionsUl = $('<ul>').addClass('types ' + type).appendTo(typeLi);
         for (_i = 0, _len = actions.length; _i < _len; _i++) {
           action = actions[_i];

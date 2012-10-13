@@ -7,7 +7,7 @@
 
   window.Webbzeug.Importer = Importer = (function() {
 
-    Importer.prototype.debug = true;
+    Importer.prototype.debug = false;
 
     function Importer(app) {
       this.app = app;

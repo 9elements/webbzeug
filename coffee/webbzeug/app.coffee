@@ -98,6 +98,7 @@ window.Webbzeug.App = class App
 
     for type, actions of types
       typeLi = $('<li>').addClass('type ' + type).text(_.str.classify(type)).appendTo navigationWrapper
+      dropdownImg = $('<img>').addClass('arrow').attr(src: '/images/dropdown-arrow.png').appendTo typeLi
 
       actionsUl = $('<ul>').addClass('types ' + type).appendTo typeLi
       for action in actions
