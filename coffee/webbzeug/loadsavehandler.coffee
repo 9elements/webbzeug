@@ -5,6 +5,10 @@ window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
     @importer = new Webbzeug.Importer @app
     saveLink.click =>
       if filename = prompt('Please enter a filename:', 'workspace.webb')
+
+        unless filename.match /\.webb$/i
+          filename = filename + '.webb'
+
         url = @exporter.actionsToDataURL @app.actions
         if url?
           downloadDataURI

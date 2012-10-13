@@ -15,6 +15,9 @@
       saveLink.click(function() {
         var filename, url;
         if (filename = prompt('Please enter a filename:', 'workspace.webb')) {
+          if (!filename.match(/\.webb$/i)) {
+            filename = filename + '.webb';
+          }
           url = _this.exporter.actionsToDataURL(_this.app.actions);
           if (url != null) {
             return downloadDataURI({
