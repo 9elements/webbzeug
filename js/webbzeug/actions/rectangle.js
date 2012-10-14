@@ -19,7 +19,7 @@
       return RectangleAction.__super__.constructor.apply(this, arguments);
     }
 
-    RectangleAction.prototype.type = 'generative';
+    RectangleAction.prototype.type = 'rect';
 
     RectangleAction.prototype.name = 'Rect';
 
@@ -27,31 +27,35 @@
       return {
         x: {
           name: 'X',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 64
+          "default": 64,
+          scrollPrecision: 1
         },
         y: {
           name: 'Y',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 64
+          "default": 64,
+          scrollPrecision: 1
         },
         width: {
           name: 'Width',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 128
+          "default": 128,
+          scrollPrecision: 1
         },
         height: {
           name: 'Height',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 128
+          "default": 128,
+          scrollPrecision: 1
         },
         color: {
           name: 'Color',

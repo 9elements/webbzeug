@@ -1,7 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Mirror = class MirrorAction extends Webbzeug.Action
-  type: 'processive'
+  type: 'mirror'
   name: 'Mirror'
   availableParameters: ->
     {

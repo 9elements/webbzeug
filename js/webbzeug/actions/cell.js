@@ -48,7 +48,7 @@
       return CellAction.__super__.constructor.apply(this, arguments);
     }
 
-    CellAction.prototype.type = 'generative';
+    CellAction.prototype.type = 'cell';
 
     CellAction.prototype.name = 'Cell';
 
@@ -56,17 +56,19 @@
       return {
         gridSize: {
           name: 'Grid size',
-          type: 'number',
+          type: 'integer',
           min: 2,
-          max: 1000,
-          "default": 8
+          max: 100,
+          "default": 8,
+          scrollPrecision: 1
         },
         seed: {
           name: 'Seed',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": Math.round(Math.random() * 255)
+          "default": Math.round(Math.random() * 255),
+          scrollPrecision: 1
         },
         type: {
           name: 'Type',

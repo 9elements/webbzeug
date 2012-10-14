@@ -436,8 +436,8 @@ window.Webbzeug.App = class App
     @settingsWindow = $('.workspace-wrapper .parameters')
 
     @settingsWindow.show().css
-      left: (action.x + action.width) * @gridWidth + 10 #+ $('.workspace-wrapper').offset().left
-      top: action.y * @gridHeight #+ $('.workspace-wrapper').offset().top
+      left: (action.x + action.width) * @gridWidth + 10
+      top: action.y * @gridHeight
 
     @settingsWindow.click (e) => e.stopPropagation()
 
@@ -472,25 +472,26 @@ window.Webbzeug.App = class App
               self.renderAll()
           )()
 
-        when 'number'
+        when 'integer', 'float'
           li = $('<li>').appendTo settingsUl
           label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo li
 
           attributes = 
-            type: 'range'
-            min: info.min or 0
-            max: info.max or 9999
+            type: 'text'
             value: action.getParameter(key) or info.default
-            step: info.step or 1
 
           input = $('<input>').attr(attributes).appendTo li
 
-          value = $('<div>').addClass('value').text(attributes.value).appendTo li
+          $(input).draggableInput
+            type: info.type
+            min: info.min
+            max: info.max
+            precision: info.precision
+            scrollPrecision: info.scrollPrecision
 
           (=>
             _input = input
             _key   = key
-            _value = value
             _input.change ->
               newVal = _input.val()
 
@@ -500,7 +501,6 @@ window.Webbzeug.App = class App
                 newVal = parseInt(newVal)
 
               action.setParameter _key, newVal
-              _value.text newVal
 
               self.renderAll()
           )()

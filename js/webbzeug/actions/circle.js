@@ -19,7 +19,7 @@
       return CircleAction.__super__.constructor.apply(this, arguments);
     }
 
-    CircleAction.prototype.type = 'generative';
+    CircleAction.prototype.type = 'circle';
 
     CircleAction.prototype.name = 'Circle';
 
@@ -27,24 +27,27 @@
       return {
         x: {
           name: 'X',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 128
+          "default": 128,
+          scrollPrecision: 1
         },
         y: {
           name: 'Y',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 128
+          "default": 128,
+          scrollPrecision: 1
         },
         radiusX: {
           name: 'Radius X',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 50
+          "default": 50,
+          scrollPrecision: 1
         },
         color: {
           name: 'Color',

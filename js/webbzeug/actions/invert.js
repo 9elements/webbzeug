@@ -19,7 +19,7 @@
       return InvertAction.__super__.constructor.apply(this, arguments);
     }
 
-    InvertAction.prototype.type = 'processive';
+    InvertAction.prototype.type = 'invert';
 
     InvertAction.prototype.name = 'Invert';
 

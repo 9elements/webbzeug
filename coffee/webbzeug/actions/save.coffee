@@ -1,11 +1,11 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Save = class SaveAction extends Webbzeug.Action
-  type: 'memory'
+  type: 'save'
   name: 'Save'
   availableParameters: ->
     {
-      id: { name: 'ID', type: 'number', min: 0, max: 50, default: 0 }
+      id: { name: 'ID', type: 'integer', min: 0, max: 50, default: 0, scrollPrecision: 1 }
     }
 
   render: (contexts) ->

@@ -1,7 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Flat = class FlatAction extends Webbzeug.Action
-  type: 'generative'
+  type: 'flat'
   name: 'Flat'
   availableParameters: ->
     {

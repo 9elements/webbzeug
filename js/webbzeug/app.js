@@ -521,7 +521,7 @@
 
 
     App.prototype.showParameters = function(e, action) {
-      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, val, value, _ref1, _results,
+      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, val, _ref1, _results,
         _this = this;
       self = this;
       this.settingsWindow = $('.workspace-wrapper .parameters');
@@ -567,23 +567,26 @@
               });
             })());
             break;
-          case 'number':
+          case 'integer':
+          case 'float':
             li = $('<li>').appendTo(settingsUl);
             label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo(li);
             attributes = {
-              type: 'range',
-              min: info.min || 0,
-              max: info.max || 9999,
-              value: action.getParameter(key) || info["default"],
-              step: info.step || 1
+              type: 'text',
+              value: action.getParameter(key) || info["default"]
             };
             input = $('<input>').attr(attributes).appendTo(li);
-            value = $('<div>').addClass('value').text(attributes.value).appendTo(li);
+            $(input).draggableInput({
+              type: info.type,
+              min: info.min,
+              max: info.max,
+              precision: info.precision,
+              scrollPrecision: info.scrollPrecision
+            });
             _results.push((function() {
-              var _input, _key, _value;
+              var _input, _key;
               _input = input;
               _key = key;
-              _value = value;
               return _input.change(function() {
                 var newVal;
                 newVal = _input.val();
@@ -593,7 +596,6 @@
                   newVal = parseInt(newVal);
                 }
                 action.setParameter(_key, newVal);
-                _value.text(newVal);
                 return self.renderAll();
               });
             })());

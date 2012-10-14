@@ -1,14 +1,14 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Repeat = class RepeatAction extends Webbzeug.Action
-  type: 'processive'
+  type: 'repeat'
   name: 'Repeat'
 
   availableParameters: ->
     {
-      scrollX: { name: 'Scroll X', type: 'number', min: -256, max: 256, default: 0, step: 1 },
-      scrollY: { name: 'Scroll Y', type: 'number', min: -256, max: 256, default: 0, step: 1 },
-      count: { name: 'Count', type: 'number', min: 1, max: 50, default: 1 },
+      scrollX: { name: 'Scroll X', type: 'integer', min: -256, max: 256, default: 0, step: 1, scrollPrecision: 1 },
+      scrollY: { name: 'Scroll Y', type: 'integer', min: -256, max: 256, default: 0, step: 1, scrollPrecision: 1 },
+      count: { name: 'Count', type: 'integer', min: 1, max: 50, default: 1, scrollPrecision: 1 },
       blendmode: { name: 'Blend Mode', type: 'enum', values: {
         add: 'Add'
       }, default: 'add' }

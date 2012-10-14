@@ -1,14 +1,14 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Rectangle = class RectangleAction extends Webbzeug.Action
-  type: 'generative'
+  type: 'rect'
   name: 'Rect'
   availableParameters: ->
     {
-      x: { name: 'X', type: 'number', min: 0, max: 255, default: 64 },
-      y:  { name: 'Y', type: 'number', min: 0, max: 255, default: 64 },
-      width:  { name: 'Width', type: 'number', min: 0, max: 255, default: 128 },
-      height:  { name: 'Height', type: 'number', min: 0, max: 255, default: 128 }
+      x: { name: 'X', type: 'integer', min: 0, max: 255, default: 64, scrollPrecision: 1 },
+      y:  { name: 'Y', type: 'integer', min: 0, max: 255, default: 64, scrollPrecision: 1 },
+      width:  { name: 'Width', type: 'integer', min: 0, max: 255, default: 128, scrollPrecision: 1 },
+      height:  { name: 'Height', type: 'integer', min: 0, max: 255, default: 128, scrollPrecision: 1 }
       color: { name: 'Color', type: 'color', default: 'rgba(255,255,255,1)' }
     }
 

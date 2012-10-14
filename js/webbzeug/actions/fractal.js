@@ -48,7 +48,7 @@
       return FractalAction.__super__.constructor.apply(this, arguments);
     }
 
-    FractalAction.prototype.type = 'generative';
+    FractalAction.prototype.type = 'fractal';
 
     FractalAction.prototype.name = 'Fractal';
 
@@ -58,17 +58,19 @@
       return {
         roughness: {
           name: 'Roughness',
-          type: 'number',
+          type: 'integer',
           min: 1,
           max: 100,
-          "default": 3
+          "default": 3,
+          scrollPrecision: 1
         },
         seed: {
           name: 'Seed',
-          type: 'number',
+          type: 'integer',
           min: 1,
           max: 255,
-          "default": Math.round(Math.random() * 255)
+          "default": Math.round(Math.random() * 255),
+          scrollPrecision: 1
         }
       };
     };

@@ -19,7 +19,7 @@
       return BlurAction.__super__.constructor.apply(this, arguments);
     }
 
-    BlurAction.prototype.type = 'processive';
+    BlurAction.prototype.type = 'blur';
 
     BlurAction.prototype.name = 'Blur';
 
@@ -27,10 +27,11 @@
       return {
         strength: {
           name: 'Strength',
-          type: 'number',
+          type: 'integer',
           "default": 1,
           min: 1,
-          max: 30
+          max: 30,
+          scrollPrecision: 1
         },
         type: {
           name: 'Type',

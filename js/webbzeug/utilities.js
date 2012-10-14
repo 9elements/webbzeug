@@ -49,6 +49,11 @@
       dict[37] = 'vertical';
       dict[38] = 'substract';
       dict[38] = 'add';
+      dict[39] = 'repeat';
+      dict[40] = 'balls';
+      dict[41] = 'mosaic';
+      dict[42] = 'gauss';
+      dict[43] = 'linear';
       return dict;
     },
     stringToByte: function(string) {

@@ -45,7 +45,7 @@
       return PixelsAction.__super__.constructor.apply(this, arguments);
     }
 
-    PixelsAction.prototype.type = 'generative';
+    PixelsAction.prototype.type = 'pixels';
 
     PixelsAction.prototype.name = 'Pixels';
 
@@ -53,10 +53,11 @@
       return {
         seed: {
           name: 'Seed',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": Math.round(Math.random() * 255)
+          "default": Math.round(Math.random() * 255),
+          scrollPrecision: 1
         }
       };
     };

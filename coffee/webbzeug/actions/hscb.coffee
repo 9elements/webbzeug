@@ -1,14 +1,14 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.HSCB = class HSCBAction extends Webbzeug.Action
-  type: 'processive'
+  type: 'hscb'
   name: 'HSCB'
   availableParameters: ->
     {
-      hue: { name: "Hue", type: 'number', min: -180, max: 180, default: 0 },
-      saturation: { name: "Saturation", type: 'number', min: -100, max: 100, default: 0 },
-      contrast: { name: "Contrast", type: 'number', min: 0, max: 255, default: 127 },
-      brightness: { name: "Brightness", type: 'number', min: 0, max: 255, default: 127 }
+      hue: { name: "Hue", type: 'integer', min: -180, max: 180, default: 0, scrollPrecision: 1 },
+      saturation: { name: "Saturation", type: 'integer', min: -100, max: 100, default: 0, scrollPrecision: 1 },
+      contrast: { name: "Contrast", type: 'integer', min: 0, max: 255, default: 127, scrollPrecision: 1 },
+      brightness: { name: "Brightness", type: 'integer', min: 0, max: 255, default: 127, scrollPrecision: 1 }
     }
 
   validations: (contexts) ->

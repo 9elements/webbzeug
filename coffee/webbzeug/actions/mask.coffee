@@ -1,7 +1,7 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Mask = class MaskAction extends Webbzeug.Action
-  type: 'processive'
+  type: 'mask'
   name: 'Mask'
   availableParameters: -> {}
 

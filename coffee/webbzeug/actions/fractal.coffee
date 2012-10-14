@@ -30,13 +30,13 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Fractal = class FractalAction extends Webbzeug.Action
-  type: 'generative'
+  type: 'fractal'
   name: 'Fractal'
   unitSize: 1
   availableParameters: ->
     {
-      roughness: { name: 'Roughness', type: 'number', min: 1, max: 100, default: 3 },
-      seed: { name: 'Seed', type: 'number', min: 1, max: 255, default: Math.round(Math.random() * 255) }
+      roughness: { name: 'Roughness', type: 'integer', min: 1, max: 100, default: 3, scrollPrecision: 1 },
+      seed: { name: 'Seed', type: 'integer', min: 1, max: 255, default: Math.round(Math.random() * 255), scrollPrecision: 1 }
     }
 
   validations: (contexts) ->

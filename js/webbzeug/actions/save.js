@@ -19,7 +19,7 @@
       return SaveAction.__super__.constructor.apply(this, arguments);
     }
 
-    SaveAction.prototype.type = 'memory';
+    SaveAction.prototype.type = 'save';
 
     SaveAction.prototype.name = 'Save';
 
@@ -27,10 +27,11 @@
       return {
         id: {
           name: 'ID',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 50,
-          "default": 0
+          "default": 0,
+          scrollPrecision: 1
         }
       };
     };

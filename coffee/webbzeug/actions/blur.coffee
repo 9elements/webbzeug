@@ -1,11 +1,11 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
-  type: 'processive'
+  type: 'blur'
   name: 'Blur'
   availableParameters: ->
     {
-      strength: { name: 'Strength', type: 'number', default: 1, min: 1 , max: 30 }
+      strength: { name: 'Strength', type: 'integer', default: 1, min: 1 , max: 30, scrollPrecision: 1 }
       type: { name: 'Type', type: 'enum', values: { linear: 'Linear', gauss: 'Gauss' }, default: 'linear' }
     }
 

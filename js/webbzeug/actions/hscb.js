@@ -19,7 +19,7 @@
       return HSCBAction.__super__.constructor.apply(this, arguments);
     }
 
-    HSCBAction.prototype.type = 'processive';
+    HSCBAction.prototype.type = 'hscb';
 
     HSCBAction.prototype.name = 'HSCB';
 
@@ -27,31 +27,35 @@
       return {
         hue: {
           name: "Hue",
-          type: 'number',
+          type: 'integer',
           min: -180,
           max: 180,
-          "default": 0
+          "default": 0,
+          scrollPrecision: 1
         },
         saturation: {
           name: "Saturation",
-          type: 'number',
+          type: 'integer',
           min: -100,
           max: 100,
-          "default": 0
+          "default": 0,
+          scrollPrecision: 1
         },
         contrast: {
           name: "Contrast",
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 127
+          "default": 127,
+          scrollPrecision: 1
         },
         brightness: {
           name: "Brightness",
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 255,
-          "default": 127
+          "default": 127,
+          scrollPrecision: 1
         }
       };
     };

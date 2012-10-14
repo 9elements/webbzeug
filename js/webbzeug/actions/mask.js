@@ -19,7 +19,7 @@
       return MaskAction.__super__.constructor.apply(this, arguments);
     }
 
-    MaskAction.prototype.type = 'processive';
+    MaskAction.prototype.type = 'mask';
 
     MaskAction.prototype.name = 'Mask';
 

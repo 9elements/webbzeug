@@ -19,7 +19,7 @@
       return LightAction.__super__.constructor.apply(this, arguments);
     }
 
-    LightAction.prototype.type = 'processive';
+    LightAction.prototype.type = 'light';
 
     LightAction.prototype.name = 'Light';
 
@@ -27,58 +27,59 @@
       return {
         eyeX: {
           name: 'Eye X',
-          type: 'number',
+          type: 'float',
           min: -1,
           max: 1,
           "default": 0.5,
-          step: 0.001
+          scrollPrecision: 0.001
         },
         eyeY: {
           name: 'Eye Y',
-          type: 'number',
+          type: 'float',
           min: -1,
           max: 1,
           "default": 0.5,
-          step: 0.001
+          scrollPrecision: 0.001
         },
         eyeZ: {
           name: 'Eye Z',
-          type: 'number',
+          type: 'float',
           min: -1,
           max: 1,
           "default": 0.5,
-          step: 0.001
+          scrollPrecision: 0.001
         },
         lightX: {
           name: 'Light X',
-          type: 'number',
+          type: 'float',
           min: -1,
           max: 1,
           "default": 0.5,
-          step: 0.001
+          scrollPrecision: 0.001
         },
         lightY: {
           name: 'Light Y',
-          type: 'number',
+          type: 'float',
           min: -1,
           max: 1,
           "default": 0.5,
-          step: 0.001
+          scrollPrecision: 0.001
         },
         lightZ: {
           name: 'Light Z',
-          type: 'number',
+          type: 'float',
           min: -1,
           max: 1,
           "default": 0.5,
-          step: 0.001
+          scrollPrecision: 0.001
         },
         power: {
           name: 'Power',
-          type: 'number',
+          type: 'integer',
           min: 0.1,
           max: 100,
-          "default": 20
+          "default": 20,
+          scrollPrecision: 1
         },
         diffuseColor: {
           name: 'Diffuse',

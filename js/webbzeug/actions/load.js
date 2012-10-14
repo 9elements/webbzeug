@@ -19,7 +19,7 @@
       return LoadAction.__super__.constructor.apply(this, arguments);
     }
 
-    LoadAction.prototype.type = 'memory';
+    LoadAction.prototype.type = 'load';
 
     LoadAction.prototype.name = 'Load';
 
@@ -27,10 +27,11 @@
       return {
         id: {
           name: 'ID',
-          type: 'number',
+          type: 'integer',
           min: 0,
           max: 50,
-          "default": 0
+          "default": 0,
+          scrollPrecision: 1
         }
       };
     };

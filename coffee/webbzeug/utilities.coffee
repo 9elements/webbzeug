@@ -18,7 +18,6 @@ window.Webbzeug.Utilities =
     dict[13] = 'rectangle'
     dict[14] = 'rotozoom'
     dict[15] = 'save'
-
     dict[16] = 'roughness'
     dict[17] = 'seed'
     dict[18] = 'type'
@@ -43,6 +42,11 @@ window.Webbzeug.Utilities =
     dict[37] = 'vertical'
     dict[38] = 'substract'
     dict[38] = 'add'
+    dict[39] = 'repeat'
+    dict[40] = 'balls'
+    dict[41] = 'mosaic'
+    dict[42] = 'gauss'
+    dict[43] = 'linear'
 
     return dict
 

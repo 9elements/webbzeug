@@ -19,7 +19,7 @@
       return NormalAction.__super__.constructor.apply(this, arguments);
     }
 
-    NormalAction.prototype.type = 'processive';
+    NormalAction.prototype.type = 'normal';
 
     NormalAction.prototype.name = 'Normal';
 

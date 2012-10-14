@@ -30,12 +30,12 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
-  type: 'generative'
+  type: 'cell'
   name: 'Cell'
   availableParameters: ->
     {
-      gridSize: { name: 'Grid size', type: 'number', min: 2, max: 1000, default: 8 },
-      seed: { name: 'Seed', type: 'number', min: 0, max: 255, default: Math.round(Math.random() * 255) },
+      gridSize: { name: 'Grid size', type: 'integer', min: 2, max: 100, default: 8, scrollPrecision: 1 },
+      seed: { name: 'Seed', type: 'integer', min: 0, max: 255, default: Math.round(Math.random() * 255), scrollPrecision: 1 },
       type: { name: 'Type', type: 'enum', values: { balls: 'Balls', mosaic: 'Mosaic' }, default: 'balls' }
     }
 

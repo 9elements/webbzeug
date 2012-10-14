@@ -61,6 +61,8 @@
           %li
             %a{ :href => '#normal' } Normal
           %li
+            %a{ :href => '#repeat' } Repeat
+          %li
             %a{ :href => '#rotozoom' } Rotozoom
 
         .group Memory Actions
@@ -210,6 +212,14 @@
       The normal action creates a normal map for the given input. It needs exactly one input.
 
       %a.source{ :'data-file' => 'coffee/webbzeug/actions/normal.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'repeat' }
+      %h3 Repeat
+
+      The repeat action repeats the input using the given scrolling offset and blending method. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/repeat.coffee' } View source on Github.com
 
     %section
       %a{ :name => 'rotozoom' }

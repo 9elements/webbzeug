@@ -19,7 +19,7 @@
       return RepeatAction.__super__.constructor.apply(this, arguments);
     }
 
-    RepeatAction.prototype.type = 'processive';
+    RepeatAction.prototype.type = 'repeat';
 
     RepeatAction.prototype.name = 'Repeat';
 
@@ -27,26 +27,29 @@
       return {
         scrollX: {
           name: 'Scroll X',
-          type: 'number',
+          type: 'integer',
           min: -256,
           max: 256,
           "default": 0,
-          step: 1
+          step: 1,
+          scrollPrecision: 1
         },
         scrollY: {
           name: 'Scroll Y',
-          type: 'number',
+          type: 'integer',
           min: -256,
           max: 256,
           "default": 0,
-          step: 1
+          step: 1,
+          scrollPrecision: 1
         },
         count: {
           name: 'Count',
-          type: 'number',
+          type: 'integer',
           min: 1,
           max: 50,
-          "default": 1
+          "default": 1,
+          scrollPrecision: 1
         },
         blendmode: {
           name: 'Blend Mode',

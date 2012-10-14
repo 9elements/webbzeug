@@ -19,7 +19,7 @@
       return RotoZoomAction.__super__.constructor.apply(this, arguments);
     }
 
-    RotoZoomAction.prototype.type = 'processive';
+    RotoZoomAction.prototype.type = 'rotozoom';
 
     RotoZoomAction.prototype.name = 'Rotozoom';
 
@@ -27,18 +27,19 @@
       return {
         rotation: {
           name: 'Rotation',
-          type: 'number',
+          type: 'float',
           min: 0,
           max: Math.PI * 2,
           "default": 0,
-          step: 0.01
+          scrollPrecision: 0.01
         },
         zoom: {
           name: 'Zoom',
-          type: 'number',
+          type: 'integer',
           min: 1,
           max: 255,
-          "default": 10
+          "default": 10,
+          scrollPrecision: 1
         }
       };
     };

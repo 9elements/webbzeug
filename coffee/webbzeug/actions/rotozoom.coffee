@@ -1,12 +1,12 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.RotoZoom = class RotoZoomAction extends Webbzeug.Action
-  type: 'processive'
+  type: 'rotozoom'
   name: 'Rotozoom'
   availableParameters: ->
     {
-      rotation: { name: 'Rotation', type: 'number', min: 0, max: Math.PI * 2, default: 0, step: 0.01},
-      zoom: { name: 'Zoom', type: 'number', min: 1, max: 255, default: 10}
+      rotation: { name: 'Rotation', type: 'float', min: 0, max: Math.PI * 2, default: 0, scrollPrecision: 0.01 },
+      zoom: { name: 'Zoom', type: 'integer', min: 1, max: 255, default: 10, scrollPrecision: 1 }
     }
 
   validations: (contexts) ->

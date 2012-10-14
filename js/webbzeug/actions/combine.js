@@ -19,7 +19,7 @@
       return CombineAction.__super__.constructor.apply(this, arguments);
     }
 
-    CombineAction.prototype.type = 'processive';
+    CombineAction.prototype.type = 'combine';
 
     CombineAction.prototype.name = 'Combine';
 
