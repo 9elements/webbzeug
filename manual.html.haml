@@ -59,6 +59,8 @@
           %li
             %a{ :href => '#mirror' } Mirror
           %li
+            %a{ :href => '#move' } Move
+          %li
             %a{ :href => '#normal' } Normal
           %li
             %a{ :href => '#repeat' } Repeat
@@ -204,6 +206,14 @@
       The mirror action mirrors the image vertically or horizontically. It needs exactly one input.
 
       %a.source{ :'data-file' => 'coffee/webbzeug/actions/mirror.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'move' }
+      %h3 Move
+
+      The move action moves the input by the given x and y offset. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/move.coffee' } View source on Github.com
 
     %section
       %a{ :name => 'normal' }
