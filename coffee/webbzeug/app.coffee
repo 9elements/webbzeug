@@ -31,6 +31,8 @@ window.Webbzeug.App = class App
       $.get '/samples/' + value, (data) =>
         @loadSaveHandler.openData data
 
+        samplesSelect.val('')
+
   ###
     Setup
   ###

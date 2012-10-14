@@ -46,7 +46,8 @@
         var value;
         value = samplesSelect.val();
         return $.get('/samples/' + value, function(data) {
-          return _this.loadSaveHandler.openData(data);
+          _this.loadSaveHandler.openData(data);
+          return samplesSelect.val('');
         });
       });
     };
