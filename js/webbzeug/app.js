@@ -427,7 +427,7 @@
           e.preventDefault();
           offsetX = $('.workspace').offset().left;
           return editingElement.css({
-            width: Math.max(3, Math.floor((e.pageX - offsetX - editingElement.position().left) / _this.gridWidth)) * _this.gridWidth
+            width: Math.max(3, Math.round((e.pageX - offsetX - editingElement.position().left) / _this.gridWidth)) * _this.gridWidth
           });
         };
         $(document).mousemove(handleMouseMove);
@@ -478,8 +478,8 @@
             newLeft = initPosHash[element.attr('data-index')].x + distPos.x;
             newTop = initPosHash[element.attr('data-index')].y + distPos.y;
             element.css({
-              left: Math.floor(newLeft / _this.gridWidth) * _this.gridWidth,
-              top: Math.floor(newTop / _this.gridHeight) * _this.gridHeight
+              left: Math.round(newLeft / _this.gridWidth) * _this.gridWidth,
+              top: Math.round(newTop / _this.gridHeight) * _this.gridHeight
             });
           }
         };

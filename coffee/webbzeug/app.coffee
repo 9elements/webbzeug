@@ -362,7 +362,7 @@ window.Webbzeug.App = class App
         offsetX = $('.workspace').offset().left
 
         editingElement.css
-          width: Math.max(3, Math.floor((e.pageX - offsetX - editingElement.position().left) / @gridWidth)) * @gridWidth
+          width: Math.max(3, Math.round((e.pageX - offsetX - editingElement.position().left) / @gridWidth)) * @gridWidth
 
       $(document).mousemove handleMouseMove
 
@@ -403,8 +403,8 @@ window.Webbzeug.App = class App
           newLeft = initPosHash[element.attr('data-index')].x + distPos.x
           newTop  = initPosHash[element.attr('data-index')].y + distPos.y
           element.css
-            left: Math.floor(newLeft / @gridWidth) * @gridWidth
-            top:  Math.floor(newTop / @gridHeight) * @gridHeight
+            left: Math.round(newLeft / @gridWidth) * @gridWidth
+            top:  Math.round(newTop / @gridHeight) * @gridHeight
 
         return
 
