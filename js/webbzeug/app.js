@@ -442,7 +442,6 @@
         var handleMouseMove, initMousePos, initPosHash, otherElement, _i, _j, _len, _len1, _ref1, _ref2;
         e.stopPropagation();
         if (!$(element).hasClass('selected')) {
-          console.log("not selected");
           _ref1 = _this.selectedElements;
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             otherElement = _ref1[_i];

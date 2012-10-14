@@ -377,7 +377,6 @@ window.Webbzeug.App = class App
       e.stopPropagation()
 
       unless $(element).hasClass('selected')
-        console.log "not selected"
 
         for otherElement in @selectedElements
           $(otherElement).removeClass 'selected'
@@ -577,7 +576,6 @@ window.Webbzeug.App = class App
       if possibleChildAction is action
         continue
 
-      # console.log possibleChildAction.x, action.x + action.width, "///", action.x + action.width, possibleChildAction.x
       if possibleChildAction.y is action.y - 1
         if !(possibleChildAction.x >= action.x + action.width or possibleChildAction.x + possibleChildAction.width <= action.x)
           action.children.push possibleChildAction
