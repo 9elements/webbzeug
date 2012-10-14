@@ -3,82 +3,82 @@ window.Webbzeug.ClassMap =
   ###
     generative actions
   ###
-  rectangle: 
-    name: 'Rect'
-    type: 'generative'
-    class: Webbzeug.Actions.Rectangle
-  glowrect: 
-    name: 'GlowRect'
-    type: 'generative'
-    class: Webbzeug.Actions.Glowrect
-  circle: 
-    name: 'Circle'
-    type: 'generative'
-    class: Webbzeug.Actions.Circle
-  fractal: 
-    name: 'Fractal'
-    type: 'generative'
-    class: Webbzeug.Actions.Fractal
-  pixels: 
-    name: 'Pixels'
-    type: 'generative'
-    class: Webbzeug.Actions.Pixels
-  flat: 
-    name: 'Flat'
-    type: 'generative'
-    class: Webbzeug.Actions.Flat
   cell: 
     name: 'Cell'
     type: 'generative'
     class: Webbzeug.Actions.Cell
-
+  circle: 
+    name: 'Circle'
+    type: 'generative'
+    class: Webbzeug.Actions.Circle
+  flat: 
+    name: 'Flat'
+    type: 'generative'
+    class: Webbzeug.Actions.Flat
+  fractal: 
+    name: 'Fractal'
+    type: 'generative'
+    class: Webbzeug.Actions.Fractal
+  glowrect: 
+    name: 'GlowRect'
+    type: 'generative'
+    class: Webbzeug.Actions.Glowrect
+  pixels: 
+    name: 'Pixels'
+    type: 'generative'
+    class: Webbzeug.Actions.Pixels
+  rectangle: 
+    name: 'Rect'
+    type: 'generative'
+    class: Webbzeug.Actions.Rectangle
+  
   ###
     Processive actions
   ###
-  combine: 
-    name: 'Combine'
-    type: 'processive'
-    class: Webbzeug.Actions.Combine
-  invert: 
-    name: 'Invert'
-    type: 'processive'
-    class: Webbzeug.Actions.Invert
-  hscb: 
-    name: 'HSCB'
-    type: 'processive'
-    class: Webbzeug.Actions.HSCB
   blur: 
     name: 'Blur'
     type: 'processive'
     class: Webbzeug.Actions.Blur
-  rotozoom: 
-    name: 'RotoZoom'
+  combine: 
+    name: 'Combine'
     type: 'processive'
-    class: Webbzeug.Actions.RotoZoom
+    class: Webbzeug.Actions.Combine
+  hscb: 
+    name: 'HSCB'
+    type: 'processive'
+    class: Webbzeug.Actions.HSCB
+  invert: 
+    name: 'Invert'
+    type: 'processive'
+    class: Webbzeug.Actions.Invert
   light: 
     name: 'Light'
     type: 'processive'
     class: Webbzeug.Actions.Light
-  mirror: 
-    name: 'Mirror'
-    type: 'processive'
-    class: Webbzeug.Actions.Mirror
-  normal:
-    name: 'Normal'
-    type: 'processive'
-    class: Webbzeug.Actions.Normal
   mask:
     name: 'Mask'
     type: 'processive'
     class: Webbzeug.Actions.Mask
-  repeat:
-    name: 'Repeat'
+  mirror: 
+    name: 'Mirror'
     type: 'processive'
-    class: Webbzeug.Actions.Repeat
+    class: Webbzeug.Actions.Mirror
   move:
     name: 'Move'
     type: 'processive'
     class: Webbzeug.Actions.Move
+  normal:
+    name: 'Normal'
+    type: 'processive'
+    class: Webbzeug.Actions.Normal
+  repeat:
+    name: 'Repeat'
+    type: 'processive'
+    class: Webbzeug.Actions.Repeat
+  rotozoom: 
+    name: 'RotoZoom'
+    type: 'processive'
+    class: Webbzeug.Actions.RotoZoom
 
   ###
     Memory actions
