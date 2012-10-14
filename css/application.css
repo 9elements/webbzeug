@@ -102,6 +102,20 @@ strong {
     overflow: hidden;
     opacity: 0; }
 
+ul.nav {
+  float: left;
+  margin-left: 20px; }
+  ul.nav li a {
+    display: block;
+    font: bold 13px "Helvetica Neue", Helvetica, Arial;
+    color: white;
+    padding: 17px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none; }
+    ul.nav li a:hover {
+      background: rgba(0, 0, 0, 0.3); }
+
 header, .sidebar {
   background: rgba(0, 0, 0, 0.3);
   width: 100%;
