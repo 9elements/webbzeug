@@ -71,6 +71,10 @@ window.Webbzeug.ClassMap =
     name: 'Repeat'
     type: 'processive'
     class: Webbzeug.Actions.Repeat
+  move:
+    name: 'Move'
+    type: 'processive'
+    class: Webbzeug.Actions.Move
 
   ###
     Memory actions

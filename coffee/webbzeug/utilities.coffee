@@ -47,6 +47,7 @@ window.Webbzeug.Utilities =
     dict[41] = 'mosaic'
     dict[42] = 'gauss'
     dict[43] = 'linear'
+    dict[44] = 'move'
 
     return dict
 
