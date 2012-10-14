@@ -7,6 +7,10 @@ window.Webbzeug.ClassMap =
     name: 'Rect'
     type: 'generative'
     class: Webbzeug.Actions.Rectangle
+  glowrect: 
+    name: 'GlowRect'
+    type: 'generative'
+    class: Webbzeug.Actions.Glowrect
   circle: 
     name: 'Circle'
     type: 'generative'
