@@ -52,6 +52,10 @@ window.Webbzeug.App = class App
       width: (cols + 1) * @gridWidth
       height: (rows + 1) * @gridHeight
 
+    @workspace.css
+      width: (cols + 1) * @gridWidth
+      height: (rows + 1) * @gridHeight
+
     for r in [0...rows]
       rowDiv = $('<div>').addClass('grid-row').css(height: @gridHeight - 1).appendTo grid
 

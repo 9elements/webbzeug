@@ -2,5 +2,9 @@
   { 
     "name": "Bio Hazard", 
     "file": "bio.webb"
+  },
+  {
+    "name": "Floor Texture",
+    "file": "floor-tex.webb"
   }
 ]

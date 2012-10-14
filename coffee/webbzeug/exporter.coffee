@@ -39,10 +39,16 @@ window.Webbzeug.Exporter = class Exporter
   renderedToDataURL: -> return $('canvas#canvas').get(0).toDataURL 'image/png'
 
   writeData: (data) ->
-    if typeof data is 'number' and parseInt(data) == data
+    if typeof data is 'number' and parseInt(data) == data and data <= 255
       @output += '\xfa'
       @output += chr(data & 0xff)
+    if typeof data is 'number' and parseInt(data) == data and data > 255
+      # 16bit integer
+      @output += '\xfe'
+      @output += chr(data & 0xff00)
+      @output += chr(data & 0x00ff)
     if typeof data is 'number' and !!(data % 1)
+      # 8bit integer
       data = data.toString()
       @output += '\xfd'
       @output += chr(data.length & 0xff)

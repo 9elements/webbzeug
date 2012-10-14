@@ -45,7 +45,7 @@
           name: 'Radius X',
           type: 'integer',
           min: 0,
-          max: 255,
+          max: 256,
           "default": 50,
           scrollPrecision: 1
         },

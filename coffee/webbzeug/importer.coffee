@@ -1,11 +1,9 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Importer = class Importer
-  debug: false
+  debug: true
   constructor: (@app) -> return
   loadData: (@data) ->
     @maxIndex = 0
-
-    @debugPrint @data
 
     @actions = []
 
@@ -89,6 +87,10 @@ window.Webbzeug.Importer = class Importer
       # Integer
       val = @readInt()
 
+    if valueType is '\xfe'
+      # 16 bit Integer
+      val = @readInt16()
+
     if valueType is '\xfb'
       # String
       stringLength = @readInt()
@@ -109,6 +111,11 @@ window.Webbzeug.Importer = class Importer
   readInt: ->
     int = ord(@data[0])
     @data = @data.slice 1
+    return int
+
+  readInt16: ->
+    int = ord(@data[0])
+    int += ord(@data[1])
     return int
     
   readBytes: (count, translate=true) ->

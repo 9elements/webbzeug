@@ -46,9 +46,14 @@
 
     Exporter.prototype.writeData = function(data) {
       var stringifiedObj;
-      if (typeof data === 'number' && parseInt(data) === data) {
+      if (typeof data === 'number' && parseInt(data) === data && data <= 255) {
         this.output += '\xfa';
         this.output += chr(data & 0xff);
+      }
+      if (typeof data === 'number' && parseInt(data) === data && data > 255) {
+        this.output += '\xfe';
+        this.output += chr(data & 0xff00);
+        this.output += chr(data & 0x00ff);
       }
       if (typeof data === 'number' && !!(data % 1)) {
         data = data.toString();

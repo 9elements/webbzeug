@@ -7,7 +7,7 @@
 
   window.Webbzeug.Importer = Importer = (function() {
 
-    Importer.prototype.debug = false;
+    Importer.prototype.debug = true;
 
     function Importer(app) {
       this.app = app;
@@ -18,7 +18,6 @@
       var byte, i, identifier, version, _i, _ref1;
       this.data = data;
       this.maxIndex = 0;
-      this.debugPrint(this.data);
       this.actions = [];
       identifier = this.readBytes(2);
       if (identifier !== 'WZ') {
@@ -100,6 +99,9 @@
       if (valueType === '\xfa') {
         val = this.readInt();
       }
+      if (valueType === '\xfe') {
+        val = this.readInt16();
+      }
       if (valueType === '\xfb') {
         stringLength = this.readInt();
         val = this.readBytes(stringLength);
@@ -119,6 +121,13 @@
       var int;
       int = ord(this.data[0]);
       this.data = this.data.slice(1);
+      return int;
+    };
+
+    Importer.prototype.readInt16 = function() {
+      var int;
+      int = ord(this.data[0]);
+      int += ord(this.data[1]);
       return int;
     };
 

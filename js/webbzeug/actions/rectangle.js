@@ -29,7 +29,7 @@
           name: 'X',
           type: 'integer',
           min: 0,
-          max: 255,
+          max: 256,
           "default": 64,
           scrollPrecision: 1
         },
@@ -37,7 +37,7 @@
           name: 'Y',
           type: 'integer',
           min: 0,
-          max: 255,
+          max: 256,
           "default": 64,
           scrollPrecision: 1
         },
@@ -45,7 +45,7 @@
           name: 'Width',
           type: 'integer',
           min: 0,
-          max: 255,
+          max: 256,
           "default": 128,
           scrollPrecision: 1
         },
@@ -53,7 +53,7 @@
           name: 'Height',
           type: 'integer',
           min: 0,
-          max: 255,
+          max: 256,
           "default": 128,
           scrollPrecision: 1
         },
@@ -83,6 +83,7 @@
       y = this.getParameter('y');
       w = this.getParameter('width');
       h = this.getParameter('height');
+      console.log("rendering", x, y, w, h);
       this.copyRendered(contexts);
       this.context.fillStyle = this.getParameter('color');
       this.context.fillRect(x, y, w, h);

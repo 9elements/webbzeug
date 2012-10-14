@@ -72,6 +72,10 @@
         width: (cols + 1) * this.gridWidth,
         height: (rows + 1) * this.gridHeight
       });
+      this.workspace.css({
+        width: (cols + 1) * this.gridWidth,
+        height: (rows + 1) * this.gridHeight
+      });
       for (r = _i = 0; 0 <= rows ? _i < rows : _i > rows; r = 0 <= rows ? ++_i : --_i) {
         rowDiv = $('<div>').addClass('grid-row').css({
           height: this.gridHeight - 1
