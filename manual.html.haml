@@ -38,6 +38,8 @@
           %li
             %a{ :href => '#fractal' } Fractal
           %li
+            %a{ :href => '#glowrect' } GlowRect
+          %li
             %a{ :href => '#pixels' } Pixels
           %li
             %a{ :href => '#rect' } Rectangle
@@ -132,6 +134,14 @@
       The fractal action fills the image with a fractal noise using the given seed and roughness. All inputs are overwritten.
 
       %a.source{ :'data-file' => 'coffee/webbzeug/actions/fractal.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'glowrect' }
+      %h3 GlowRect
+
+      The GlowRect action draws a rectangle with a glowing border using the given position, size and radius. The rectangle is drawn on the first input, if given.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/glowrect.coffee' } View source on Github.com
 
     %section
       %a{ :name => 'pixels' }
