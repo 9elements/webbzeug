@@ -46,7 +46,6 @@
 
     Exporter.prototype.writeData = function(data) {
       var stringifiedObj;
-      console.log("WRITIN DATA", data);
       if (typeof data === 'number' && parseInt(data) === data) {
         this.output += '\xfa';
         this.output += chr(data & 0xff);

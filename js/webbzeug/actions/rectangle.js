@@ -19,7 +19,7 @@
       return RectangleAction.__super__.constructor.apply(this, arguments);
     }
 
-    RectangleAction.prototype.type = 'rect';
+    RectangleAction.prototype.type = 'rectangle';
 
     RectangleAction.prototype.name = 'Rect';
 

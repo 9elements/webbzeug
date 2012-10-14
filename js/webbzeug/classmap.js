@@ -11,7 +11,7 @@
     */
 
     rectangle: {
-      name: 'Rectangle',
+      name: 'Rect',
       type: 'generative',
       "class": Webbzeug.Actions.Rectangle
     },

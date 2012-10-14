@@ -4,7 +4,7 @@ window.Webbzeug.ClassMap =
     generative actions
   ###
   rectangle: 
-    name: 'Rectangle'
+    name: 'Rect'
     type: 'generative'
     class: Webbzeug.Actions.Rectangle
   circle: 

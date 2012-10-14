@@ -39,7 +39,6 @@ window.Webbzeug.Exporter = class Exporter
   renderedToDataURL: -> return $('canvas#canvas').get(0).toDataURL 'image/png'
 
   writeData: (data) ->
-    console.log "WRITIN DATA", data
     if typeof data is 'number' and parseInt(data) == data
       @output += '\xfa'
       @output += chr(data & 0xff)

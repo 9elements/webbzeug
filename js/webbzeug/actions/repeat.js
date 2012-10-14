@@ -88,26 +88,20 @@
       outputData = this.context.getImageData(0, 0, w, h);
       scrollXinc = parseInt(this.getParameter('scrollX'));
       scrollYinc = parseInt(this.getParameter('scrollY'));
-      scrollX = scrollXinc;
-      scrollY = scrollYinc;
-      for (i = _i = 0, _ref2 = parseInt(this.getParameter('count')); 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        for (x = _j = 0; 0 <= w ? _j < w : _j > w; x = 0 <= w ? ++_j : --_j) {
-          for (y = _k = 0; 0 <= h ? _k < h : _k > h; y = 0 <= h ? ++_k : --_k) {
+      for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
+        for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
+          scrollX = scrollXinc;
+          scrollY = scrollYinc;
+          for (i = _k = 0, _ref2 = parseInt(this.getParameter('count')); 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
             srcX = x;
             srcY = y;
-            destX = x + scrollX;
-            destY = y + scrollY;
-            if (destY < 0) {
-              destY += Math.ceil(Math.abs(destY) / h) * h;
-            }
-            if (destY > h - 1) {
-              destY -= Math.ceil(destY / h) * h;
-            }
+            destX = (srcX + scrollX) % w;
+            destY = (srcY + scrollY) % h;
             if (destX < 0) {
-              destX += Math.ceil(Math.abs(destX) / w) * w;
+              destX += w;
             }
-            if (destX > w - 1) {
-              destX -= Math.ceil(destX / w) * w;
+            if (destY < 0) {
+              destY += h;
             }
             srcIndex = ((srcY * w) + srcX) << 2;
             destIndex = ((destY * w) + destX) << 2;
@@ -118,10 +112,10 @@
                 outputData.data[destIndex + 2] = Math.min(outputData.data[destIndex + 2] + inputData.data[srcIndex + 2], 255);
                 outputData.data[destIndex + 3] = Math.min(outputData.data[destIndex + 3] + inputData.data[srcIndex + 3], 255);
             }
+            scrollX += scrollXinc;
+            scrollY += scrollYinc;
           }
         }
-        scrollX += scrollXinc;
-        scrollY += scrollYinc;
       }
       this.context.putImageData(outputData, 0, 0);
       return this.context;

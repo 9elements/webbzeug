@@ -38,26 +38,21 @@ window.Webbzeug.Actions.Repeat = class RepeatAction extends Webbzeug.Action
     scrollXinc = parseInt @getParameter('scrollX')
     scrollYinc = parseInt @getParameter('scrollY')
 
-    scrollX = scrollXinc
-    scrollY = scrollYinc
+    for x in [0...w]
+      for y in [0...h]
+        scrollX = scrollXinc
+        scrollY = scrollYinc
+        for i in [0...parseInt(@getParameter('count'))]
 
-    for i in [0...parseInt(@getParameter('count'))]
-      for x in [0...w]
-        for y in [0...h]
           srcX = x
           srcY = y
-          destX = x + scrollX
-          destY = y + scrollY
-
-          if destY < 0
-            destY += Math.ceil(Math.abs(destY) / h) * h
-          if destY > h - 1
-            destY -= Math.ceil(destY / h) * h
+          destX = (srcX + scrollX) % w
+          destY = (srcY + scrollY) % h
 
           if destX < 0
-            destX += Math.ceil(Math.abs(destX) / w) * w
-          if destX > w - 1
-            destX -= Math.ceil(destX / w) * w
+            destX += w
+          if destY < 0
+            destY += h
 
           srcIndex = ((srcY * w) + srcX) << 2
           destIndex = ((destY * w) + destX) << 2
@@ -68,9 +63,9 @@ window.Webbzeug.Actions.Repeat = class RepeatAction extends Webbzeug.Action
               outputData.data[destIndex + 1] = Math.min(outputData.data[destIndex + 1] + inputData.data[srcIndex + 1], 255)
               outputData.data[destIndex + 2] = Math.min(outputData.data[destIndex + 2] + inputData.data[srcIndex + 2], 255)
               outputData.data[destIndex + 3] = Math.min(outputData.data[destIndex + 3] + inputData.data[srcIndex + 3], 255)
-
-      scrollX += scrollXinc
-      scrollY += scrollYinc
+          
+          scrollX += scrollXinc
+          scrollY += scrollYinc  
 
     @context.putImageData outputData, 0, 0 
     return @context
