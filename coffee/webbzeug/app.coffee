@@ -305,47 +305,49 @@ window.Webbzeug.App = class App
         $(document).off 'mousemove', handleMouseMove
         selectionRectEl.fadeOut 'fast'
 
-        ###
-          Selection done
-        ###
-        intersectingActions = []
+        @handleSelectIntersection selectionRect
 
-        offsetX = @workspace.offset().left
-        offsetY = @workspace.offset().top
+        return
 
-        r2 = 
-          left:   selectionRect.x
-          top:    selectionRect.y
-          width:  Math.abs(selectionRect.width)
-          height: Math.abs(selectionRect.height)
+  handleSelectIntersection: (selectionRect) ->
+    intersectingActions = []
 
-        if selectionRect.width < 0
-          r2.left = r2.left + selectionRect.width
-        if selectionRect.height < 0
-          r2.top = r2.top + selectionRect.height
+    offsetX = @workspace.offset().left
+    offsetY = @workspace.offset().top
 
-        @workspace.find('.action').removeClass('selected')
-        @selectedElements = []
+    r2 = 
+      left:   selectionRect.x
+      top:    selectionRect.y
+      width:  Math.abs(selectionRect.width)
+      height: Math.abs(selectionRect.height)
 
-        if r2.width > 0 or r2.height > 0
-          selectedElements = []
-          for action in @actionsArr
-            # rectangular intersection test
-            r1 =
-              left:   action.x * @gridWidth + offsetX
-              top:    action.y * @gridHeight + offsetY
-              width:  action.width * @gridWidth
-              height: @gridHeight
+    if selectionRect.width < 0
+      r2.left = r2.left + selectionRect.width
+    if selectionRect.height < 0
+      r2.top = r2.top + selectionRect.height
 
-            unless r2.left > r1.left + r1.width or
-              r2.left + r2.width < r1.left or
-              r2.top > r1.top + r1.height or
-              r2.top + r2.height < r1.top
-                action.element.addClass('selected')
-                selectedElements.push action.element
+    @workspace.find('.action').removeClass('selected')
+    @selectedElements = []
 
-          if selectedElements.length > 0
-            @selectedElements = selectedElements
+    if r2.width > 0 or r2.height > 0
+      selectedElements = []
+      for action in @actionsArr
+        # rectangular intersection test
+        r1 =
+          left:   action.x * @gridWidth + offsetX
+          top:    action.y * @gridHeight + offsetY
+          width:  action.width * @gridWidth
+          height: @gridHeight
+
+        unless r2.left > r1.left + r1.width or
+          r2.left + r2.width < r1.left or
+          r2.top > r1.top + r1.height or
+          r2.top + r2.height < r1.top
+            action.element.addClass('selected')
+            selectedElements.push action.element
+
+      if selectedElements.length > 0
+        @selectedElements = selectedElements
 
   handleElementDrag: (element) ->
     $(element).find('.dragger').mousedown (e) =>
@@ -372,10 +374,11 @@ window.Webbzeug.App = class App
 
     # Move drag
     $(element).mousedown (e) =>
-      e.preventDefault()
       e.stopPropagation()
 
       unless $(element).hasClass('selected')
+        console.log "not selected"
+
         for otherElement in @selectedElements
           $(otherElement).removeClass 'selected'
 
@@ -404,18 +407,24 @@ window.Webbzeug.App = class App
             left: Math.floor(newLeft / @gridWidth) * @gridWidth
             top:  Math.floor(newTop / @gridHeight) * @gridHeight
 
+        return
+
       $(document).mousemove handleMouseMove
 
       $(document).mouseup (e) =>
         $(document).off 'mousemove', handleMouseMove
+        @updateElementPositions()
+        return
+      return
 
-        for element in @selectedElements
-          action = @actions[element.attr('data-index')]
-          action.x = Math.round(element.position().left / @gridWidth)
-          action.y = Math.round(element.position().top  / @gridHeight)
+  updateElementPositions: ->
+    for element in @selectedElements
+      action = @actions[element.attr('data-index')]
+      action.x = Math.round(element.position().left / @gridWidth)
+      action.y = Math.round(element.position().top  / @gridHeight)
 
-          action.updatedAt = +new Date()
-          @updateParentsRecursively action
+      action.updatedAt = +new Date()
+      @updateParentsRecursively action
 
   handleElementClick: (e, element) ->
     @selectedActionIndex = element.attr('data-index')

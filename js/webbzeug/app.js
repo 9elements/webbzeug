@@ -367,52 +367,52 @@
         };
         $(document).mousemove(handleMouseMove);
         return $(document).one('mouseup', function(e) {
-          var action, intersectingActions, offsetX, offsetY, r1, r2, selectedElements, _i, _len, _ref1;
           $(document).off('mousemove', handleMouseMove);
           selectionRectEl.fadeOut('fast');
-          /*
-                    Selection done
-          */
-
-          intersectingActions = [];
-          offsetX = _this.workspace.offset().left;
-          offsetY = _this.workspace.offset().top;
-          r2 = {
-            left: selectionRect.x,
-            top: selectionRect.y,
-            width: Math.abs(selectionRect.width),
-            height: Math.abs(selectionRect.height)
-          };
-          if (selectionRect.width < 0) {
-            r2.left = r2.left + selectionRect.width;
-          }
-          if (selectionRect.height < 0) {
-            r2.top = r2.top + selectionRect.height;
-          }
-          _this.workspace.find('.action').removeClass('selected');
-          _this.selectedElements = [];
-          if (r2.width > 0 || r2.height > 0) {
-            selectedElements = [];
-            _ref1 = _this.actionsArr;
-            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-              action = _ref1[_i];
-              r1 = {
-                left: action.x * _this.gridWidth + offsetX,
-                top: action.y * _this.gridHeight + offsetY,
-                width: action.width * _this.gridWidth,
-                height: _this.gridHeight
-              };
-              if (!(r2.left > r1.left + r1.width || r2.left + r2.width < r1.left || r2.top > r1.top + r1.height || r2.top + r2.height < r1.top)) {
-                action.element.addClass('selected');
-                selectedElements.push(action.element);
-              }
-            }
-            if (selectedElements.length > 0) {
-              return _this.selectedElements = selectedElements;
-            }
-          }
+          _this.handleSelectIntersection(selectionRect);
         });
       });
+    };
+
+    App.prototype.handleSelectIntersection = function(selectionRect) {
+      var action, intersectingActions, offsetX, offsetY, r1, r2, selectedElements, _i, _len, _ref1;
+      intersectingActions = [];
+      offsetX = this.workspace.offset().left;
+      offsetY = this.workspace.offset().top;
+      r2 = {
+        left: selectionRect.x,
+        top: selectionRect.y,
+        width: Math.abs(selectionRect.width),
+        height: Math.abs(selectionRect.height)
+      };
+      if (selectionRect.width < 0) {
+        r2.left = r2.left + selectionRect.width;
+      }
+      if (selectionRect.height < 0) {
+        r2.top = r2.top + selectionRect.height;
+      }
+      this.workspace.find('.action').removeClass('selected');
+      this.selectedElements = [];
+      if (r2.width > 0 || r2.height > 0) {
+        selectedElements = [];
+        _ref1 = this.actionsArr;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          action = _ref1[_i];
+          r1 = {
+            left: action.x * this.gridWidth + offsetX,
+            top: action.y * this.gridHeight + offsetY,
+            width: action.width * this.gridWidth,
+            height: this.gridHeight
+          };
+          if (!(r2.left > r1.left + r1.width || r2.left + r2.width < r1.left || r2.top > r1.top + r1.height || r2.top + r2.height < r1.top)) {
+            action.element.addClass('selected');
+            selectedElements.push(action.element);
+          }
+        }
+        if (selectedElements.length > 0) {
+          return this.selectedElements = selectedElements;
+        }
+      }
     };
 
     App.prototype.handleElementDrag = function(element) {
@@ -440,9 +440,9 @@
       });
       return $(element).mousedown(function(e) {
         var handleMouseMove, initMousePos, initPosHash, otherElement, _i, _j, _len, _len1, _ref1, _ref2;
-        e.preventDefault();
         e.stopPropagation();
         if (!$(element).hasClass('selected')) {
+          console.log("not selected");
           _ref1 = _this.selectedElements;
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             otherElement = _ref1[_i];
@@ -465,7 +465,7 @@
           };
         }
         handleMouseMove = function(e) {
-          var distPos, newLeft, newTop, offsetX, offsetY, _k, _len2, _ref3, _results;
+          var distPos, newLeft, newTop, offsetX, offsetY, _k, _len2, _ref3;
           e.preventDefault();
           offsetX = $('.workspace').offset().left;
           offsetY = $('.workspace').offset().top;
@@ -474,35 +474,37 @@
             y: e.pageY - initMousePos.y
           };
           _ref3 = _this.selectedElements;
-          _results = [];
           for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
             element = _ref3[_k];
             newLeft = initPosHash[element.attr('data-index')].x + distPos.x;
             newTop = initPosHash[element.attr('data-index')].y + distPos.y;
-            _results.push(element.css({
+            element.css({
               left: Math.floor(newLeft / _this.gridWidth) * _this.gridWidth,
               top: Math.floor(newTop / _this.gridHeight) * _this.gridHeight
-            }));
+            });
           }
-          return _results;
         };
         $(document).mousemove(handleMouseMove);
-        return $(document).mouseup(function(e) {
-          var action, _k, _len2, _ref3, _results;
+        $(document).mouseup(function(e) {
           $(document).off('mousemove', handleMouseMove);
-          _ref3 = _this.selectedElements;
-          _results = [];
-          for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-            element = _ref3[_k];
-            action = _this.actions[element.attr('data-index')];
-            action.x = Math.round(element.position().left / _this.gridWidth);
-            action.y = Math.round(element.position().top / _this.gridHeight);
-            action.updatedAt = +new Date();
-            _results.push(_this.updateParentsRecursively(action));
-          }
-          return _results;
+          _this.updateElementPositions();
         });
       });
+    };
+
+    App.prototype.updateElementPositions = function() {
+      var action, element, _i, _len, _ref1, _results;
+      _ref1 = this.selectedElements;
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        element = _ref1[_i];
+        action = this.actions[element.attr('data-index')];
+        action.x = Math.round(element.position().left / this.gridWidth);
+        action.y = Math.round(element.position().top / this.gridHeight);
+        action.updatedAt = +new Date();
+        _results.push(this.updateParentsRecursively(action));
+      }
+      return _results;
     };
 
     App.prototype.handleElementClick = function(e, element) {

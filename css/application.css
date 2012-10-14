@@ -261,6 +261,8 @@ header, .sidebar {
       border: 3px solid #a08116; }
   .workspace-wrapper .action {
     position: absolute;
+    -moz-user-select: none;
+    -webkit-user-select: none;
     z-index: 4;
     width: 112px;
     font: bold 10px Verdana;
