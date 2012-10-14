@@ -89,6 +89,11 @@
       type: 'processive',
       "class": Webbzeug.Actions.Mask
     },
+    repeat: {
+      name: 'Repeat',
+      type: 'processive',
+      "class": Webbzeug.Actions.Repeat
+    },
     /*
         Memory actions
     */
