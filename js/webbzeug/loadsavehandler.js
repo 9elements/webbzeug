@@ -61,6 +61,7 @@
     }
 
     LoadSaveHandler.prototype.openData = function(data) {
+      this.app.reset();
       return this.importer.loadData(data);
     };
 

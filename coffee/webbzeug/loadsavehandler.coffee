@@ -44,4 +44,5 @@ window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
       reader.readAsDataURL(file)
   
   openData: (data) ->
+    @app.reset()
     @importer.loadData data
