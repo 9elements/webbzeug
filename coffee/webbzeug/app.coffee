@@ -578,6 +578,18 @@ window.Webbzeug.App = class App
 
   findChildrenRecursively: (action) ->
     action.children = []
+    # if we deal with a load action we must find its save and go on there with recursion
+    if action.type is 'load'
+      for possibleChildAction in @actionsArr
+        if possibleChildAction.type is 'save'
+          if possibleChildAction.getParameter(0) is action.getParameter(0) 
+            action.children.push possibleChildAction
+            @findChildrenRecursively possibleChildAction
+            return
+      return
+
+
+    # otherwise we find children useing postions 
     for possibleChildAction in @actionsArr
       if possibleChildAction is action
         continue

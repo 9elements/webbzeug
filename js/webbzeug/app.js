@@ -688,12 +688,26 @@
     };
 
     App.prototype.findChildrenRecursively = function(action) {
-      var possibleChildAction, _i, _len, _ref1, _results;
+      var possibleChildAction, _i, _j, _len, _len1, _ref1, _ref2, _results;
       action.children = [];
-      _ref1 = this.actionsArr;
+      if (action.type === 'load') {
+        _ref1 = this.actionsArr;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          possibleChildAction = _ref1[_i];
+          if (possibleChildAction.type === 'save') {
+            if (possibleChildAction.getParameter(0) === action.getParameter(0)) {
+              action.children.push(possibleChildAction);
+              this.findChildrenRecursively(possibleChildAction);
+              return;
+            }
+          }
+        }
+        return;
+      }
+      _ref2 = this.actionsArr;
       _results = [];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        possibleChildAction = _ref1[_i];
+      for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+        possibleChildAction = _ref2[_j];
         if (possibleChildAction === action) {
           continue;
         }
