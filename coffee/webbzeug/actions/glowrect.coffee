@@ -7,11 +7,12 @@ window.Webbzeug.Actions.Glowrect = class GlowrectAction extends Webbzeug.Action
     {
       centerX: { name: 'Center X', type: 'integer', min: 0, max: 255, default: 128, scrollPrecision: 1 },
       centerY: { name: 'Center Y', type: 'integer', min: 0, max: 255, default: 128, scrollPrecision: 1 },
-      radius: { name: 'Radius', type: 'integer', min: 0, max: 255, default: 30, scrollPrecision: 1 },
+      width:  { name: 'Width', type: 'integer', min: 1, max: 255, default: 0, scrollPrecision: 1 },
+      height:  { name: 'Height', type: 'integer', min: 1, max: 255, default: 0, scrollPrecision: 1 }
+      radius: { name: 'Radius', type: 'integer', min: 1, max: 255, default: 30, scrollPrecision: 1 },
+      power: { name: 'Power', type: 'integer', min: 1, max: 100, default: 1, scrollPrecision: 1 },
       # radiusX: { name: 'Radius X', type: 'integer', min: 0, max: 255, default: 10, scrollPrecision: 1 },
       # radiusY: { name: 'Radius Y', type: 'integer', min: 0, max: 255, default: 10, scrollPrecision: 1 },
-      width:  { name: 'Width', type: 'integer', min: 0, max: 255, default: 0, scrollPrecision: 1 },
-      height:  { name: 'Height', type: 'integer', min: 0, max: 255, default: 0, scrollPrecision: 1 }
 
       # power: { name: 'Power', type: 'float', min: 0, max: 1, default: 0.5, scrollPrecision: 0.001 },
 
@@ -35,7 +36,11 @@ window.Webbzeug.Actions.Glowrect = class GlowrectAction extends Webbzeug.Action
     radius = parseInt(@getParameter('radius'))
     width = parseInt(@getParameter('width'))
     height = parseInt(@getParameter('height'))
-    # power = parseFloat(@getParameter('power'))
+    power = parseFloat(@getParameter('power'))
+    power = power * 0.2
+    if(power < 1)
+      power = 1
+
 
     colorRGB = Webbzeug.Utilities.getRgb2 @getParameter('color')
 
@@ -103,7 +108,9 @@ window.Webbzeug.Actions.Glowrect = class GlowrectAction extends Webbzeug.Action
           distX = distY = dist = 0
 
         value = 255 - (dist / radius * 255)
-
+        value = value * power
+        if (value > 255)
+          value = 255
         imageData.data[index] = colorRGB[0] / 255 * value
         imageData.data[index + 1] = colorRGB[1] / 255 * value
         imageData.data[index + 2] = colorRGB[2] / 255 * value

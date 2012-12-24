@@ -41,18 +41,10 @@
           "default": 128,
           scrollPrecision: 1
         },
-        radius: {
-          name: 'Radius',
-          type: 'integer',
-          min: 0,
-          max: 255,
-          "default": 30,
-          scrollPrecision: 1
-        },
         width: {
           name: 'Width',
           type: 'integer',
-          min: 0,
+          min: 1,
           max: 255,
           "default": 0,
           scrollPrecision: 1
@@ -60,9 +52,25 @@
         height: {
           name: 'Height',
           type: 'integer',
-          min: 0,
+          min: 1,
           max: 255,
           "default": 0,
+          scrollPrecision: 1
+        },
+        radius: {
+          name: 'Radius',
+          type: 'integer',
+          min: 1,
+          max: 255,
+          "default": 30,
+          scrollPrecision: 1
+        },
+        power: {
+          name: 'Power',
+          type: 'integer',
+          min: 1,
+          max: 100,
+          "default": 1,
           scrollPrecision: 1
         },
         color: {
@@ -85,13 +93,18 @@
     };
 
     GlowrectAction.prototype.render = function(contexts) {
-      var centerX, centerY, colorRGB, dist, distX, distY, h, height, imageData, index, radius, value, w, width, x, y, _i, _j;
+      var centerX, centerY, colorRGB, dist, distX, distY, h, height, imageData, index, power, radius, value, w, width, x, y, _i, _j;
       GlowrectAction.__super__.render.call(this);
       centerX = parseInt(this.getParameter('centerX'));
       centerY = parseInt(this.getParameter('centerY'));
       radius = parseInt(this.getParameter('radius'));
       width = parseInt(this.getParameter('width'));
       height = parseInt(this.getParameter('height'));
+      power = parseFloat(this.getParameter('power'));
+      power = power * 0.2;
+      if (power < 1) {
+        power = 1;
+      }
       colorRGB = Webbzeug.Utilities.getRgb2(this.getParameter('color'));
       this.copyRendered(contexts);
       w = this.app.getWidth();
@@ -142,6 +155,10 @@
             distX = distY = dist = 0;
           }
           value = 255 - (dist / radius * 255);
+          value = value * power;
+          if (value > 255) {
+            value = 255;
+          }
           imageData.data[index] = colorRGB[0] / 255 * value;
           imageData.data[index + 1] = colorRGB[1] / 255 * value;
           imageData.data[index + 2] = colorRGB[2] / 255 * value;
