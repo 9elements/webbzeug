@@ -6,5 +6,9 @@
   {
     "name": "Floor Texture",
     "file": "floor-tex.webb"
+  },
+  {
+    "name": "9e",
+    "file": "9e.webb"
   }
 ]
