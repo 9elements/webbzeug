@@ -77,16 +77,39 @@
     };
 
     RectangleAction.prototype.render = function(contexts) {
-      var h, w, x, y;
+      var buffer, fragmentShader, gl, positionLocation, program, resolutionLocation, vertexShader;
       RectangleAction.__super__.render.call(this);
-      x = this.getParameter('x');
-      y = this.getParameter('y');
-      w = this.getParameter('width');
-      h = this.getParameter('height');
-      console.log("rendering", x, y, w, h);
-      this.copyRendered(contexts);
-      this.context.fillStyle = this.getParameter('color');
-      this.context.fillRect(x, y, w, h);
+      /*
+          x = @getParameter('x')
+          y = @getParameter('y')
+          w = @getParameter('width')
+          h = @getParameter('height')
+      
+          console.log "rendering", x, y, w, h
+      
+          @copyRendered contexts
+      
+          @context.fillStyle = @getParameter('color')
+          @context.fillRect x, y, w, h
+      */
+
+      gl = this.context;
+      if (!gl) {
+        console.log("getWebGLContext failed noob!");
+      }
+      vertexShader = this.loadShader(gl, "attribute vec2 a_position;    uniform vec2 u_resolution;    void main() {       // convert the rectangle from pixels to 0.0 to 1.0       vec2 zeroToOne = a_position / u_resolution;       // convert from 0->1 to 0->2       vec2 zeroToTwo = zeroToOne * 2.0;       // convert from 0->2 to -1->+1 (clipspace)       vec2 clipSpace = zeroToTwo - 1.0;       gl_Position = vec4(clipSpace, 0, 1);    }", gl.VERTEX_SHADER, null);
+      fragmentShader = this.loadShader(gl, "void main() {       gl_FragColor = vec4(0,1,0,1);  // green    }", gl.FRAGMENT_SHADER, null);
+      program = createProgram(gl, [vertexShader, fragmentShader]);
+      gl.useProgram(program);
+      positionLocation = gl.getAttribLocation(program, "a_position");
+      resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+      gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+      buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([10, 20, 80, 20, 10, 30, 10, 30, 80, 20, 80, 30]), gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
       return this.context;
     };
 

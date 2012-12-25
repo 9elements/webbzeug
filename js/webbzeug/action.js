@@ -72,7 +72,7 @@
       this.canvas = $('<canvas>').get(0);
       this.canvas.width = this.app.getWidth();
       this.canvas.height = this.app.getHeight();
-      return this.context = this.canvas.getContext('2d');
+      return this.context = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
     };
 
     Action.prototype.willRender = function() {
@@ -101,6 +101,31 @@
 
     Action.prototype.setCaption = function(caption) {
       return this.element.find('.wrapper').contents().first().get(0).data = caption || this.caption();
+    };
+
+    /*
+       * Loads a shader.
+       * @param {!WebGLContext} gl The WebGLContext to use.
+       * @param {string} shaderSource The shader source.
+       * @param {number} shaderType The type of shader.
+       * @param {function(string): void) opt_errorCallback callback for errors.
+       * @return {!WebGLShader} The created shader.
+    */
+
+
+    Action.prototype.loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
+      var compiled, lastError, shader;
+      shader = gl.createShader(shaderType);
+      gl.shaderSource(shader, shaderSource);
+      gl.compileShader(shader);
+      compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+      if (!compiled) {
+        lastError = gl.getShaderInfoLog(shader);
+        console.log("*** Error compiling shader '" + shader + "':" + lastError);
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
     };
 
     Action.prototype.caption = function() {

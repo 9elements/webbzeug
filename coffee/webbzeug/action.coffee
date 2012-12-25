@@ -49,7 +49,7 @@ window.Webbzeug.Action = class Action
     @canvas.width = @app.getWidth()
     @canvas.height = @app.getHeight()
 
-    @context = @canvas.getContext '2d'
+    @context = @canvas.getContext("webgl") || @canvas.getContext("experimental-webgl")
 
   willRender: -> @updatedAt > @renderedAt
 
@@ -70,5 +70,37 @@ window.Webbzeug.Action = class Action
 
   setCaption: (caption) ->
     @element.find('.wrapper').contents().first().get(0).data = caption or @caption()
+
+  ###
+   * Loads a shader.
+   * @param {!WebGLContext} gl The WebGLContext to use.
+   * @param {string} shaderSource The shader source.
+   * @param {number} shaderType The type of shader.
+   * @param {function(string): void) opt_errorCallback callback for errors.
+   * @return {!WebGLShader} The created shader.
+  ###
+  loadShader: (gl, shaderSource, shaderType, opt_errorCallback) ->
+    
+    # Create the shader object
+    shader = gl.createShader(shaderType)
+
+    # Load the shader source
+    gl.shaderSource(shader, shaderSource)
+
+    # Compile the shader
+    gl.compileShader(shader);
+
+    # Check the compile status
+    compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
+    if (!compiled)  
+      # |Something went wrong during compilation; get the error
+      lastError = gl.getShaderInfoLog(shader);
+      console.log "*** Error compiling shader '" + shader + "':" + lastError
+      gl.deleteShader(shader) 
+      return null
+    
+
+    return shader
+
 
   caption: -> return @name
