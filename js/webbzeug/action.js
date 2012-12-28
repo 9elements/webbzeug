@@ -26,7 +26,21 @@
         info = _ref1[parameter];
         this.parameters[parameter] = info["default"];
       }
+      this.createTextureAndFramebufferObject;
     }
+
+    Action.prototype.createTextureAndFramebufferObject = function() {
+      this.texture = this.gl.createTexture();
+      this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.app.getWidth(), this.app.getHeight(), 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
+      this.fbo = this.gl.createFramebuffer();
+      this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbo);
+      return this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.texture, 0);
+    };
 
     Action.prototype.availableParameters = function() {
       return {};
@@ -47,9 +61,9 @@
       }
     };
 
-    Action.prototype.doRender = function(contexts) {
+    Action.prototype.doRender = function(textures) {
       var valid, _ref1, _ref2;
-      valid = this.validations(contexts);
+      valid = this.validations(textures);
       if (((_ref1 = valid.warnings) != null ? _ref1.length : void 0) > 0) {
         this.app.displayWarnings(this, valid.warnings);
       } else {
@@ -62,17 +76,13 @@
         this.app.removeErrors(this);
       }
       if (this.willRender()) {
-        this.render(contexts);
+        this.render(textures);
       }
-      return this.context;
+      return this.texture;
     };
 
-    Action.prototype.render = function(contexts) {
-      this.renderedAt = +new Date();
-      this.canvas = $('<canvas>').get(0);
-      this.canvas.width = this.app.getWidth();
-      this.canvas.height = this.app.getHeight();
-      return this.context = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
+    Action.prototype.render = function(textures) {
+      return this.renderedAt = +new Date();
     };
 
     Action.prototype.willRender = function() {
@@ -103,17 +113,11 @@
       return this.element.find('.wrapper').contents().first().get(0).data = caption || this.caption();
     };
 
-    /*
-       * Loads a shader.
-       * @param {!WebGLContext} gl The WebGLContext to use.
-       * @param {string} shaderSource The shader source.
-       * @param {number} shaderType The type of shader.
-       * @param {function(string): void) opt_errorCallback callback for errors.
-       * @return {!WebGLShader} The created shader.
-    */
+    Action.prototype.caption = function() {
+      return this.name;
+    };
 
-
-    Action.prototype.loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
+    Action.prototype.loadShader = function(gl, shaderSource, shaderType) {
       var compiled, lastError, shader;
       shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
@@ -126,10 +130,6 @@
         return null;
       }
       return shader;
-    };
-
-    Action.prototype.caption = function() {
-      return this.name;
     };
 
     return Action;

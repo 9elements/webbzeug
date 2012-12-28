@@ -58,9 +58,15 @@
 
 
     App.prototype.setupCanvas = function() {
-      this.context = this.canvas.getContext('2d');
-      this.width = this.context.canvas.width;
-      return this.height = this.context.canvas.height;
+      console.log(this.canvas);
+      this.gl = this.canvas.getContext("experimental-webgl");
+      if (!this.gl) {
+        console.log("Can't init WebGl context braw");
+      } else {
+        console.log("WebGL init works");
+      }
+      this.width = this.canvas.width;
+      return this.height = this.canvas.height;
     };
 
     App.prototype.buildGrid = function() {
@@ -661,6 +667,10 @@
       return this.canvas.height;
     };
 
+    App.prototype.getWebGLContext = function() {
+      return this.gl;
+    };
+
     /*
         Tree building / handling
     */
@@ -733,43 +743,72 @@
       }
     };
 
+    App.prototype.setFramebuffer = function(fbo, width, height) {
+      return this.gl.viewport(0, 0, width, height);
+    };
+
     /*
         Rendering
     */
 
 
     App.prototype.renderAll = function() {
-      var context, imageData, startTime, watchedAction;
+      var startTime, watchedAction;
       this.buildTree();
       watchedAction = this.actions[this.watchedActionIndex];
       if (watchedAction == null) {
         return false;
       }
       startTime = +new Date();
-      if (context = this.render(watchedAction)) {
-        imageData = context.getImageData(0, 0, this.getWidth(), this.getHeight());
-        this.context.putImageData(imageData, 0, 0);
-      }
+      this.blabla();
       this.renderTime = +new Date() - startTime;
       return $('.debug').text('rendered in ' + this.renderTime + 'ms');
     };
 
+    App.prototype.blabla = function() {
+      var fShader, fShaderQuellcode, gl, vShader, vShaderQuellcode, vVertices, vertexAttribLoc, vertexPosBufferObjekt, webGLProgramObject;
+      gl = this.canvas.getContext("experimental-webgl");
+      webGLProgramObject = gl.createProgram();
+      vShaderQuellcode = "attribute vec4 vPosition; \n\        void main() \n\        { \n\            gl_Position = vPosition; \n\        } \n";
+      vShader = gl.createShader(gl.VERTEX_SHADER);
+      gl.shaderSource(vShader, vShaderQuellcode);
+      gl.compileShader(vShader);
+      gl.attachShader(webGLProgramObject, vShader);
+      fShaderQuellcode = "precision mediump float;\n\        void main()  \n\        {     \n\            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n\        } \n";
+      fShader = gl.createShader(gl.FRAGMENT_SHADER);
+      gl.shaderSource(fShader, fShaderQuellcode);
+      gl.compileShader(fShader);
+      gl.attachShader(webGLProgramObject, fShader);
+      gl.linkProgram(webGLProgramObject);
+      gl.useProgram(webGLProgramObject);
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      vertexAttribLoc = gl.getAttribLocation(webGLProgramObject, "vPosition");
+      vVertices = new Float32Array([0.0, 0.1, 0.0, -0.1, -0.1, 0.0, 0.1, -0.1, 0.0]);
+      vertexPosBufferObjekt = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexPosBufferObjekt);
+      gl.bufferData(gl.ARRAY_BUFFER, vVertices, gl.STATIC_DRAW);
+      gl.vertexAttribPointer(vertexAttribLoc, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(vertexAttribLoc);
+      return gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+
     App.prototype.render = function(action) {
-      var child, children, context, contexts, startTime, _i, _len;
+      var child, children, startTime, texture, textures, _i, _len;
       if (action == null) {
         return false;
       }
       children = action.children;
-      contexts = [];
+      textures = [];
       for (_i = 0, _len = children.length; _i < _len; _i++) {
         child = children[_i];
-        context = this.render(child);
-        contexts.push(context);
+        texture = this.render(child);
+        textures.push(texture);
       }
       startTime = +new Date();
-      context = action.doRender(contexts);
+      texture = action.doRender(textures);
       action.renderTime = (+new Date()) - startTime;
-      return context;
+      return texture;
     };
 
     return App;

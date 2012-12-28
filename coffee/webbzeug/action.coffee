@@ -12,6 +12,31 @@ window.Webbzeug.Action = class Action
     for parameter, info of @availableParameters()
       @parameters[parameter] = info.default
 
+    @createTextureAndFramebufferObject
+
+  createTextureAndFramebufferObject: ->
+    @texture = @gl.createTexture()
+    @gl.bindTexture( @gl.TEXTURE_2D, @texture)
+
+    # Set up texture so we can render any size image and so we are
+    # working with pixels.
+    @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_WRAP_S, @gl.CLAMP_TO_EDGE)
+    @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_WRAP_T, @gl.CLAMP_TO_EDGE)
+    @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_MIN_FILTER, @gl.NEAREST)
+    @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_MAG_FILTER, @gl.NEAREST)
+    #// make the texture the same size as the image
+    @gl.texImage2D(
+        @gl.TEXTURE_2D, 0, @gl.RGBA, @app.getWidth(), @app.getHeight(), 0,
+        @gl.RGBA, @gl.UNSIGNED_BYTE, null)
+
+    #// Create a framebuffer
+    @fbo = @gl.createFramebuffer()
+    @gl.bindFramebuffer(@gl.FRAMEBUFFER, @fbo)
+
+    #// Attach a texture to it.
+    @gl.framebufferTexture2D( @gl.FRAMEBUFFER, @gl.COLOR_ATTACHMENT0, @gl.TEXTURE_2D, @texture, 0)
+
+   
   availableParameters: -> {}
   validations: -> return {}
 
@@ -23,8 +48,8 @@ window.Webbzeug.Action = class Action
       imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
       @context.putImageData imageData, 0, 0
 
-  doRender: (contexts) ->
-    valid = @validations contexts
+  doRender: (textures) ->
+    valid = @validations textures
 
     if valid.warnings?.length > 0
       @app.displayWarnings this, valid.warnings
@@ -38,18 +63,18 @@ window.Webbzeug.Action = class Action
       @app.removeErrors this
 
     if @willRender()
-      @render contexts
+      @render textures
 
-    return @context
+    return @texture
 
-  render: (contexts) ->
+  render: (textures) ->
     @renderedAt = +new Date()
-    @canvas = $('<canvas>').get(0)
+    #@canvas = $('<canvas>').get(0) # create a new canvas dom-object
 
-    @canvas.width = @app.getWidth()
-    @canvas.height = @app.getHeight()
+    #@canvas.width = @app.getWidth()
+    #@canvas.height = @app.getHeight()
 
-    @context = @canvas.getContext("webgl") || @canvas.getContext("experimental-webgl")
+    #@context = @canvas.getContext("2d") 
 
   willRender: -> @updatedAt > @renderedAt
 
@@ -71,16 +96,10 @@ window.Webbzeug.Action = class Action
   setCaption: (caption) ->
     @element.find('.wrapper').contents().first().get(0).data = caption or @caption()
 
-  ###
-   * Loads a shader.
-   * @param {!WebGLContext} gl The WebGLContext to use.
-   * @param {string} shaderSource The shader source.
-   * @param {number} shaderType The type of shader.
-   * @param {function(string): void) opt_errorCallback callback for errors.
-   * @return {!WebGLShader} The created shader.
-  ###
-  loadShader: (gl, shaderSource, shaderType, opt_errorCallback) ->
-    
+  caption: -> return @name
+
+  loadShader: (gl, shaderSource, shaderType) ->
+     
     # Create the shader object
     shader = gl.createShader(shaderType)
 
@@ -88,19 +107,14 @@ window.Webbzeug.Action = class Action
     gl.shaderSource(shader, shaderSource)
 
     # Compile the shader
-    gl.compileShader(shader);
+    gl.compileShader(shader)
 
     # Check the compile status
     compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
-    if (!compiled)  
-      # |Something went wrong during compilation; get the error
+    if (!compiled) 
+      # Something went wrong during compilation; get the error
       lastError = gl.getShaderInfoLog(shader);
-      console.log "*** Error compiling shader '" + shader + "':" + lastError
-      gl.deleteShader(shader) 
+      console.log("*** Error compiling shader '" + shader + "':" + lastError);
+      gl.deleteShader(shader);
       return null
-    
-
     return shader
-
-
-  caption: -> return @name
