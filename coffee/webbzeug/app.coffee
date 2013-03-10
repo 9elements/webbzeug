@@ -1,12 +1,12 @@
 window.Webbzeug ?= {}
-window.Webbzeug.Version = '0.0.1'
+window.Webbzeug.Version = '0.0.2'
 window.Webbzeug.App = class App
   gridHeight: 28
   gridWidth:  112 / 3
   shiftPressed: false
-  constructor: (@canvas) ->
+  constructor: (@container) ->
     @workspace = $('.workspace')
-    @setupCanvas()
+    @initRenderer()
     @buildGrid()
     @reset()
 
@@ -15,10 +15,8 @@ window.Webbzeug.App = class App
     @loadSaveHandler = new Webbzeug.LoadSaveHandler this, $('.save-link'), $('input#file'), $('.export-link')
 
     @handleNavigation()
-    @handleMultipleSelection()  
+    @handleMultipleSelection()
     @handleKeyboardInput()
-
-
 
   loadSamples: ->
     samplesSelect = $('select.samples')
@@ -36,9 +34,27 @@ window.Webbzeug.App = class App
         samplesSelect.val('')
 
   ###
-    Setup
+    ------------------------------------------------------------- Setup
   ###
+  ###
+    initializes the THREE.js renderer
+  ###
+  initRenderer: ->
+    console.log "init renderer"
+    @renderer = new THREE.WebGLRenderer antialias: true, preserveDrawingBuffer: true
+    @renderer.setSize window.innerWidth, window.innerHeight
+    @renderer.autoClear = false
+    console.log @renderer
+    console.log @container
 
+    @container.append @renderer.domElement
+
+    @canvas = @renderer.domElement
+    @width = @canvas.width
+    @height = @canvas.height
+
+
+  ###
   setupCanvas: ->
     console.log @canvas
     @gl = @canvas.getContext("experimental-webgl")
@@ -48,6 +64,7 @@ window.Webbzeug.App = class App
       console.log "WebGL init works"
     @width = @canvas.width
     @height = @canvas.height
+  ###
 
   buildGrid: ->
     rows = 30
@@ -328,7 +345,7 @@ window.Webbzeug.App = class App
     offsetX = @workspace.offset().left
     offsetY = @workspace.offset().top
 
-    r2 = 
+    r2 =
       left:   selectionRect.x
       top:    selectionRect.y
       width:  Math.abs(selectionRect.width)
@@ -444,7 +461,7 @@ window.Webbzeug.App = class App
 
     $('.workspace .action').removeClass('selected')
     $(element).addClass('selected')
-    
+
     if @shiftPressed
       @showParameters e, @actions[@selectedActionIndex]
 
@@ -497,7 +514,7 @@ window.Webbzeug.App = class App
           li = $('<li>').appendTo settingsUl
           label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo li
 
-          attributes = 
+          attributes =
             type: 'text'
             value: action.getParameter(key) or info.default
 
@@ -537,7 +554,7 @@ window.Webbzeug.App = class App
           (=>
             _key   = key
             _input = input
-            _input.ColorPicker 
+            _input.ColorPicker
               color: color
               onChange: (hsb, hex, rgb) ->
                 color = "rgb(#{rgb.r}, #{rgb.g}, #{rgb.b})"
@@ -553,7 +570,7 @@ window.Webbzeug.App = class App
   deleteTree: ->
     for index, action of @actions
       action.deleteChildren()
-  
+
   ###
     Helper functions for actions
   ###
@@ -589,14 +606,14 @@ window.Webbzeug.App = class App
     if action.type is 'load'
       for possibleChildAction in @actionsArr
         if possibleChildAction.type is 'save'
-          if possibleChildAction.getParameter(0) is action.getParameter(0) 
+          if possibleChildAction.getParameter(0) is action.getParameter(0)
             action.children.push possibleChildAction
             @findChildrenRecursively possibleChildAction
             return
       return
 
 
-    # otherwise we find children useing postions 
+    # otherwise we find children useing postions
     for possibleChildAction in @actionsArr
       if possibleChildAction is action
         continue
@@ -612,7 +629,7 @@ window.Webbzeug.App = class App
     if action.parent?
       action.parent.updatedAt = +new Date()
       @updateParentsRecursively action.parent
-  
+
   setFramebuffer: (fbo, width, height) ->
     #// make this the framebuffer we are rendering to.
     #@gl.bindFramebuffer(@gl.FRAMEBUFFER, fbo);
@@ -632,7 +649,7 @@ window.Webbzeug.App = class App
       return false
 
     startTime = +new Date()
-    @blabla()
+    #@blabla()
     ## present final result
     #if textur = @render watchedAction
     #  console.log "succsess"
@@ -640,25 +657,32 @@ window.Webbzeug.App = class App
 
     ##  imageData = context.getImageData 0, 0, @getWidth(), @getHeight()
     ##  @context.putImageData imageData, 0, 0
-  
+
     @renderTime = (+new Date() - startTime)
 
     $('.debug').text 'rendered in ' + @renderTime + 'ms'
+
   blabla: ->
     gl = @canvas.getContext("experimental-webgl");
 
-    # Das Shader-Program-Objekt fasst spaeter den Vertex- 
+    # --------------------------------------------------------------- shader init
+    # Das Shader-Program-Objekt fasst spaeter den Vertex-
     # und Fragment-Shader zusammen.
     webGLProgramObject = gl.createProgram();
 
     # Der folgende String enthaelt den kompletten Quellcode
-    # fuer einen minimalistischen Vertex-Shader:  
+    # fuer einen minimalistischen Vertex-Shader:
     vShaderQuellcode = "attribute vec4 vPosition; \n\
+        attribute vec2 a_texCoord; \n\
+        varying vec2 v_texCoord;  \n\
         void main() \n\
         { \n\
             gl_Position = vPosition; \n\
+            // pass the texCoord to the fragment shader \n\
+            // The GPU will interpolate this value between points. \n\
+            v_texCoord = a_texCoord; \n\
         } \n"
-    # Das Vertex-Shader-Objekt wird angelegt:                                
+    # Das Vertex-Shader-Objekt wird angelegt:
     vShader = gl.createShader(gl.VERTEX_SHADER);
     #           - mit seinem Quelltext verknuepft:
     gl.shaderSource(vShader, vShaderQuellcode);
@@ -668,13 +692,19 @@ window.Webbzeug.App = class App
     gl.attachShader(webGLProgramObject, vShader);
 
     # Nochmal das gleiche Vorgehen wie fuer den Vertex-
-    # Shader; analog fuer den Fragment-Shader:                
+    # Shader; analog fuer den Fragment-Shader:
     fShaderQuellcode =
         "precision mediump float;\n\
-        void main()  \n\
-        {     \n\
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n\
-        } \n" 
+        \n\
+        // our texture \n\
+        uniform sampler2D u_image; \n\
+        \n\
+        // the texCoords passed in from the vertex shader. \n\
+        varying vec2 v_texCoord; \n\
+        \n\
+        void main() { \n\
+           gl_FragColor = texture2D(u_image, v_texCoord); \n\
+        } \n"
     fShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fShader, fShaderQuellcode);
     gl.compileShader(fShader);
@@ -682,32 +712,63 @@ window.Webbzeug.App = class App
     # Das Shader-Program-Objekt ist vollstaendig und muss
     # gelinkt werden.
     gl.linkProgram(webGLProgramObject);
-    # Da theoretisch mehrere Shader-Program-Objekte moeglich  
+    # Da theoretisch mehrere Shader-Program-Objekte moeglich
     # sind, muss angegeben werden, welches benutzt werden soll.
+    # ------------------------------------------------------------------------ TEXTUR AND FBO init
+    texture = gl.createTexture()
+    gl.bindTexture( gl.TEXTURE_2D, texture)
+
+    # Set up texture so we can render any size image and so we are
+    # working with pixels.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+    #// make the texture the same size as the image
+    gl.texImage2D(
+        gl.TEXTURE_2D, 0, gl.RGBA, 256, 256, 0,
+        gl.RGBA, gl.UNSIGNED_BYTE, null)
+
+    #// Create a framebuffer
+    fbo = gl.createFramebuffer()
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)
+
+    #// Attach a texture to it.
+    gl.framebufferTexture2D( gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0)
+
+
+
+    # ------------------------------------------------------------- actual rendering
     gl.useProgram(webGLProgramObject);
-    # RGB-Alpha Farbe zum loeschen des Hintergrundes:
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    # Hintergrund loeschen
-    gl.clear(gl.COLOR_BUFFER_BIT);
 
-    # Die Verknuepfung zwischen JavaScript und dem 
-    # Shader-Attribut
     vertexAttribLoc = gl.getAttribLocation(webGLProgramObject, "vPosition");
-    # Ein Array mit den Koordinaten, der Eckpunkte des Dreiecks
-    # das dargestellt wird.
-    vVertices = new Float32Array([ 
-      0.0,  0.1, 0.0,
-        -0.1, -0.1, 0.0,
-        0.1, -0.1, 0.0 ]);
-    # ein WebGL-Buffer-Objekt wird erzeugt:                                          
     vertexPosBufferObjekt = gl.createBuffer();
-    # ...und als aktives Objekt gesetzt:
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexPosBufferObjekt);
-    # die Arraydaten werden an den aktiven Puffer uebergeben:
-    gl.bufferData(gl.ARRAY_BUFFER, vVertices, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(vertexAttribLoc, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(vertexAttribLoc);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        0.0,  0.1, 0.0,
+        -0.1, -0.1, 0.0,
+        0.1, -0.1, 0.0 ]), gl.STATIC_DRAW);
 
+    gl.enableVertexAttribArray(vertexAttribLoc);
+    gl.vertexAttribPointer(vertexAttribLoc, 3, gl.FLOAT, false, 0, 0);
+
+    texCoordLocation = gl.getAttribLocation(webGLProgramObject, "a_texCoord");
+    texCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        0.0,  0.0,
+        1.0,  0.0,
+        1.0,  1.0]), gl.STATIC_DRAW);
+
+    gl.enableVertexAttribArray(texCoordLocation);
+    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+
+    # RGB-Alpha Farbe zum loeschen des Hintergrundes:
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    gl.bindTexture( gl.TEXTURE_2D, null)
+
+    gl.clearColor(0.5, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
   render: (action) ->

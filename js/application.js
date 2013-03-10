@@ -9,11 +9,7 @@
   };
 
   $(function() {
-    $('#canvas').attr({
-      width: $('#canvas').width(),
-      height: $('#canvas').height()
-    });
-    return window.app = new Webbzeug.App($('#canvas').get(0));
+    return window.app = new Webbzeug.App($('.container'));
   });
 
 }).call(this);
