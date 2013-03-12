@@ -4,21 +4,21 @@
         constant = Math.pow(2, 13)+1,
         prime = 37,
         maximum = Math.pow(2, 50);
- 
+
     if (nseed) {
         seed = nseed;
     }
- 
+
     if (seed == null) {
         seed = (new Date()).getTime();
-    } 
- 
+    }
+
     return {
         next : function() {
             seed *= constant;
             seed += prime;
             seed %= maximum;
-            
+
             return seed;
         },
         next01: function() {
@@ -32,6 +32,7 @@ window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
   type: 'cell'
   name: 'Cell'
+  canvas: null
   availableParameters: ->
     {
       gridSize: { name: 'Grid size', type: 'integer', min: 2, max: 100, default: 8, scrollPrecision: 1 },
@@ -46,13 +47,35 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
 
     return { warnings: warnings }
 
-  render: (contexts) ->
+  render: (inputs) ->
     super()
+    if @canvas is null
+      @createCanvas()
+
+    @createPatternOnCanvas()
+    cellTexture = new THREE.Texture @canvas
+    cellTexture.needsUpdate = true
+
+    @cellMaterial = new THREE.MeshBasicMaterial map: cellTexture
+    @screenAlignedQuadMesh.material = @cellMaterial
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+
+    return @renderTarget
+
+  createCanvas: ->
+    @canvas = $('<canvas>').get(0) # create a new canvas dom-object
+
+    @canvas.width = @app.textureSize
+    @canvas.height = @app.textureSize
+
+    @context = @canvas.getContext("2d")
+
+  createPatternOnCanvas:  ->
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
 
     gridSize = parseInt @getParameter('gridSize')
 
-    points = @generatePoints gridSize   
+    points = @generatePoints gridSize
 
     gridPxSize = @app.getWidth() / gridSize
 
@@ -129,7 +152,7 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
     #   imageData.data[((point.y * 256) << 2) + (point.x << 2) + 3] = 255
 
 
-    @context.putImageData imageData, 0, 0 
+    @context.putImageData imageData, 0, 0
     return @context
 
   generatePoints: (gridSize) ->
@@ -150,44 +173,3 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
       points.push pointsCol
 
     return points
-
-###
-  OLD APPROACH
-###
-###
-  w = @app.getWidth()
-  h = @app.getHeight()
-
-  smallestDistances = []
-  maxDist = 0
-  minDist = 255
-
-  for x in [0...w]
-    for y in [0...h]
-      index = ((y * w) << 2) + (x << 2)
-
-      smallestDistance = 255
-      for point in @points
-        dist = Math.sqrt(Math.pow( (x - point.x), 2 ) + Math.pow( (y - point.y), 2 ))
-        smallestDistance = Math.min(dist, smallestDistance)
-      maxDist = Math.max(maxDist, smallestDistance)
-      minDist = Math.min(minDist, smallestDistance)
-      smallestDistances.push smallestDistance
-
-  dDist = maxDist - minDist
-  # normalize array
-  for distance, i in smallestDistances
-    smallestDistances[i] = (distance - minDist) / dDist * 255
-
-  for x in [0...w]
-    for y in [0...h]
-      pixindex = y * w + x
-      value = smallestDistances[pixindex]
-
-      index = ((y * w) << 2) + (x << 2)
-      imageData.data[index] = value
-      imageData.data[index + 1] = value
-      imageData.data[index + 2] = value
-
-      imageData.data[index + 3] = 255
-###

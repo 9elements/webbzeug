@@ -11,7 +11,7 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
       radiusY:  { name: 'Radius Y', type: 'integer', min: 0, max: 256, default: 128, scrollPrecision: 1 },
       glow:  { name: 'Glow', type: 'integer', min: 0, max: 255, default: 128, scrollPrecision: 1 },
       alpha:  { name: 'Alpha', type: 'integer', min: 0, max: 255, default: 255, scrollPrecision: 1 },
-      color: { name: 'Color', type: 'color', default: 'rgba(255,0,0,1)' }
+      color: { name: 'Color', type: 'color', default: 'rgba(255,255,255,1)' }
     }
 
   validations: (contexts) ->
@@ -28,9 +28,9 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
     @glowMaterial.uniforms['y'].value = y / 255.0
 
     sx = parseInt @getParameter('radiusX')
-    @glowMaterial.uniforms['sx'].value =    sx / 255.0
+    @glowMaterial.uniforms['sx'].value = sx / 255.0
     sy = parseInt @getParameter('radiusY')
-    @glowMaterial.uniforms['sy'].value =   sy / 255.0
+    @glowMaterial.uniforms['sy'].value = sy / 255.0
 
     glow = parseInt @getParameter('glow')
     glow = (255.0 - glow) / 30.0
@@ -41,6 +41,7 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
     @glowMaterial.uniforms[ "r" ].value = colorRGB[0] / 255.0
     @glowMaterial.uniforms[ "g" ].value = colorRGB[1] / 255.0
     @glowMaterial.uniforms[ "b" ].value = colorRGB[2] / 255.0
+
   render: (inputs) ->
     super()
     if @screenAlignedQuadMesh.material is null

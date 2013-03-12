@@ -5,21 +5,21 @@
         constant = Math.pow(2, 13)+1,
         prime = 37,
         maximum = Math.pow(2, 50);
- 
+
     if (nseed) {
         seed = nseed;
     }
- 
+
     if (seed == null) {
         seed = (new Date()).getTime();
-    } 
- 
+    }
+
     return {
         next : function() {
             seed *= constant;
             seed += prime;
             seed %= maximum;
-            
+
             return seed;
         },
         next01: function() {
@@ -51,6 +51,8 @@
     CellAction.prototype.type = 'cell';
 
     CellAction.prototype.name = 'Cell';
+
+    CellAction.prototype.canvas = null;
 
     CellAction.prototype.availableParameters = function() {
       return {
@@ -93,10 +95,33 @@
       };
     };
 
-    CellAction.prototype.render = function(contexts) {
+    CellAction.prototype.render = function(inputs) {
+      var cellTexture;
+      CellAction.__super__.render.call(this);
+      if (this.canvas === null) {
+        this.createCanvas();
+      }
+      this.createPatternOnCanvas();
+      cellTexture = new THREE.Texture(this.canvas);
+      cellTexture.needsUpdate = true;
+      this.cellMaterial = new THREE.MeshBasicMaterial({
+        map: cellTexture
+      });
+      this.screenAlignedQuadMesh.material = this.cellMaterial;
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
+    };
+
+    CellAction.prototype.createCanvas = function() {
+      this.canvas = $('<canvas>').get(0);
+      this.canvas.width = this.app.textureSize;
+      this.canvas.height = this.app.textureSize;
+      return this.context = this.canvas.getContext("2d");
+    };
+
+    CellAction.prototype.createPatternOnCanvas = function() {
       var dist, distances, gridPosX, gridPosY, gridPxSize, gridSize, gridX, gridY, h, imageData, index, lastMinDist, maxDist, minDist, originalGridX, originalGridY, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5,
         _this = this;
-      CellAction.__super__.render.call(this);
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       gridSize = parseInt(this.getParameter('gridSize'));
       points = this.generatePoints(gridSize);
@@ -194,49 +219,5 @@
     return CellAction;
 
   })(Webbzeug.Action);
-
-  /*
-    OLD APPROACH
-  */
-
-
-  /*
-    w = @app.getWidth()
-    h = @app.getHeight()
-  
-    smallestDistances = []
-    maxDist = 0
-    minDist = 255
-  
-    for x in [0...w]
-      for y in [0...h]
-        index = ((y * w) << 2) + (x << 2)
-  
-        smallestDistance = 255
-        for point in @points
-          dist = Math.sqrt(Math.pow( (x - point.x), 2 ) + Math.pow( (y - point.y), 2 ))
-          smallestDistance = Math.min(dist, smallestDistance)
-        maxDist = Math.max(maxDist, smallestDistance)
-        minDist = Math.min(minDist, smallestDistance)
-        smallestDistances.push smallestDistance
-  
-    dDist = maxDist - minDist
-    # normalize array
-    for distance, i in smallestDistances
-      smallestDistances[i] = (distance - minDist) / dDist * 255
-  
-    for x in [0...w]
-      for y in [0...h]
-        pixindex = y * w + x
-        value = smallestDistances[pixindex]
-  
-        index = ((y * w) << 2) + (x << 2)
-        imageData.data[index] = value
-        imageData.data[index + 1] = value
-        imageData.data[index + 2] = value
-  
-        imageData.data[index + 3] = 255
-  */
-
 
 }).call(this);
