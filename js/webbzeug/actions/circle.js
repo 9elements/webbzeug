@@ -93,7 +93,7 @@
     };
 
     CircleAction.prototype.setUniforms = function() {
-      var glow, sx, sy, x, y;
+      var colorRGB, glow, sx, sy, x, y;
       x = parseInt(this.getParameter('x') - 128.0);
       this.glowMaterial.uniforms['x'].value = x / 255.0;
       y = parseInt(this.getParameter('y') - 128.0);
@@ -103,7 +103,13 @@
       sy = parseInt(this.getParameter('radiusY'));
       this.glowMaterial.uniforms['sy'].value = sy / 255.0;
       glow = parseInt(this.getParameter('glow'));
-      return this.glowMaterial.uniforms['glow'].value = 1.0 - glow / 255.0;
+      glow = (255.0 - glow) / 30.0;
+      glow *= glow;
+      this.glowMaterial.uniforms['glow'].value = glow;
+      colorRGB = Webbzeug.Utilities.getRgb2(this.getParameter('color'));
+      this.glowMaterial.uniforms["r"].value = colorRGB[0] / 255.0;
+      this.glowMaterial.uniforms["g"].value = colorRGB[1] / 255.0;
+      return this.glowMaterial.uniforms["b"].value = colorRGB[2] / 255.0;
     };
 
     CircleAction.prototype.render = function(inputs) {

@@ -13,7 +13,10 @@ THREE.GlowShader = {
     sx:  { type: "f", value: 0.5 },
     sy:  { type: "f", value: 0.5 },
     glow:  { type: "f", value: 1.0 },
-    alpha:  { type: "f", value: 1.0 }
+    alpha:  { type: "f", value: 1.0 },
+    r:  { type: "f", value: 1.0 },
+    g:  { type: "f", value: 1.0 },
+    b:  { type: "f", value: 1.0 }
 
   },
 
@@ -37,6 +40,9 @@ THREE.GlowShader = {
     "uniform float sy;",
     "uniform float glow;",
     "uniform float alpha;",
+    "uniform float r;",
+    "uniform float g;",
+    "uniform float b;",
 
     "varying vec2 vUv;",
 
@@ -48,7 +54,8 @@ THREE.GlowShader = {
       "texturCoord.y /= sy;",
       "lowp float d = clamp (1.0 - dot(texturCoord, texturCoord), 0.0, 1.0);",
       "d = pow(d, glow);",
-      "gl_FragColor = vec4(vec3(d),1.0);",
+      "vec3 color = vec3(r,g,b);",
+      "gl_FragColor = vec4(vec3(d) * color ,1.0);",
     "}"
 
   ].join("\n")

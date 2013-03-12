@@ -33,8 +33,14 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
     @glowMaterial.uniforms['sy'].value =   sy / 255.0
 
     glow = parseInt @getParameter('glow')
-    @glowMaterial.uniforms['glow'].value = 1.0 - glow / 255.0
+    glow = (255.0 - glow) / 30.0
+    glow *=glow
+    @glowMaterial.uniforms['glow'].value = glow
 
+    colorRGB = Webbzeug.Utilities.getRgb2 @getParameter('color')
+    @glowMaterial.uniforms[ "r" ].value = colorRGB[0] / 255.0
+    @glowMaterial.uniforms[ "g" ].value = colorRGB[1] / 255.0
+    @glowMaterial.uniforms[ "b" ].value = colorRGB[2] / 255.0
   render: (inputs) ->
     super()
     if @screenAlignedQuadMesh.material is null
