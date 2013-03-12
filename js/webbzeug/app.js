@@ -9,6 +9,8 @@
 
   window.Webbzeug.App = App = (function() {
 
+    App.prototype.textureSize = 256;
+
     App.prototype.gridHeight = 28;
 
     App.prototype.gridWidth = 112 / 3;
@@ -19,6 +21,7 @@
       this.container = container;
       this.workspace = $('.workspace');
       this.initRenderer();
+      this.initRenderToTextureStuff();
       this.buildGrid();
       this.reset();
       this.loadSamples();
@@ -65,10 +68,10 @@
     App.prototype.initRenderer = function() {
       console.log("init renderer");
       this.renderer = new THREE.WebGLRenderer({
-        antialias: true,
+        antialias: false,
         preserveDrawingBuffer: true
       });
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      this.renderer.setSize(this.textureSize, this.textureSize);
       this.renderer.autoClear = false;
       console.log(this.renderer);
       console.log(this.container);
@@ -76,6 +79,14 @@
       this.canvas = this.renderer.domElement;
       this.width = this.canvas.width;
       return this.height = this.canvas.height;
+    };
+
+    App.prototype.initRenderToTextureStuff = function() {
+      this.renderToTextureCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      this.copyMaterial = new THREE.ShaderMaterial(THREE.CopyShader);
+      this.screenAlignedQuadMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.copyMaterial);
+      this.renderToTextureScene = new THREE.Scene();
+      return this.renderToTextureScene.add(this.screenAlignedQuadMesh);
     };
 
     /*
@@ -775,63 +786,27 @@
 
 
     App.prototype.renderAll = function() {
-      var startTime, watchedAction;
+      var startTime, textur, watchedAction;
       this.buildTree();
       watchedAction = this.actions[this.watchedActionIndex];
       if (watchedAction == null) {
         return false;
       }
       startTime = +new Date();
+      this.renderer.setClearColorHex(0x200000, 1);
+      this.renderer.clear();
+      if (textur = this.renderAction(watchedAction)) {
+        console.log("succsess");
+        this.copyMaterial.uniforms['tDiffuse'].value = textur;
+        this.renderer.render(this.renderToTextureScene, this.renderToTextureCamera);
+      } else {
+        console.log("fail");
+      }
       this.renderTime = +new Date() - startTime;
       return $('.debug').text('rendered in ' + this.renderTime + 'ms');
     };
 
-    App.prototype.blabla = function() {
-      var fShader, fShaderQuellcode, fbo, gl, texCoordBuffer, texCoordLocation, texture, vShader, vShaderQuellcode, vertexAttribLoc, vertexPosBufferObjekt, webGLProgramObject;
-      gl = this.canvas.getContext("experimental-webgl");
-      webGLProgramObject = gl.createProgram();
-      vShaderQuellcode = "attribute vec4 vPosition; \n\        attribute vec2 a_texCoord; \n\        varying vec2 v_texCoord;  \n\        void main() \n\        { \n\            gl_Position = vPosition; \n\            // pass the texCoord to the fragment shader \n\            // The GPU will interpolate this value between points. \n\            v_texCoord = a_texCoord; \n\        } \n";
-      vShader = gl.createShader(gl.VERTEX_SHADER);
-      gl.shaderSource(vShader, vShaderQuellcode);
-      gl.compileShader(vShader);
-      gl.attachShader(webGLProgramObject, vShader);
-      fShaderQuellcode = "precision mediump float;\n\        \n\        // our texture \n\        uniform sampler2D u_image; \n\        \n\        // the texCoords passed in from the vertex shader. \n\        varying vec2 v_texCoord; \n\        \n\        void main() { \n\           gl_FragColor = texture2D(u_image, v_texCoord); \n\        } \n";
-      fShader = gl.createShader(gl.FRAGMENT_SHADER);
-      gl.shaderSource(fShader, fShaderQuellcode);
-      gl.compileShader(fShader);
-      gl.attachShader(webGLProgramObject, fShader);
-      gl.linkProgram(webGLProgramObject);
-      texture = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 256, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-      fbo = gl.createFramebuffer();
-      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-      gl.useProgram(webGLProgramObject);
-      vertexAttribLoc = gl.getAttribLocation(webGLProgramObject, "vPosition");
-      vertexPosBufferObjekt = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, vertexPosBufferObjekt);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.1, 0.0, -0.1, -0.1, 0.0, 0.1, -0.1, 0.0]), gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(vertexAttribLoc);
-      gl.vertexAttribPointer(vertexAttribLoc, 3, gl.FLOAT, false, 0, 0);
-      texCoordLocation = gl.getAttribLocation(webGLProgramObject, "a_texCoord");
-      texCoordBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 1.0, 0.0, 1.0, 1.0]), gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(texCoordLocation);
-      gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      gl.bindTexture(gl.TEXTURE_2D, null);
-      gl.clearColor(0.5, 0.0, 0.0, 1.0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      return gl.drawArrays(gl.TRIANGLES, 0, 3);
-    };
-
-    App.prototype.render = function(action) {
+    App.prototype.renderAction = function(action) {
       var child, children, startTime, texture, textures, _i, _len;
       if (action == null) {
         return false;
@@ -840,12 +815,13 @@
       textures = [];
       for (_i = 0, _len = children.length; _i < _len; _i++) {
         child = children[_i];
-        texture = this.render(child);
+        texture = this.renderAction(child);
         textures.push(texture);
       }
       startTime = +new Date();
       texture = action.doRender(textures);
       action.renderTime = (+new Date()) - startTime;
+      console.log(texture);
       return texture;
     };
 

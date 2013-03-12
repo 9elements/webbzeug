@@ -49,6 +49,30 @@
           "default": 50,
           scrollPrecision: 1
         },
+        radiusY: {
+          name: 'Radius Y',
+          type: 'integer',
+          min: 0,
+          max: 256,
+          "default": 50,
+          scrollPrecision: 1
+        },
+        glow: {
+          name: 'Glow',
+          type: 'integer',
+          min: 0,
+          max: 255,
+          "default": 128,
+          scrollPrecision: 1
+        },
+        alpha: {
+          name: 'Alpha',
+          type: 'integer',
+          min: 0,
+          max: 255,
+          "default": 255,
+          scrollPrecision: 1
+        },
         color: {
           name: 'Color',
           type: 'color',
@@ -68,15 +92,12 @@
       };
     };
 
-    CircleAction.prototype.render = function(contexts) {
+    CircleAction.prototype.render = function(inputs) {
       CircleAction.__super__.render.call(this);
-      this.copyRendered(contexts);
-      this.context.beginPath();
-      this.context.arc(this.getParameter('x'), this.getParameter('y'), this.getParameter('radiusX'), 0, 2 * Math.PI, false);
-      this.context.closePath();
-      this.context.fillStyle = this.getParameter('color');
-      this.context.fill();
-      return this.context;
+      this.glowMaterial = new THREE.ShaderMaterial(THREE.GlowShader);
+      this.screenAlignedQuadMesh.material = this.glowMaterial;
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
     };
 
     return CircleAction;

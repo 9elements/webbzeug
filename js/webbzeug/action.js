@@ -26,21 +26,49 @@
         info = _ref1[parameter];
         this.parameters[parameter] = info["default"];
       }
-      this.createTextureAndFramebufferObject;
+      this.createRenderTarget();
     }
 
-    Action.prototype.createTextureAndFramebufferObject = function() {
-      this.texture = this.gl.createTexture();
-      this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.app.getWidth(), this.app.getHeight(), 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
-      this.fbo = this.gl.createFramebuffer();
-      this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbo);
-      return this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.texture, 0);
+    Action.prototype.createRenderTarget = function() {
+      var height, parameters, width;
+      width = this.app.textureSize || 1;
+      height = this.app.textureSize || 1;
+      parameters = {
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        format: THREE.RGBFormat,
+        stencilBuffer: false
+      };
+      this.renderTarget = new THREE.WebGLRenderTarget(width, height, parameters);
+      this.screenAlignedQuadMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), null);
+      this.renderToTextureScene = new THREE.Scene();
+      return this.renderToTextureScene.add(this.screenAlignedQuadMesh);
     };
+
+    /*
+      createTextureAndFramebufferObject: ->
+        @texture = @gl.createTexture()
+        @gl.bindTexture( @gl.TEXTURE_2D, @texture)
+    
+        # Set up texture so we can render any size image and so we are
+        # working with pixels.
+        @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_WRAP_S, @gl.CLAMP_TO_EDGE)
+        @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_WRAP_T, @gl.CLAMP_TO_EDGE)
+        @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_MIN_FILTER, @gl.NEAREST)
+        @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_MAG_FILTER, @gl.NEAREST)
+        #// make the texture the same size as the image
+        @gl.texImage2D(
+            @gl.TEXTURE_2D, 0, @gl.RGBA, @app.getWidth(), @app.getHeight(), 0,
+            @gl.RGBA, @gl.UNSIGNED_BYTE, null)
+    
+        #// Create a framebuffer
+        @fbo = @gl.createFramebuffer()
+        @gl.bindFramebuffer(@gl.FRAMEBUFFER, @fbo)
+    
+        #// Attach a texture to it.
+        @gl.framebufferTexture2D( @gl.FRAMEBUFFER, @gl.COLOR_ATTACHMENT0, @gl.TEXTURE_2D, @texture, 0)
+    */
+
 
     Action.prototype.availableParameters = function() {
       return {};
@@ -51,15 +79,22 @@
     };
 
     Action.prototype.copyRendered = function(contexts) {
-      var imageData;
-      if (contexts.length === 0) {
-        this.context.fillStyle = 'black';
-        return this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
-      } else {
-        imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        return this.context.putImageData(imageData, 0, 0);
-      }
+      return console.log("someone called me");
+      /*
+          if contexts.length is 0
+            @context.fillStyle = 'black'
+            @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
+          else
+            imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
+            @context.putImageData imageData, 0, 0
+      */
+
     };
+
+    /*
+      this is called from the tree renderer
+    */
+
 
     Action.prototype.doRender = function(textures) {
       var valid, _ref1, _ref2;
@@ -78,7 +113,7 @@
       if (this.willRender()) {
         this.render(textures);
       }
-      return this.texture;
+      return this.renderTarget;
     };
 
     Action.prototype.render = function(textures) {
@@ -117,20 +152,29 @@
       return this.name;
     };
 
-    Action.prototype.loadShader = function(gl, shaderSource, shaderType) {
-      var compiled, lastError, shader;
-      shader = gl.createShader(shaderType);
-      gl.shaderSource(shader, shaderSource);
-      gl.compileShader(shader);
-      compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-      if (!compiled) {
-        lastError = gl.getShaderInfoLog(shader);
-        console.log("*** Error compiling shader '" + shader + "':" + lastError);
-        gl.deleteShader(shader);
-        return null;
-      }
-      return shader;
-    };
+    /*
+      loadShader: (gl, shaderSource, shaderType) ->
+    
+        # Create the shader object
+        shader = gl.createShader(shaderType)
+    
+        # Load the shader source
+        gl.shaderSource(shader, shaderSource)
+    
+        # Compile the shader
+        gl.compileShader(shader)
+    
+        # Check the compile status
+        compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
+        if (!compiled)
+          # Something went wrong during compilation; get the error
+          lastError = gl.getShaderInfoLog(shader);
+          console.log("*** Error compiling shader '" + shader + "':" + lastError);
+          gl.deleteShader(shader);
+          return null
+        return shader
+    */
+
 
     return Action;
 

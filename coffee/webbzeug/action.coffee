@@ -11,9 +11,21 @@ window.Webbzeug.Action = class Action
     @parameters = {}
     for parameter, info of @availableParameters()
       @parameters[parameter] = info.default
+    @createRenderTarget()
 
-    @createTextureAndFramebufferObject
+  createRenderTarget: ->
+    width = @app.textureSize || 1;
+    height = @app.textureSize || 1;
+    parameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false }
 
+    @renderTarget = new THREE.WebGLRenderTarget( width, height, parameters )
+
+    @screenAlignedQuadMesh = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), null)
+    @renderToTextureScene = new THREE.Scene();
+    @renderToTextureScene.add( @screenAlignedQuadMesh );
+
+
+  ###
   createTextureAndFramebufferObject: ->
     @texture = @gl.createTexture()
     @gl.bindTexture( @gl.TEXTURE_2D, @texture)
@@ -35,19 +47,25 @@ window.Webbzeug.Action = class Action
 
     #// Attach a texture to it.
     @gl.framebufferTexture2D( @gl.FRAMEBUFFER, @gl.COLOR_ATTACHMENT0, @gl.TEXTURE_2D, @texture, 0)
+  ###
 
-   
   availableParameters: -> {}
   validations: -> return {}
 
   copyRendered: (contexts) ->
+    console.log "someone called me"
+    ###
     if contexts.length is 0
       @context.fillStyle = 'black'
       @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
     else
       imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
       @context.putImageData imageData, 0, 0
+    ###
 
+  ###
+  this is called from the tree renderer
+  ###
   doRender: (textures) ->
     valid = @validations textures
 
@@ -65,7 +83,7 @@ window.Webbzeug.Action = class Action
     if @willRender()
       @render textures
 
-    return @texture
+    return @renderTarget
 
   render: (textures) ->
     @renderedAt = +new Date()
@@ -74,7 +92,7 @@ window.Webbzeug.Action = class Action
     #@canvas.width = @app.getWidth()
     #@canvas.height = @app.getHeight()
 
-    #@context = @canvas.getContext("2d") 
+    #@context = @canvas.getContext("2d")
 
   willRender: -> @updatedAt > @renderedAt
 
@@ -83,7 +101,7 @@ window.Webbzeug.Action = class Action
   addChild: (child) -> @children.push child
 
   getParameter: (parameter) -> @parameters[parameter]
-  setParameter: (parameter, value) -> 
+  setParameter: (parameter, value) ->
     @parameters[parameter] = value
     @updatedAt = +new Date()
 
@@ -97,9 +115,9 @@ window.Webbzeug.Action = class Action
     @element.find('.wrapper').contents().first().get(0).data = caption or @caption()
 
   caption: -> return @name
-
+  ###
   loadShader: (gl, shaderSource, shaderType) ->
-     
+
     # Create the shader object
     shader = gl.createShader(shaderType)
 
@@ -111,10 +129,11 @@ window.Webbzeug.Action = class Action
 
     # Check the compile status
     compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
-    if (!compiled) 
+    if (!compiled)
       # Something went wrong during compilation; get the error
       lastError = gl.getShaderInfoLog(shader);
       console.log("*** Error compiling shader '" + shader + "':" + lastError);
       gl.deleteShader(shader);
       return null
     return shader
+  ###
