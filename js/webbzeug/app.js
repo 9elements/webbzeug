@@ -796,7 +796,6 @@
       this.renderer.setClearColorHex(0x200000, 1);
       this.renderer.clear();
       if (textur = this.renderAction(watchedAction)) {
-        console.log("succsess");
         this.copyMaterial.uniforms['tDiffuse'].value = textur;
         this.renderer.render(this.renderToTextureScene, this.renderToTextureCamera);
       } else {
@@ -821,7 +820,6 @@
       startTime = +new Date();
       texture = action.doRender(textures);
       action.renderTime = (+new Date()) - startTime;
-      console.log(texture);
       return texture;
     };
 

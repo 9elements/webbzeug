@@ -665,7 +665,6 @@ window.Webbzeug.App = class App
     @renderer.clear()
 
     if textur = @renderAction watchedAction
-      console.log "succsess"
       @copyMaterial.uniforms['tDiffuse'].value = textur
 
       @renderer.render @renderToTextureScene, @renderToTextureCamera
@@ -692,5 +691,4 @@ window.Webbzeug.App = class App
     startTime = +new Date()
     texture = action.doRender(textures)
     action.renderTime = (+new Date()) - startTime
-    console.log texture
     return texture

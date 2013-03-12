@@ -46,7 +46,7 @@
           type: 'integer',
           min: 0,
           max: 256,
-          "default": 50,
+          "default": 128,
           scrollPrecision: 1
         },
         radiusY: {
@@ -54,7 +54,7 @@
           type: 'integer',
           min: 0,
           max: 256,
-          "default": 50,
+          "default": 128,
           scrollPrecision: 1
         },
         glow: {
@@ -92,10 +92,27 @@
       };
     };
 
+    CircleAction.prototype.setUniforms = function() {
+      var glow, sx, sy, x, y;
+      x = parseInt(this.getParameter('x') - 128.0);
+      this.glowMaterial.uniforms['x'].value = x / 255.0;
+      y = parseInt(this.getParameter('y') - 128.0);
+      this.glowMaterial.uniforms['y'].value = y / 255.0;
+      sx = parseInt(this.getParameter('radiusX'));
+      this.glowMaterial.uniforms['sx'].value = sx / 255.0;
+      sy = parseInt(this.getParameter('radiusY'));
+      this.glowMaterial.uniforms['sy'].value = sy / 255.0;
+      glow = parseInt(this.getParameter('glow'));
+      return this.glowMaterial.uniforms['glow'].value = 1.0 - glow / 255.0;
+    };
+
     CircleAction.prototype.render = function(inputs) {
       CircleAction.__super__.render.call(this);
-      this.glowMaterial = new THREE.ShaderMaterial(THREE.GlowShader);
-      this.screenAlignedQuadMesh.material = this.glowMaterial;
+      if (this.screenAlignedQuadMesh.material === null) {
+        this.glowMaterial = new THREE.ShaderMaterial(THREE.GlowShader);
+        this.screenAlignedQuadMesh.material = this.glowMaterial;
+      }
+      this.setUniforms();
       this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
       return this.renderTarget;
     };
