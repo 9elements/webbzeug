@@ -5,11 +5,11 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
   name: 'Combine'
   availableParameters: ->
     {
-      type: { name: 'Type', type: 'enum', values: { 
+      type: { name: 'Type', type: 'enum', values: {
         darken: 'Darken',
         lighten: 'Lighten',
-        multiply: 'Multiply', 
-        add: 'Add', 
+        multiply: 'Multiply',
+        add: 'Add',
         substract: 'Substract',
         divide: 'Divide'
       }, default: 'add' }
@@ -22,16 +22,27 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
       errors.push 'Combine needs exactly 2 inputs.'
     if contexts.length > 2
       warnings.push 'Combine will only use the first 2 inputs.'
-    
+
     return { warnings: warnings, errors: errors }
 
-  render: (contexts) ->
+
+  render: (inputs) ->
     super()
 
-    if contexts.length < 2
+    if inputs.length < 2
       console.log 'A combine needs at least 2 inputs!'
       return false
 
+    if @screenAlignedQuadMesh.material is null
+      @combineMaterial = new THREE.ShaderMaterial (THREE.AddShader)
+      @screenAlignedQuadMesh.material = @combineMaterial
+
+    @combineMaterial.uniforms['input1'].value = inputs[0]
+    @combineMaterial.uniforms['input2'].value = inputs[1]
+
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+
+    ###
     # Take first image, draw it to the action context
     imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
     @context.putImageData imageData, 0, 0
@@ -53,8 +64,8 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
           @substract applyingContext
         when 'divide'
           @divide applyingContext
-
-    return @context
+    ###
+    return @renderTarget
 
   # Darken
   darken: (applyingContext) ->

@@ -57,38 +57,44 @@
       };
     };
 
-    CombineAction.prototype.render = function(contexts) {
-      var applyingContext, i, imageData, _i, _ref2;
+    CombineAction.prototype.render = function(inputs) {
       CombineAction.__super__.render.call(this);
-      if (contexts.length < 2) {
+      if (inputs.length < 2) {
         console.log('A combine needs at least 2 inputs!');
         return false;
       }
-      imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      this.context.putImageData(imageData, 0, 0);
-      for (i = _i = 1, _ref2 = contexts.length; 1 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 1 <= _ref2 ? ++_i : --_i) {
-        applyingContext = contexts[i];
-        switch (this.getParameter('type')) {
-          case 'darken':
-            this.darken(applyingContext);
-            break;
-          case 'lighten':
-            this.lighten(applyingContext);
-            break;
-          case 'multiply':
-            this.multiply(applyingContext);
-            break;
-          case 'add':
-            this.add(applyingContext);
-            break;
-          case 'substract':
-            this.substract(applyingContext);
-            break;
-          case 'divide':
-            this.divide(applyingContext);
-        }
+      if (this.screenAlignedQuadMesh.material === null) {
+        this.combineMaterial = new THREE.ShaderMaterial(THREE.AddShader);
+        this.screenAlignedQuadMesh.material = this.combineMaterial;
       }
-      return this.context;
+      this.combineMaterial.uniforms['input1'].value = inputs[0];
+      this.combineMaterial.uniforms['input2'].value = inputs[1];
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      /*
+          # Take first image, draw it to the action context
+          imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
+          @context.putImageData imageData, 0, 0
+      
+          # Go though all other contexts and apply blend mode
+          for i in [1...contexts.length]
+            applyingContext = contexts[i]
+      
+            switch @getParameter('type')
+              when 'darken'
+                @darken applyingContext
+              when 'lighten'
+                @lighten applyingContext
+              when 'multiply'
+                @multiply applyingContext
+              when 'add'
+                @add applyingContext
+              when 'substract'
+                @substract applyingContext
+              when 'divide'
+                @divide applyingContext
+      */
+
+      return this.renderTarget;
     };
 
     CombineAction.prototype.darken = function(applyingContext) {
