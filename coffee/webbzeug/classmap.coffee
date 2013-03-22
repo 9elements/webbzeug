@@ -3,55 +3,63 @@ window.Webbzeug.ClassMap =
   ###
     generative actions
   ###
-  cell: 
+  cell:
     name: 'Cell'
     type: 'generative'
     class: Webbzeug.Actions.Cell
-  circle: 
+  circle:
     name: 'Circle'
     type: 'generative'
     class: Webbzeug.Actions.Circle
-  flat: 
+  flat:
     name: 'Flat'
     type: 'generative'
     class: Webbzeug.Actions.Flat
-  fractal: 
+  fractal:
     name: 'Fractal'
     type: 'generative'
     class: Webbzeug.Actions.Fractal
-  glowrect: 
+  glowrect:
     name: 'GlowRect'
     type: 'generative'
     class: Webbzeug.Actions.Glowrect
-  pixels: 
+  pixels:
     name: 'Pixels'
     type: 'generative'
     class: Webbzeug.Actions.Pixels
-  rectangle: 
+  rectangle:
     name: 'Rect'
     type: 'generative'
     class: Webbzeug.Actions.Rectangle
-  
+
   ###
     Processive actions
   ###
-  blur: 
+  contrastBrightnss:
+    name: 'Contr/Bright'
+    type: 'processive'
+    class: Webbzeug.Actions.ContrastBrightness
+  blur:
     name: 'Blur'
     type: 'processive'
     class: Webbzeug.Actions.Blur
-  combine: 
+  combine:
     name: 'Combine'
     type: 'processive'
     class: Webbzeug.Actions.Combine
-  hscb: 
+  hscb:
     name: 'HSCB'
     type: 'processive'
     class: Webbzeug.Actions.HSCB
-  invert: 
+  distort:
+    name: 'Distort'
+    type: 'processive'
+    class: Webbzeug.Actions.Distort
+  invert:
     name: 'Invert'
     type: 'processive'
     class: Webbzeug.Actions.Invert
-  light: 
+  light:
     name: 'Light'
     type: 'processive'
     class: Webbzeug.Actions.Light
@@ -59,7 +67,7 @@ window.Webbzeug.ClassMap =
     name: 'Mask'
     type: 'processive'
     class: Webbzeug.Actions.Mask
-  mirror: 
+  mirror:
     name: 'Mirror'
     type: 'processive'
     class: Webbzeug.Actions.Mirror
@@ -75,7 +83,7 @@ window.Webbzeug.ClassMap =
     name: 'Repeat'
     type: 'processive'
     class: Webbzeug.Actions.Repeat
-  rotozoom: 
+  rotozoom:
     name: 'RotoZoom'
     type: 'processive'
     class: Webbzeug.Actions.RotoZoom
@@ -83,11 +91,11 @@ window.Webbzeug.ClassMap =
   ###
     Memory actions
   ###
-  load: 
+  load:
     name: 'Load'
     type: 'memory'
     class: Webbzeug.Actions.Load
-  save: 
+  save:
     name: 'Save'
     type: 'memory'
     class: Webbzeug.Actions.Save

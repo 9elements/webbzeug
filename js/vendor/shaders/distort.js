@@ -34,12 +34,13 @@ THREE.DistortShader = {
 
     "void main() {",
 
-      "vec4 distorion = 2.0 * texture2D(distMap, vUv ) - 1.0;",
+      "vec4 distorion = texture2D(distMap, vUv );",
       "vec2 tex = vUv;",
-      "tex.x -= amount * distorion.y;",
-      "tex.y += amount * distorion.z;",
+      "tex.x -= amount * ((2.0 * distorion.y) - 1.0);",
+      "tex.y += amount * ((2.0 * distorion.z) - 1.0);",
 
       "// Pack [-1, 1] into [0, 1]",
+      "//gl_FragColor = texture2D(baseMap, tex );",
       "gl_FragColor = texture2D(baseMap, tex );",
     "}"
 

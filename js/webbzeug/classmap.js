@@ -49,6 +49,11 @@
         Processive actions
     */
 
+    contrastBrightnss: {
+      name: 'Contr/Bright',
+      type: 'processive',
+      "class": Webbzeug.Actions.ContrastBrightness
+    },
     blur: {
       name: 'Blur',
       type: 'processive',
@@ -63,6 +68,11 @@
       name: 'HSCB',
       type: 'processive',
       "class": Webbzeug.Actions.HSCB
+    },
+    distort: {
+      name: 'Distort',
+      type: 'processive',
+      "class": Webbzeug.Actions.Distort
     },
     invert: {
       name: 'Invert',

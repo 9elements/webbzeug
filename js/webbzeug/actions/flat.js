@@ -36,19 +36,29 @@
     FlatAction.prototype.validations = function(contexts) {
       var warnings;
       warnings = [];
-      if (contexts.length > 1) {
-        warnings.push('Flat will only use the first input.');
+      if (contexts.length > 0) {
+        warnings.push('Flat uses not input at all');
       }
       return {
         warnings: warnings
       };
     };
 
-    FlatAction.prototype.render = function(contexts) {
+    FlatAction.prototype.render = function(inputs) {
+      var colorRGB;
       FlatAction.__super__.render.call(this);
-      this.context.fillStyle = this.getParameter('color');
-      this.context.fillRect(0, 0, this.app.getWidth(), this.app.getHeight());
-      return this.context;
+      if (this.screenAlignedQuadMesh.material === null) {
+        this.flatMaterial = new THREE.ShaderMaterial(THREE.FlatShader);
+        this.screenAlignedQuadMesh.material = this.flatMaterial;
+      }
+      console.log(this.flatMaterial.uniforms);
+      console.log(THREE.FlatShader);
+      colorRGB = Webbzeug.Utilities.getRgb2(this.getParameter('color'));
+      this.flatMaterial.uniforms["r"].value = colorRGB[0] / 255.0;
+      this.flatMaterial.uniforms["g"].value = colorRGB[1] / 255.0;
+      this.flatMaterial.uniforms["b"].value = colorRGB[2] / 255.0;
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
     };
 
     return FlatAction;

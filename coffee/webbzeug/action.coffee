@@ -16,7 +16,7 @@ window.Webbzeug.Action = class Action
   createRenderTarget: ->
     width = @app.textureSize || 1;
     height = @app.textureSize || 1;
-    parameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false }
+    parameters = { wrapS:THREE.RepeatWrapping, wrapT:THREE.RepeatWrapping, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false }
 
     @renderTarget = new THREE.WebGLRenderTarget( width, height, parameters )
 

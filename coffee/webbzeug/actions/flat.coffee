@@ -10,15 +10,23 @@ window.Webbzeug.Actions.Flat = class FlatAction extends Webbzeug.Action
 
   validations: (contexts) ->
     warnings = []
-    if contexts.length > 1
-      warnings.push 'Flat will only use the first input.'
-    
+    if contexts.length > 0
+      warnings.push 'Flat uses not input at all'
+
     return { warnings: warnings }
 
-  render: (contexts) ->
+  render: (inputs) ->
     super()
+    if @screenAlignedQuadMesh.material is null
+      @flatMaterial = new THREE.ShaderMaterial (THREE.FlatShader)
+      @screenAlignedQuadMesh.material = @flatMaterial
 
-    @context.fillStyle = @getParameter('color')
-    @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
+    console.log @flatMaterial.uniforms
+    console.log THREE.FlatShader
+    colorRGB = Webbzeug.Utilities.getRgb2 @getParameter('color')
+    @flatMaterial.uniforms[ "r" ].value = colorRGB[0] / 255.0
+    @flatMaterial.uniforms[ "g" ].value = colorRGB[1] / 255.0
+    @flatMaterial.uniforms[ "b" ].value = colorRGB[2] / 255.0
 
-    return @context
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+    return @renderTarget

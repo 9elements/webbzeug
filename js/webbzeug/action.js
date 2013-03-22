@@ -34,6 +34,8 @@
       width = this.app.textureSize || 1;
       height = this.app.textureSize || 1;
       parameters = {
+        wrapS: THREE.RepeatWrapping,
+        wrapT: THREE.RepeatWrapping,
         minFilter: THREE.LinearFilter,
         magFilter: THREE.LinearFilter,
         format: THREE.RGBFormat,
