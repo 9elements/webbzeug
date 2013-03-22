@@ -5,21 +5,21 @@
         constant = Math.pow(2, 13)+1,
         prime = 37,
         maximum = Math.pow(2, 50);
- 
+
     if (nseed) {
         seed = nseed;
     }
- 
+
     if (seed == null) {
         seed = (new Date()).getTime();
-    } 
- 
+    }
+
     return {
         next : function() {
             seed *= constant;
             seed += prime;
             seed %= maximum;
-            
+
             return seed;
         }
     }
@@ -49,6 +49,8 @@
 
     PixelsAction.prototype.name = 'Pixels';
 
+    PixelsAction.prototype.canvas = null;
+
     PixelsAction.prototype.availableParameters = function() {
       return {
         seed: {
@@ -73,9 +75,8 @@
       };
     };
 
-    PixelsAction.prototype.render = function(contexts) {
+    PixelsAction.prototype.createPatternOnCanvas = function() {
       var custRnd, i, imageData, index, rand, _i, _ref2;
-      PixelsAction.__super__.render.call(this);
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       custRnd = CustomRandom(this.getParameter('seed'));
       for (i = _i = 0, _ref2 = imageData.data.length / 4; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
@@ -89,6 +90,30 @@
       }
       this.context.putImageData(imageData, 0, 0);
       return this.context;
+    };
+
+    PixelsAction.prototype.render = function(inputs) {
+      var cellTexture;
+      PixelsAction.__super__.render.call(this);
+      if (this.canvas === null) {
+        this.createCanvas();
+      }
+      this.createPatternOnCanvas();
+      cellTexture = new THREE.Texture(this.canvas);
+      cellTexture.needsUpdate = true;
+      this.cellMaterial = new THREE.MeshBasicMaterial({
+        map: cellTexture
+      });
+      this.screenAlignedQuadMesh.material = this.cellMaterial;
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
+    };
+
+    PixelsAction.prototype.createCanvas = function() {
+      this.canvas = $('<canvas>').get(0);
+      this.canvas.width = this.app.textureSize;
+      this.canvas.height = this.app.textureSize;
+      return this.context = this.canvas.getContext("2d");
     };
 
     return PixelsAction;

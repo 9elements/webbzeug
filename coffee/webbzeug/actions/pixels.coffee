@@ -4,21 +4,21 @@
         constant = Math.pow(2, 13)+1,
         prime = 37,
         maximum = Math.pow(2, 50);
- 
+
     if (nseed) {
         seed = nseed;
     }
- 
+
     if (seed == null) {
         seed = (new Date()).getTime();
-    } 
- 
+    }
+
     return {
         next : function() {
             seed *= constant;
             seed += prime;
             seed %= maximum;
-            
+
             return seed;
         }
     }
@@ -29,6 +29,7 @@ window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
   type: 'pixels'
   name: 'Pixels'
+  canvas: null
   availableParameters: ->
     {
       seed: { name: 'Seed', type: 'integer', min: 0, max: 255, default: Math.round(Math.random() * 255), scrollPrecision: 1 },
@@ -41,8 +42,7 @@ window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
 
     return { warnings: warnings }
 
-  render: (contexts) ->
-    super()
+  createPatternOnCanvas: ->
 
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
 
@@ -55,5 +55,28 @@ window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
       imageData.data[index + 1] = rand
       imageData.data[index + 2] = rand
       imageData.data[index + 3] = 255
-    @context.putImageData imageData, 0, 0 
+    @context.putImageData imageData, 0, 0
     return @context
+
+  render: (inputs) ->
+    super()
+    if @canvas is null
+      @createCanvas()
+
+    @createPatternOnCanvas()
+    cellTexture = new THREE.Texture @canvas
+    cellTexture.needsUpdate = true
+
+    @cellMaterial = new THREE.MeshBasicMaterial map: cellTexture
+    @screenAlignedQuadMesh.material = @cellMaterial
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+
+    return @renderTarget
+
+  createCanvas: ->
+    @canvas = $('<canvas>').get(0) # create a new canvas dom-object
+
+    @canvas.width = @app.textureSize
+    @canvas.height = @app.textureSize
+
+    @context = @canvas.getContext("2d")

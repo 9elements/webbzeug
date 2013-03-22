@@ -39,17 +39,15 @@
       };
     };
 
-    InvertAction.prototype.render = function(contexts) {
-      var i, imageData, _i, _ref2;
+    InvertAction.prototype.render = function(inputs) {
       InvertAction.__super__.render.call(this);
-      imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (i = _i = 0, _ref2 = imageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        if ((i % 4) !== 3) {
-          imageData.data[i] = 255 - imageData.data[i];
-        }
+      if (this.screenAlignedQuadMesh.material === null) {
+        this.ninvertMaterial = new THREE.ShaderMaterial(THREE.InvertShader);
+        this.screenAlignedQuadMesh.material = this.ninvertMaterial;
       }
-      this.context.putImageData(imageData, 0, 0);
-      return this.context;
+      this.ninvertMaterial.uniforms['input1'].value = inputs[0];
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
     };
 
     return InvertAction;
