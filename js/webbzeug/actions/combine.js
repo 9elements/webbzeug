@@ -63,10 +63,26 @@
         console.log('A combine needs at least 2 inputs!');
         return false;
       }
-      if (this.screenAlignedQuadMesh.material === null) {
-        this.combineMaterial = new THREE.ShaderMaterial(THREE.AddShader);
-        this.screenAlignedQuadMesh.material = this.combineMaterial;
+      switch (this.getParameter('type')) {
+        case 'darken':
+          this.combineMaterial = new THREE.ShaderMaterial(THREE.DarkenShader);
+          break;
+        case 'lighten':
+          this.combineMaterial = new THREE.ShaderMaterial(THREE.LightenShader);
+          break;
+        case 'multiply':
+          this.combineMaterial = new THREE.ShaderMaterial(THREE.MulShader);
+          break;
+        case 'add':
+          this.combineMaterial = new THREE.ShaderMaterial(THREE.AddShader);
+          break;
+        case 'substract':
+          this.combineMaterial = new THREE.ShaderMaterial(THREE.SubShader);
+          break;
+        case 'divide':
+          this.combineMaterial = new THREE.ShaderMaterial(THREE.DivShader);
       }
+      this.screenAlignedQuadMesh.material = this.combineMaterial;
       this.combineMaterial.uniforms['input1'].value = inputs[0];
       this.combineMaterial.uniforms['input2'].value = inputs[1];
       this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
@@ -95,74 +111,6 @@
       */
 
       return this.renderTarget;
-    };
-
-    CombineAction.prototype.darken = function(applyingContext) {
-      var applyingImageData, i, imageData, j, _i, _j, _ref2;
-      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (i = _i = 0, _ref2 = applyingImageData.data.length; _i < _ref2; i = _i += 4) {
-        for (j = _j = 0; _j < 3; j = ++_j) {
-          imageData.data[i + j] = Math.min(imageData.data[i + j], applyingImageData.data[i + j]);
-        }
-      }
-      return this.context.putImageData(imageData, 0, 0);
-    };
-
-    CombineAction.prototype.lighten = function(applyingContext) {
-      var applyingImageData, i, imageData, j, _i, _j, _ref2;
-      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (i = _i = 0, _ref2 = applyingImageData.data.length; _i < _ref2; i = _i += 4) {
-        for (j = _j = 0; _j < 3; j = ++_j) {
-          imageData.data[i + j] = Math.max(imageData.data[i + j], applyingImageData.data[i + j]);
-        }
-      }
-      return this.context.putImageData(imageData, 0, 0);
-    };
-
-    CombineAction.prototype.multiply = function(applyingContext) {
-      var applyingImageData, i, imageData, _i, _ref2;
-      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (i = _i = 0, _ref2 = applyingImageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        imageData.data[i] = Math.round(applyingImageData.data[i] * imageData.data[i] / 255);
-      }
-      return this.context.putImageData(imageData, 0, 0);
-    };
-
-    CombineAction.prototype.add = function(applyingContext) {
-      var applyingImageData, i, imageData, _i, _ref2;
-      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (i = _i = 0, _ref2 = applyingImageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        imageData.data[i] = Math.min(applyingImageData.data[i] + imageData.data[i], 255);
-      }
-      return this.context.putImageData(imageData, 0, 0);
-    };
-
-    CombineAction.prototype.substract = function(applyingContext) {
-      var applyingImageData, i, imageData, j, _i, _j, _ref2;
-      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (i = _i = 0, _ref2 = applyingImageData.data.length; _i < _ref2; i = _i += 4) {
-        for (j = _j = 0; _j < 3; j = ++_j) {
-          imageData.data[i + j] = imageData.data[i + j] - applyingImageData.data[i + j];
-        }
-      }
-      return this.context.putImageData(imageData, 0, 0);
-    };
-
-    CombineAction.prototype.divide = function(applyingContext) {
-      var applyingImageData, i, imageData, _i, _ref2;
-      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      applyingImageData = applyingContext.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (i = _i = 0, _ref2 = applyingImageData.data.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        if (imageData.data[i] > 0) {
-          imageData.data[i] = Math.round(applyingImageData.data[i] / imageData.data[i]);
-        }
-      }
-      return this.context.putImageData(imageData, 0, 0);
     };
 
     return CombineAction;

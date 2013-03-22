@@ -661,7 +661,7 @@ window.Webbzeug.App = class App
     startTime = +new Date()
 
     ## present final result
-    @renderer.setClearColorHex 0x200000, 1
+    @renderer.setClearColorHex 0x400000, 1
     @renderer.clear()
 
     if textur = @renderAction watchedAction

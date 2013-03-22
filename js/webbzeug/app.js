@@ -793,7 +793,7 @@
         return false;
       }
       startTime = +new Date();
-      this.renderer.setClearColorHex(0x200000, 1);
+      this.renderer.setClearColorHex(0x400000, 1);
       this.renderer.clear();
       if (textur = this.renderAction(watchedAction)) {
         this.copyMaterial.uniforms['tDiffuse'].value = textur;

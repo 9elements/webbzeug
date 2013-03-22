@@ -55,7 +55,7 @@ THREE.GlowShader = {
       "lowp float d = clamp (1.0 - dot(texturCoord, texturCoord), 0.0, 1.0);",
       "d = pow(d, glow);",
       "vec3 color = vec3(r,g,b);",
-      "gl_FragColor = vec4(vec3(d) * color ,d);",
+      "gl_FragColor = vec4(vec3(d) * color ,1.0);",
     "}"
 
   ].join("\n")

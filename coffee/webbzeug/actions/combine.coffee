@@ -33,9 +33,21 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
       console.log 'A combine needs at least 2 inputs!'
       return false
 
-    if @screenAlignedQuadMesh.material is null
-      @combineMaterial = new THREE.ShaderMaterial (THREE.AddShader)
-      @screenAlignedQuadMesh.material = @combineMaterial
+    switch @getParameter('type')
+      when 'darken'
+        @combineMaterial = new THREE.ShaderMaterial (THREE.DarkenShader)
+      when 'lighten'
+        @combineMaterial = new THREE.ShaderMaterial (THREE.LightenShader)
+      when 'multiply'
+        @combineMaterial = new THREE.ShaderMaterial (THREE.MulShader)
+      when 'add'
+        @combineMaterial = new THREE.ShaderMaterial (THREE.AddShader)
+      when 'substract'
+        @combineMaterial = new THREE.ShaderMaterial (THREE.SubShader)
+      when 'divide'
+        @combineMaterial = new THREE.ShaderMaterial (THREE.DivShader)
+
+    @screenAlignedQuadMesh.material = @combineMaterial
 
     @combineMaterial.uniforms['input1'].value = inputs[0]
     @combineMaterial.uniforms['input2'].value = inputs[1]
@@ -67,66 +79,3 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
     ###
     return @renderTarget
 
-  # Darken
-  darken: (applyingContext) ->
-    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-
-    for i in [0...applyingImageData.data.length] by 4
-      for j in [0...3]
-        imageData.data[i + j] = Math.min(imageData.data[i + j], applyingImageData.data[i + j])
-
-    @context.putImageData imageData, 0, 0
-
-  # Lighten
-  lighten: (applyingContext) ->
-    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-
-    for i in [0...applyingImageData.data.length] by 4
-      for j in [0...3]
-        imageData.data[i + j] = Math.max(imageData.data[i + j], applyingImageData.data[i + j])
-
-    @context.putImageData imageData, 0, 0
-
-  # Multiplication
-  multiply: (applyingContext) ->
-    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-
-    for i in [0...applyingImageData.data.length]
-      imageData.data[i] = Math.round(applyingImageData.data[i] * imageData.data[i] / 255)
-
-    @context.putImageData imageData, 0, 0
-
-  # Addition
-  add: (applyingContext) ->
-    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-
-    for i in [0...applyingImageData.data.length]
-      imageData.data[i] = Math.min(applyingImageData.data[i] + imageData.data[i], 255)
-
-    @context.putImageData imageData, 0, 0
-
-  # Substraction
-  substract: (applyingContext) ->
-    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-
-    for i in [0...applyingImageData.data.length] by 4
-      for j in [0...3]
-        imageData.data[i + j] = imageData.data[i + j] - applyingImageData.data[i + j]
-
-    @context.putImageData imageData, 0, 0
-
-  # Division
-  divide: (applyingContext) ->
-    imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    applyingImageData = applyingContext.getImageData 0, 0, @app.getWidth(), @app.getHeight()
-
-    for i in [0...applyingImageData.data.length]
-      if imageData.data[i] > 0
-        imageData.data[i] = Math.round(applyingImageData.data[i] / imageData.data[i])
-
-    @context.putImageData imageData, 0, 0

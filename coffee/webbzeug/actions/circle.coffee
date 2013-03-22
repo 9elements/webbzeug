@@ -48,5 +48,6 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
       @glowMaterial = new THREE.ShaderMaterial (THREE.GlowShader)
       @screenAlignedQuadMesh.material = @glowMaterial
     @setUniforms()
+
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
     return @renderTarget
