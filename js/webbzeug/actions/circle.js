@@ -119,6 +119,7 @@
         this.screenAlignedQuadMesh.material = this.glowMaterial;
       }
       this.setUniforms();
+      this.glowMaterial.uniforms['input1'].value = inputs[0];
       this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
       return this.renderTarget;
     };
