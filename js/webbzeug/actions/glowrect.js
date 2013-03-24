@@ -25,16 +25,16 @@
 
     GlowrectAction.prototype.availableParameters = function() {
       return {
-        centerX: {
-          name: 'Center X',
+        x: {
+          name: 'X',
           type: 'integer',
           min: 0,
           max: 255,
           "default": 128,
           scrollPrecision: 1
         },
-        centerY: {
-          name: 'Center Y',
+        y: {
+          name: 'Y',
           type: 'integer',
           min: 0,
           max: 255,
@@ -57,16 +57,24 @@
           "default": 0,
           scrollPrecision: 1
         },
-        radius: {
-          name: 'Radius',
+        radiusX: {
+          name: 'Radius X',
           type: 'integer',
-          min: 1,
+          min: 0,
           max: 255,
           "default": 30,
           scrollPrecision: 1
         },
-        power: {
-          name: 'Power',
+        radiusY: {
+          name: 'Radius Y',
+          type: 'integer',
+          min: 0,
+          max: 255,
+          "default": 30,
+          scrollPrecision: 1
+        },
+        glow: {
+          name: 'Glow',
           type: 'integer',
           min: 1,
           max: 100,
@@ -92,81 +100,35 @@
       };
     };
 
-    GlowrectAction.prototype.render = function(contexts) {
-      var centerX, centerY, colorRGB, dist, distX, distY, h, height, imageData, index, power, radius, value, w, width, x, y, _i, _j;
-      GlowrectAction.__super__.render.call(this);
-      centerX = parseInt(this.getParameter('centerX'));
-      centerY = parseInt(this.getParameter('centerY'));
-      radius = parseInt(this.getParameter('radius'));
-      width = parseInt(this.getParameter('width'));
-      height = parseInt(this.getParameter('height'));
-      power = parseFloat(this.getParameter('power'));
-      power = power * 0.2;
-      if (power < 1) {
-        power = 1;
-      }
-      colorRGB = Webbzeug.Utilities.getRgb2(this.getParameter('color'));
-      this.copyRendered(contexts);
-      w = this.app.getWidth();
-      h = this.app.getHeight();
-      imageData = this.context.getImageData(0, 0, w, h);
-      for (x = _i = 0; 0 <= w ? _i < w : _i > w; x = 0 <= w ? ++_i : --_i) {
-        for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
-          index = ((y * w) + x) << 2;
-          /*
-                    SEGMENTS:
-          
-                    0 | 1 | 2
-                    ---------
-                    3 | 4 | 5
-                    ---------
-                    6 | 7 | 8
-          */
+    GlowrectAction.prototype.setUniforms = function() {
+      var glow, rx, ry, sx, sy, x, y;
+      x = parseInt(this.getParameter('x') - 128.0);
+      this.glowMaterial.uniforms['x'].value = x / 255.0;
+      y = parseInt(this.getParameter('y') - 128.0);
+      this.glowMaterial.uniforms['y'].value = y / 255.0;
+      sx = parseInt(this.getParameter('width'));
+      this.glowMaterial.uniforms['sizeX'].value = sx / 255.0;
+      sy = parseInt(this.getParameter('height'));
+      this.glowMaterial.uniforms['sizeY'].value = sy / 255.0;
+      rx = parseInt(this.getParameter('radiusX'));
+      this.glowMaterial.uniforms['radiusX'].value = rx / 255.0;
+      ry = parseInt(this.getParameter('radiusY'));
+      this.glowMaterial.uniforms['radiusY'].value = ry / 255.0;
+      glow = parseInt(this.getParameter('glow'));
+      glow = (255.0 - glow) / 30.0;
+      glow *= glow;
+      return this.glowMaterial.uniforms['frameSharpness'].value = glow;
+    };
 
-          if (x < centerX - width / 2 && y < centerY - height / 2) {
-            distX = centerX - width / 2 - x;
-            distY = centerY - height / 2 - y;
-            dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-          } else if (x > centerX + width / 2 && y < centerY - height / 2) {
-            distX = centerX + width / 2 - x;
-            distY = centerY - height / 2 - y;
-            dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-          } else if (x > centerX + width / 2 && y > centerY + height / 2) {
-            distX = centerX + width / 2 - x;
-            distY = centerY + height / 2 - y;
-            dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-          } else if (x < centerX - width / 2 && y > centerY + height / 2) {
-            distX = centerX - width / 2 - x;
-            distY = centerY + height / 2 - y;
-            dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-          } else if (x < centerX - width / 2) {
-            distX = dist = centerX - width / 2 - x;
-            distY = 0;
-          } else if (x > centerX + width / 2) {
-            distX = dist = x - (centerX + width / 2);
-            distY = 0;
-          } else if (y < centerY - height / 2) {
-            distY = dist = centerY - height / 2 - y;
-            distX = 0;
-          } else if (y > centerY + height / 2) {
-            distY = dist = y - (centerY + height / 2);
-            distX = 0;
-          } else {
-            distX = distY = dist = 0;
-          }
-          value = 255 - (dist / radius * 255);
-          value = value * power;
-          if (value > 255) {
-            value = 255;
-          }
-          imageData.data[index] = colorRGB[0] / 255 * value;
-          imageData.data[index + 1] = colorRGB[1] / 255 * value;
-          imageData.data[index + 2] = colorRGB[2] / 255 * value;
-          imageData.data[index + 3] = 255;
-        }
+    GlowrectAction.prototype.render = function(inputs) {
+      GlowrectAction.__super__.render.call(this);
+      if (this.screenAlignedQuadMesh.material === null) {
+        this.glowMaterial = new THREE.ShaderMaterial(THREE.RoundRectShader);
+        this.screenAlignedQuadMesh.material = this.glowMaterial;
       }
-      this.context.putImageData(imageData, 0, 0);
-      return this.context;
+      this.setUniforms();
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
     };
 
     return GlowrectAction;

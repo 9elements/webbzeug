@@ -50,7 +50,7 @@
     */
 
     contrastBrightnss: {
-      name: 'Contr/Bright',
+      name: 'Cont/Bri',
       type: 'processive',
       "class": Webbzeug.Actions.ContrastBrightness
     },
@@ -64,10 +64,10 @@
       type: 'processive',
       "class": Webbzeug.Actions.Combine
     },
-    hscb: {
-      name: 'HSCB',
+    csb: {
+      name: 'CSB',
       type: 'processive',
-      "class": Webbzeug.Actions.HSCB
+      "class": Webbzeug.Actions.CSB
     },
     distort: {
       name: 'Distort',

@@ -36,7 +36,7 @@ window.Webbzeug.ClassMap =
     Processive actions
   ###
   contrastBrightnss:
-    name: 'Contr/Bright'
+    name: 'Cont/Bri'
     type: 'processive'
     class: Webbzeug.Actions.ContrastBrightness
   blur:
@@ -47,10 +47,10 @@ window.Webbzeug.ClassMap =
     name: 'Combine'
     type: 'processive'
     class: Webbzeug.Actions.Combine
-  hscb:
-    name: 'HSCB'
+  csb:
+    name: 'CSB'
     type: 'processive'
-    class: Webbzeug.Actions.HSCB
+    class: Webbzeug.Actions.CSB
   distort:
     name: 'Distort'
     type: 'processive'
