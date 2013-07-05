@@ -46,10 +46,7 @@
       errors = [];
       warnings = [];
       if (contexts.length < 2) {
-        errors.push('Combine needs exactly 2 inputs.');
-      }
-      if (contexts.length > 2) {
-        warnings.push('Combine will only use the first 2 inputs.');
+        errors.push('Combine needs at least 2 inputs.');
       }
       return {
         warnings: warnings,
@@ -57,59 +54,51 @@
       };
     };
 
-    CombineAction.prototype.render = function(inputs) {
-      CombineAction.__super__.render.call(this);
-      if (inputs.length < 2) {
-        console.log('A combine needs at least 2 inputs!');
-        return false;
-      }
+    CombineAction.prototype.createCombineMaterial = function() {
       switch (this.getParameter('type')) {
         case 'darken':
-          this.combineMaterial = new THREE.ShaderMaterial(THREE.DarkenShader);
-          break;
+          return this.combineMaterial = new THREE.ShaderMaterial(THREE.DarkenShader);
         case 'lighten':
-          this.combineMaterial = new THREE.ShaderMaterial(THREE.LightenShader);
-          break;
+          return this.combineMaterial = new THREE.ShaderMaterial(THREE.LightenShader);
         case 'multiply':
-          this.combineMaterial = new THREE.ShaderMaterial(THREE.MulShader);
-          break;
+          return this.combineMaterial = new THREE.ShaderMaterial(THREE.MulShader);
         case 'add':
-          this.combineMaterial = new THREE.ShaderMaterial(THREE.AddShader);
-          break;
+          return this.combineMaterial = new THREE.ShaderMaterial(THREE.AddShader);
         case 'substract':
-          this.combineMaterial = new THREE.ShaderMaterial(THREE.SubShader);
-          break;
+          return this.combineMaterial = new THREE.ShaderMaterial(THREE.SubShader);
         case 'divide':
-          this.combineMaterial = new THREE.ShaderMaterial(THREE.DivShader);
+          return this.combineMaterial = new THREE.ShaderMaterial(THREE.DivShader);
       }
-      this.screenAlignedQuadMesh.material = this.combineMaterial;
-      this.combineMaterial.uniforms['input1'].value = inputs[0];
-      this.combineMaterial.uniforms['input2'].value = inputs[1];
-      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
-      /*
-          # Take first image, draw it to the action context
-          imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
-          @context.putImageData imageData, 0, 0
-      
-          # Go though all other contexts and apply blend mode
-          for i in [1...contexts.length]
-            applyingContext = contexts[i]
-      
-            switch @getParameter('type')
-              when 'darken'
-                @darken applyingContext
-              when 'lighten'
-                @lighten applyingContext
-              when 'multiply'
-                @multiply applyingContext
-              when 'add'
-                @add applyingContext
-              when 'substract'
-                @substract applyingContext
-              when 'divide'
-                @divide applyingContext
-      */
+    };
 
+    CombineAction.prototype.render = function(inputs) {
+      var i, useRenderTargetAsBuffer, _i, _ref2;
+      CombineAction.__super__.render.call(this);
+      if (inputs.length < 2) {
+        return false;
+      }
+      this.createCombineMaterial();
+      this.screenAlignedQuadMesh.material = this.combineMaterial;
+      if (inputs.length > 2) {
+        this.createTempTarget();
+      }
+      useRenderTargetAsBuffer = inputs.length % 2 === 0;
+      console.log(useRenderTargetAsBuffer);
+      this.combineMaterial.uniforms['input1'].value = inputs[0];
+      for (i = _i = 1, _ref2 = inputs.length; 1 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 1 <= _ref2 ? ++_i : --_i) {
+        console.log(i);
+        this.combineMaterial.uniforms['input2'].value = inputs[i];
+        if (useRenderTargetAsBuffer) {
+          this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, false);
+          this.combineMaterial.uniforms['input1'].value = this.renderTarget;
+          console.log('renderTarget');
+        } else {
+          this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, false);
+          this.combineMaterial.uniforms['input1'].value = this.tempTarget;
+          console.log('tempTarget');
+        }
+        useRenderTargetAsBuffer = !useRenderTargetAsBuffer;
+      }
       return this.renderTarget;
     };
 

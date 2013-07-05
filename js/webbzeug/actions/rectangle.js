@@ -79,27 +79,33 @@
     RectangleAction.prototype.setUniforms = function() {
       var colorRGB, sx, sy, x, y;
       x = parseInt(this.getParameter('x'));
-      this.glowMaterial.uniforms['x'].value = x / 255.0;
+      this.rectMaterial.uniforms['x'].value = x / 255.0;
       y = parseInt(this.getParameter('y'));
-      this.glowMaterial.uniforms['y'].value = y / 255.0;
+      this.rectMaterial.uniforms['y'].value = y / 255.0;
       sx = parseInt(this.getParameter('width'));
-      this.glowMaterial.uniforms['width'].value = sx / 255.0;
+      this.rectMaterial.uniforms['width'].value = sx / 255.0;
       sy = parseInt(this.getParameter('height'));
-      this.glowMaterial.uniforms['height'].value = sy / 255.0;
+      this.rectMaterial.uniforms['height'].value = sy / 255.0;
       colorRGB = Webbzeug.Utilities.getRgb2(this.getParameter('color'));
-      this.glowMaterial.uniforms["r"].value = colorRGB[0] / 255.0;
-      this.glowMaterial.uniforms["g"].value = colorRGB[1] / 255.0;
-      return this.glowMaterial.uniforms["b"].value = colorRGB[2] / 255.0;
+      this.rectMaterial.uniforms["r"].value = colorRGB[0] / 255.0;
+      this.rectMaterial.uniforms["g"].value = colorRGB[1] / 255.0;
+      return this.rectMaterial.uniforms["b"].value = colorRGB[2] / 255.0;
     };
 
     RectangleAction.prototype.render = function(inputs) {
       RectangleAction.__super__.render.call(this);
       if (this.screenAlignedQuadMesh.material === null) {
-        this.glowMaterial = new THREE.ShaderMaterial(THREE.RectangleShader);
-        this.screenAlignedQuadMesh.material = this.glowMaterial;
+        this.rectMaterial = new THREE.ShaderMaterial(THREE.RectangleShader);
+        this.screenAlignedQuadMesh.material = this.rectMaterial;
       }
       this.setUniforms();
-      this.glowMaterial.uniforms['input1'].value = inputs[0];
+      if (inputs.length > 0) {
+        this.rectMaterial.uniforms['input1'].value = inputs[0];
+      } else {
+        this.createTempTarget();
+        this.clearTempTarget();
+        this.rectMaterial.uniforms['input1'].value = this.tempTarget;
+      }
       this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
       return this.renderTarget;
     };

@@ -25,7 +25,8 @@ window.Webbzeug.Action = class Action
     @renderToTextureScene.add( @screenAlignedQuadMesh );
 
   createTempTarget: ->
-    if @tempTarget? return
+    if @tempTarget?
+      return
 
     width = @app.textureSize || 1;
     height = @app.textureSize || 1;
@@ -91,25 +92,15 @@ window.Webbzeug.Action = class Action
     @element.find('.wrapper').contents().first().get(0).data = caption or @caption()
 
   caption: -> return @name
-  ###
-  loadShader: (gl, shaderSource, shaderType) ->
 
-    # Create the shader object
-    shader = gl.createShader(shaderType)
+  clearTempTarget: ->
+    oldMaterial = @screenAlignedQuadMesh.material
+    flatMaterial = new THREE.ShaderMaterial (THREE.FlatShader)
+    @screenAlignedQuadMesh.material = flatMaterial
 
-    # Load the shader source
-    gl.shaderSource(shader, shaderSource)
+    flatMaterial.uniforms[ "r" ].value = 0
+    flatMaterial.uniforms[ "g" ].value = 0
+    flatMaterial.uniforms[ "b" ].value = 0
 
-    # Compile the shader
-    gl.compileShader(shader)
-
-    # Check the compile status
-    compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
-    if (!compiled)
-      # Something went wrong during compilation; get the error
-      lastError = gl.getShaderInfoLog(shader);
-      console.log("*** Error compiling shader '" + shader + "':" + lastError);
-      gl.deleteShader(shader);
-      return null
-    return shader
-  ###
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, true
+    @screenAlignedQuadMesh.material = oldMaterial

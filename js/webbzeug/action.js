@@ -47,30 +47,23 @@
       return this.renderToTextureScene.add(this.screenAlignedQuadMesh);
     };
 
-    /*
-      createTextureAndFramebufferObject: ->
-        @texture = @gl.createTexture()
-        @gl.bindTexture( @gl.TEXTURE_2D, @texture)
-    
-        # Set up texture so we can render any size image and so we are
-        # working with pixels.
-        @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_WRAP_S, @gl.CLAMP_TO_EDGE)
-        @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_WRAP_T, @gl.CLAMP_TO_EDGE)
-        @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_MIN_FILTER, @gl.NEAREST)
-        @gl.texParameteri(@gl.TEXTURE_2D, @gl.TEXTURE_MAG_FILTER, @gl.NEAREST)
-        #// make the texture the same size as the image
-        @gl.texImage2D(
-            @gl.TEXTURE_2D, 0, @gl.RGBA, @app.getWidth(), @app.getHeight(), 0,
-            @gl.RGBA, @gl.UNSIGNED_BYTE, null)
-    
-        #// Create a framebuffer
-        @fbo = @gl.createFramebuffer()
-        @gl.bindFramebuffer(@gl.FRAMEBUFFER, @fbo)
-    
-        #// Attach a texture to it.
-        @gl.framebufferTexture2D( @gl.FRAMEBUFFER, @gl.COLOR_ATTACHMENT0, @gl.TEXTURE_2D, @texture, 0)
-    */
-
+    Action.prototype.createTempTarget = function() {
+      var height, parameters, width;
+      if (this.tempTarget != null) {
+        return;
+      }
+      width = this.app.textureSize || 1;
+      height = this.app.textureSize || 1;
+      parameters = {
+        wrapS: THREE.RepeatWrapping,
+        wrapT: THREE.RepeatWrapping,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        format: THREE.RGBFormat,
+        stencilBuffer: false
+      };
+      return this.tempTarget = new THREE.WebGLRenderTarget(width, height, parameters);
+    };
 
     Action.prototype.availableParameters = function() {
       return {};
@@ -82,15 +75,6 @@
 
     Action.prototype.copyRendered = function(contexts) {
       return console.log("someone called me");
-      /*
-          if contexts.length is 0
-            @context.fillStyle = 'black'
-            @context.fillRect 0, 0, @app.getWidth(), @app.getHeight()
-          else
-            imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
-            @context.putImageData imageData, 0, 0
-      */
-
     };
 
     /*
@@ -154,29 +138,17 @@
       return this.name;
     };
 
-    /*
-      loadShader: (gl, shaderSource, shaderType) ->
-    
-        # Create the shader object
-        shader = gl.createShader(shaderType)
-    
-        # Load the shader source
-        gl.shaderSource(shader, shaderSource)
-    
-        # Compile the shader
-        gl.compileShader(shader)
-    
-        # Check the compile status
-        compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
-        if (!compiled)
-          # Something went wrong during compilation; get the error
-          lastError = gl.getShaderInfoLog(shader);
-          console.log("*** Error compiling shader '" + shader + "':" + lastError);
-          gl.deleteShader(shader);
-          return null
-        return shader
-    */
-
+    Action.prototype.clearTempTarget = function() {
+      var flatMaterial, oldMaterial;
+      oldMaterial = this.screenAlignedQuadMesh.material;
+      flatMaterial = new THREE.ShaderMaterial(THREE.FlatShader);
+      this.screenAlignedQuadMesh.material = flatMaterial;
+      flatMaterial.uniforms["r"].value = 0;
+      flatMaterial.uniforms["g"].value = 0;
+      flatMaterial.uniforms["b"].value = 0;
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, true);
+      return this.screenAlignedQuadMesh.material = oldMaterial;
+    };
 
     return Action;
 

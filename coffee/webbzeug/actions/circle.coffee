@@ -51,7 +51,9 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
     if inputs.length > 0
       @glowMaterial.uniforms['input1'].value = inputs[0]
     else
-      @glowMaterial.uniforms['input1'].value = nil
+      @createTempTarget()
+      @clearTempTarget()
+      @glowMaterial.uniforms['input1'].value = @tempTarget
 
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
     return @renderTarget

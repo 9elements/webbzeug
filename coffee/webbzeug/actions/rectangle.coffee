@@ -45,7 +45,9 @@ window.Webbzeug.Actions.Rectangle = class RectangleAction extends Webbzeug.Actio
     if inputs.length > 0
       @rectMaterial.uniforms['input1'].value = inputs[0]
     else
-      @rectMaterial.uniforms['input1'].value = nil
+      @createTempTarget()
+      @clearTempTarget()
+      @rectMaterial.uniforms['input1'].value = @tempTarget
 
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
     return @renderTarget
