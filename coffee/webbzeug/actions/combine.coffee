@@ -19,20 +19,12 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
     errors = []
     warnings = []
     if contexts.length < 2
-      errors.push 'Combine needs exactly 2 inputs.'
-    if contexts.length > 2
-      warnings.push 'Combine will only use the first 2 inputs.'
+      errors.push 'Combine needs at least 2 inputs.'
 
     return { warnings: warnings, errors: errors }
 
 
-  render: (inputs) ->
-    super()
-
-    if inputs.length < 2
-      console.log 'A combine needs at least 2 inputs!'
-      return false
-
+  createCombineMaterial: ->
     switch @getParameter('type')
       when 'darken'
         @combineMaterial = new THREE.ShaderMaterial (THREE.DarkenShader)
@@ -47,35 +39,31 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
       when 'divide'
         @combineMaterial = new THREE.ShaderMaterial (THREE.DivShader)
 
+  render: (inputs) ->
+    super()
+
+    if inputs.length < 2
+      return false
+
+    @createCombineMaterial()
     @screenAlignedQuadMesh.material = @combineMaterial
 
+    if inputs.length > 2
+      @createTempTarget()
+
+    useRenderTargetAsBuffer = (inputs.length) % 2 is 0
+    console.log useRenderTargetAsBuffer
+
     @combineMaterial.uniforms['input1'].value = inputs[0]
-    @combineMaterial.uniforms['input2'].value = inputs[1]
 
-    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+    for i in [1..inputs.length]
+      @combineMaterial.uniforms['input2'].value = inputs[i]
+      if useRenderTargetAsBuffer
+        @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+        @combineMaterial.uniforms['input1'].value = @renderTarget
+      else
+        @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, true
+        @combineMaterial.uniforms['input1'].value = @tempTarget
 
-    ###
-    # Take first image, draw it to the action context
-    imageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    @context.putImageData imageData, 0, 0
-
-    # Go though all other contexts and apply blend mode
-    for i in [1...contexts.length]
-      applyingContext = contexts[i]
-
-      switch @getParameter('type')
-        when 'darken'
-          @darken applyingContext
-        when 'lighten'
-          @lighten applyingContext
-        when 'multiply'
-          @multiply applyingContext
-        when 'add'
-          @add applyingContext
-        when 'substract'
-          @substract applyingContext
-        when 'divide'
-          @divide applyingContext
-    ###
     return @renderTarget
 
