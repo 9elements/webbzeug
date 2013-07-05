@@ -18,9 +18,6 @@ window.Webbzeug.Actions.Mirror = class MirrorAction extends Webbzeug.Action
 
     return { errors: errors, warnings: warnings }
 
-
-
-
   render: (inputs) ->
     super()
     if @screenAlignedQuadMesh.material is null

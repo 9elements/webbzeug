@@ -37,10 +37,9 @@
           name: 'Type',
           type: 'enum',
           values: {
-            linear: 'Linear',
-            gauss: 'Gauss'
+            disc: 'Disc'
           },
-          "default": 'linear'
+          "default": 'disc'
         }
       };
     };
@@ -61,152 +60,25 @@
       };
     };
 
-    BlurAction.prototype.linearBlur = function(contexts) {
-      var i, imageData, index, n, outputData, pixelCount, rowLength, strength, value, x, y, _i, _j, _k, _l, _ref2, _ref3, _results;
-      strength = parseInt(this.getParameter('strength'));
-      _results = [];
-      for (n = _i = 0; 0 <= strength ? _i < strength : _i > strength; n = 0 <= strength ? ++_i : --_i) {
-        if (n === 0) {
-          imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        } else {
-          imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        }
-        outputData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        rowLength = this.app.getWidth() << 2;
-        for (y = _j = 0, _ref2 = this.app.getHeight(); 0 <= _ref2 ? _j < _ref2 : _j > _ref2; y = 0 <= _ref2 ? ++_j : --_j) {
-          for (x = _k = 0, _ref3 = this.app.getWidth(); 0 <= _ref3 ? _k < _ref3 : _k > _ref3; x = 0 <= _ref3 ? ++_k : --_k) {
-            index = (x << 2) + y * (this.app.getWidth() << 2);
-            for (i = _l = 0; _l < 3; i = ++_l) {
-              pixelCount = 9;
-              value = imageData.data[index + i];
-              if (y !== 0) {
-                value += imageData.data[index + i - rowLength];
-                if (x !== 0) {
-                  value += imageData.data[index + i - 4 - rowLength];
-                } else {
-                  pixelCount -= 1;
-                }
-                if (x < (this.app.getWidth() - 1)) {
-                  value += imageData.data[index + i + 4 - rowLength];
-                } else {
-                  pixelCount -= 1;
-                }
-              } else {
-                pixelCount -= 3;
-              }
-              if (x !== 0) {
-                value += imageData.data[index + i - 4];
-              } else {
-                pixelCount -= 1;
-              }
-              if (x < (this.app.getWidth() - 1)) {
-                value += imageData.data[index + i + 4];
-              } else {
-                pixelCount -= 1;
-              }
-              if (y < (this.app.getHeight() - 1)) {
-                value += imageData.data[index + i + rowLength];
-                if (x !== 0) {
-                  value += imageData.data[index + i - 4 + rowLength];
-                } else {
-                  pixelCount -= 1;
-                }
-                if (x < (this.app.getWidth() - 1)) {
-                  value += imageData.data[index + i + 4 + rowLength];
-                } else {
-                  pixelCount -= 1;
-                }
-              } else {
-                pixelCount -= 3;
-              }
-              outputData.data[index + i] = value / pixelCount;
-            }
-            outputData.data[index + 3] = 255;
-          }
-        }
-        _results.push(this.context.putImageData(outputData, 0, 0));
+    BlurAction.prototype.renderDisc = function(inputs) {
+      var strength;
+      if (!(this.discBlurMaterial != null)) {
+        this.discBlurMaterial = new THREE.ShaderMaterial(THREE.DiscBlur);
       }
-      return _results;
+      this.screenAlignedQuadMesh.material = this.discBlurMaterial;
+      this.discBlurMaterial.uniforms['tDiffuse'].value = inputs[0];
+      strength = parseInt(this.getParameter('strength'));
+      this.discBlurMaterial.uniforms['discRadius'].value = strength * 0.0007;
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
     };
 
-    BlurAction.prototype.gaussBlur = function(contexts) {
-      var i, imageData, index, n, outputData, pixelCount, rowLength, strength, value, x, y, _i, _j, _k, _l, _ref2, _ref3, _results;
-      strength = parseInt(this.getParameter('strength'));
-      _results = [];
-      for (n = _i = 0; 0 <= strength ? _i < strength : _i > strength; n = 0 <= strength ? ++_i : --_i) {
-        if (n === 0) {
-          imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        } else {
-          imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        }
-        outputData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-        rowLength = this.app.getWidth() << 2;
-        for (y = _j = 0, _ref2 = this.app.getHeight(); 0 <= _ref2 ? _j < _ref2 : _j > _ref2; y = 0 <= _ref2 ? ++_j : --_j) {
-          for (x = _k = 0, _ref3 = this.app.getWidth(); 0 <= _ref3 ? _k < _ref3 : _k > _ref3; x = 0 <= _ref3 ? ++_k : --_k) {
-            index = (x << 2) + y * (this.app.getWidth() << 2);
-            for (i = _l = 0; _l < 3; i = ++_l) {
-              pixelCount = 16;
-              value = imageData.data[index + i] << 2;
-              if (y !== 0) {
-                value += imageData.data[index + i - rowLength] << 1;
-                if (x !== 0) {
-                  value += imageData.data[index + i - 4 - rowLength];
-                } else {
-                  pixelCount -= 1;
-                }
-                if (x < (this.app.getWidth() - 1)) {
-                  value += imageData.data[index + i + 4 - rowLength];
-                } else {
-                  pixelCount -= 1;
-                }
-              } else {
-                pixelCount -= 4;
-              }
-              if (x !== 0) {
-                value += imageData.data[index + i - 4] << 1;
-              } else {
-                pixelCount -= 2;
-              }
-              if (x < (this.app.getWidth() - 1)) {
-                value += imageData.data[index + i + 4] << 1;
-              } else {
-                pixelCount -= 2;
-              }
-              if (y < (this.app.getHeight() - 1)) {
-                value += imageData.data[index + i + rowLength] << 1;
-                if (x !== 0) {
-                  value += imageData.data[index + i - 4 + rowLength];
-                } else {
-                  pixelCount -= 1;
-                }
-                if (x < (this.app.getWidth() - 1)) {
-                  value += imageData.data[index + i + 4 + rowLength];
-                } else {
-                  pixelCount -= 1;
-                }
-              } else {
-                pixelCount -= 4;
-              }
-              outputData.data[index + i] = value / pixelCount;
-            }
-            outputData.data[index + 3] = 255;
-          }
-        }
-        _results.push(this.context.putImageData(outputData, 0, 0));
-      }
-      return _results;
-    };
-
-    BlurAction.prototype.render = function(contexts) {
+    BlurAction.prototype.render = function(inputs) {
       BlurAction.__super__.render.call(this);
       switch (this.getParameter('type')) {
-        case 'linear':
-          this.linearBlur(contexts);
-          break;
-        case 'gauss':
-          this.gaussBlur(contexts);
+        case 'disc':
+          this.renderDisc(inputs);
       }
-      return this.context;
+      return this.renderTarget;
     };
 
     return BlurAction;

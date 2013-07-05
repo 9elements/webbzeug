@@ -57,7 +57,7 @@
       },
       delta: {
         type: "v2",
-        value: new THREE.Vector2(1, 1)
+        value: new THREE.Vector2(0.1, 0.1)
       }
     },
     vertexShader: "varying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}",
@@ -71,13 +71,13 @@
         value: 0,
         texture: null
       },
-      delta: {
-        type: "v2",
-        value: new THREE.Vector2(1, 1)
+      discRadius: {
+        type: "f",
+        value: 0.02
       }
     },
     vertexShader: "varying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}",
-    fragmentShader: "varying vec3 vColor;\nvarying vec2 vUv;\n\nuniform sampler2D tDiffuse;\nvec2 offsets[12];\n\nvoid main()\n{\n  float DiscRadius = 0.02;\n  offsets[0] = vec2(-0.326212,-0.40581);\n  offsets[1] = vec2(-0.840144,-0.07358);\n  offsets[2] = vec2(-0.695914,0.457137);\n  offsets[3] = vec2(-0.203345,0.620716);\n  offsets[4] = vec2(0.96234,-0.194983);\n  offsets[5] = vec2(0.473434,-0.480026);\n  offsets[6] = vec2(0.519456,0.767022 );\n  offsets[7] = vec2(0.185461,-0.893124 );\n  offsets[8] = vec2(0.507431,0.064425 );\n  offsets[9] = vec2(0.89642,0.412458 );\n  offsets[10] = vec2(-0.32194,-0.932615 );\n  offsets[11] = vec2(-0.791559,-0.59771 );\n\n  vec4 sampleAccum = texture2D(tDiffuse,vUv);\n\n  for ( int nTapIndex = 0; nTapIndex < 12; nTapIndex++ )\n  {\n    vec2 vTapCoord = vUv + offsets[nTapIndex] * DiscRadius;\n    sampleAccum.rgb += texture2D(tDiffuse, vTapCoord).rgb;\n  }\n  sampleAccum.rgb /= 13.0;\n  gl_FragColor = sampleAccum;\n}"
+    fragmentShader: "varying vec3 vColor;\nvarying vec2 vUv;\n\nuniform sampler2D tDiffuse;\nvec2 offsets[12];\n uniform float discRadius;\n\nvoid main()\n{\n  offsets[0] = vec2(-0.326212,-0.40581);\n  offsets[1] = vec2(-0.840144,-0.07358);\n  offsets[2] = vec2(-0.695914,0.457137);\n  offsets[3] = vec2(-0.203345,0.620716);\n  offsets[4] = vec2(0.96234,-0.194983);\n  offsets[5] = vec2(0.473434,-0.480026);\n  offsets[6] = vec2(0.519456,0.767022 );\n  offsets[7] = vec2(0.185461,-0.893124 );\n  offsets[8] = vec2(0.507431,0.064425 );\n  offsets[9] = vec2(0.89642,0.412458 );\n  offsets[10] = vec2(-0.32194,-0.932615 );\n  offsets[11] = vec2(-0.791559,-0.59771 );\n\n  vec4 sampleAccum = texture2D(tDiffuse,vUv);\n\n  for ( int nTapIndex = 0; nTapIndex < 12; nTapIndex++ )\n  {\n    vec2 vTapCoord = vUv + offsets[nTapIndex] * discRadius;\n    sampleAccum.rgb += texture2D(tDiffuse, vTapCoord).rgb;\n  }\n  sampleAccum.rgb /= 13.0;\n  gl_FragColor = sampleAccum;\n}"
   };
 
   THREE.BokehBlur = {
