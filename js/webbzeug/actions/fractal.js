@@ -5,21 +5,21 @@
         constant = Math.pow(2, 13)+1,
         prime = 37,
         maximum = Math.pow(2, 50);
- 
+
     if (nseed) {
         seed = nseed;
     }
- 
+
     if (seed == null) {
         seed = (new Date()).getTime();
-    } 
- 
+    }
+
     return {
         next : function() {
             seed *= constant;
             seed += prime;
             seed %= maximum;
-            
+
             return seed;
         },
         next01: function() {
@@ -86,9 +86,25 @@
       };
     };
 
-    FractalAction.prototype.render = function(contexts) {
-      var center, color, h, imageData, imagePixelData, index, ll, lr, map, roughness, ul, ur, w, x, y, _i, _j, _k, _ref2, _ref3, _ref4;
+    FractalAction.prototype.render = function(inputs) {
+      var fractalTexture;
       FractalAction.__super__.render.call(this);
+      if (!(this.canvas != null)) {
+        this.createCanvas();
+      }
+      this.createPatternOnCanvas();
+      fractalTexture = new THREE.Texture(this.canvas);
+      fractalTexture.needsUpdate = true;
+      this.fractalMaterial = new THREE.MeshBasicMaterial({
+        map: fractalTexture
+      });
+      this.screenAlignedQuadMesh.material = this.fractalMaterial;
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
+    };
+
+    FractalAction.prototype.createPatternOnCanvas = function() {
+      var center, color, h, imageData, imagePixelData, index, ll, lr, map, roughness, ul, ur, w, x, y, _i, _j, _k, _ref2, _ref3, _ref4;
       this.rnd = CustomRandom(this.getParameter('seed'));
       roughness = this.getParameter('roughness') / this.app.getWidth();
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());

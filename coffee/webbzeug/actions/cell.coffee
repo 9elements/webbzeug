@@ -49,7 +49,7 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
 
   render: (inputs) ->
     super()
-    if @canvas is null
+    if not @canvas?
       @createCanvas()
 
     @createPatternOnCanvas()
@@ -61,14 +61,6 @@ window.Webbzeug.Actions.Cell = class CellAction extends Webbzeug.Action
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
 
     return @renderTarget
-
-  createCanvas: ->
-    @canvas = $('<canvas>').get(0) # create a new canvas dom-object
-
-    @canvas.width = @app.textureSize
-    @canvas.height = @app.textureSize
-
-    @context = @canvas.getContext("2d")
 
   createPatternOnCanvas:  ->
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()

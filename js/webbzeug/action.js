@@ -150,6 +150,13 @@
       return this.screenAlignedQuadMesh.material = oldMaterial;
     };
 
+    Action.prototype.createCanvas = function() {
+      this.canvas = $('<canvas>').get(0);
+      this.canvas.width = this.app.textureSize;
+      this.canvas.height = this.app.textureSize;
+      return this.context = this.canvas.getContext("2d");
+    };
+
     return Action;
 
   })();

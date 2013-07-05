@@ -4,21 +4,21 @@
         constant = Math.pow(2, 13)+1,
         prime = 37,
         maximum = Math.pow(2, 50);
- 
+
     if (nseed) {
         seed = nseed;
     }
- 
+
     if (seed == null) {
         seed = (new Date()).getTime();
-    } 
- 
+    }
+
     return {
         next : function() {
             seed *= constant;
             seed += prime;
             seed %= maximum;
-            
+
             return seed;
         },
         next01: function() {
@@ -43,12 +43,26 @@ window.Webbzeug.Actions.Fractal = class FractalAction extends Webbzeug.Action
     warnings = []
     if contexts.length > 1
       warnings.push 'Fractal will only use the first input.'
-    
+
     return { warnings: warnings }
 
-  render: (contexts) ->
+  render: (inputs) ->
     super()
+    if not @canvas?
+      @createCanvas()
 
+    @createPatternOnCanvas()
+    fractalTexture = new THREE.Texture @canvas
+    fractalTexture.needsUpdate = true
+
+    @fractalMaterial = new THREE.MeshBasicMaterial map: fractalTexture
+    @screenAlignedQuadMesh.material = @fractalMaterial
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+
+    return @renderTarget
+
+
+  createPatternOnCanvas:  ->
     @rnd = CustomRandom(@getParameter('seed'))
 
     roughness = @getParameter('roughness') / @app.getWidth()
@@ -146,14 +160,14 @@ window.Webbzeug.Actions.Fractal = class FractalAction extends Webbzeug.Action
             map[x][j] = (bl + br + center) / 3 + @displace(dimension)
           map[x][j] = @normalize(map[x][j])
 
-          
+
           # Right
           if i + (newDimension / 2) < @app.getWidth()
             map[i][y] = (tr + br + center + map[i + (newDimension / 2)][y]) / 4 + @displace(dimension)
           else
             map[i][y] = (tr + br + center) / 3 + @displace(dimension)
           map[i][y] = @normalize(map[i][y])
-          
+
           # Left
           if i - (newDimension * 2) + (newDimension / 2) > 0
             map[i - newDimension][y] = (tl + bl + center + map[i - dimension + (newDimension / 2)][y]) / 4 + @displace(dimension)

@@ -98,7 +98,7 @@
     CellAction.prototype.render = function(inputs) {
       var cellTexture;
       CellAction.__super__.render.call(this);
-      if (this.canvas === null) {
+      if (!(this.canvas != null)) {
         this.createCanvas();
       }
       this.createPatternOnCanvas();
@@ -110,13 +110,6 @@
       this.screenAlignedQuadMesh.material = this.cellMaterial;
       this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
       return this.renderTarget;
-    };
-
-    CellAction.prototype.createCanvas = function() {
-      this.canvas = $('<canvas>').get(0);
-      this.canvas.width = this.app.textureSize;
-      this.canvas.height = this.app.textureSize;
-      return this.context = this.canvas.getContext("2d");
     };
 
     CellAction.prototype.createPatternOnCanvas = function() {

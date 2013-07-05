@@ -19,10 +19,6 @@ window.Webbzeug.ClassMap =
     name: 'Fractal'
     type: 'generative'
     class: Webbzeug.Actions.Fractal
-  glowrect:
-    name: 'GlowRect'
-    type: 'generative'
-    class: Webbzeug.Actions.Glowrect
   pixels:
     name: 'Pixels'
     type: 'generative'
@@ -47,10 +43,6 @@ window.Webbzeug.ClassMap =
     name: 'Combine'
     type: 'processive'
     class: Webbzeug.Actions.Combine
-  csb:
-    name: 'CSB'
-    type: 'processive'
-    class: Webbzeug.Actions.CSB
   distort:
     name: 'Distort'
     type: 'processive'
@@ -79,10 +71,6 @@ window.Webbzeug.ClassMap =
     name: 'Normal'
     type: 'processive'
     class: Webbzeug.Actions.Normal
-  repeat:
-    name: 'Repeat'
-    type: 'processive'
-    class: Webbzeug.Actions.Repeat
   rotozoom:
     name: 'RotoZoom'
     type: 'processive'

@@ -104,3 +104,12 @@ window.Webbzeug.Action = class Action
 
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, true
     @screenAlignedQuadMesh.material = oldMaterial
+
+  createCanvas: ->
+    @canvas = $('<canvas>').get(0) # create a new canvas dom-object
+
+    @canvas.width = @app.textureSize
+    @canvas.height = @app.textureSize
+
+    @context = @canvas.getContext("2d")
+

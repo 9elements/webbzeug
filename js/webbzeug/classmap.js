@@ -30,11 +30,6 @@
       type: 'generative',
       "class": Webbzeug.Actions.Fractal
     },
-    glowrect: {
-      name: 'GlowRect',
-      type: 'generative',
-      "class": Webbzeug.Actions.Glowrect
-    },
     pixels: {
       name: 'Pixels',
       type: 'generative',
@@ -63,11 +58,6 @@
       name: 'Combine',
       type: 'processive',
       "class": Webbzeug.Actions.Combine
-    },
-    csb: {
-      name: 'CSB',
-      type: 'processive',
-      "class": Webbzeug.Actions.CSB
     },
     distort: {
       name: 'Distort',
@@ -103,11 +93,6 @@
       name: 'Normal',
       type: 'processive',
       "class": Webbzeug.Actions.Normal
-    },
-    repeat: {
-      name: 'Repeat',
-      type: 'processive',
-      "class": Webbzeug.Actions.Repeat
     },
     rotozoom: {
       name: 'RotoZoom',

@@ -60,7 +60,7 @@ window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
 
   render: (inputs) ->
     super()
-    if @canvas is null
+    if not @canvas?
       @createCanvas()
 
     @createPatternOnCanvas()
@@ -73,10 +73,3 @@ window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
 
     return @renderTarget
 
-  createCanvas: ->
-    @canvas = $('<canvas>').get(0) # create a new canvas dom-object
-
-    @canvas.width = @app.textureSize
-    @canvas.height = @app.textureSize
-
-    @context = @canvas.getContext("2d")
