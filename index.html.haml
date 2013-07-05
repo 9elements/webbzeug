@@ -27,6 +27,7 @@
     %script{ :src => "js/vendor/shaders/CSB.js" }
     %script{ :src => "js/vendor/shaders/roundRect.js" }
     %script{ :src => "js/vendor/shaders/rectangle.js" }
+    %script{ :src => "js/vendor/shaders/mirror.js" }
 
     %script{ :src => "js/plugins.js" }
 
@@ -99,7 +100,7 @@
           %a{ :href => "http://twitter.com/Kastor_", :target => "_blank" } @Kastor_
     .app-wrapper
       .right-wrapper
-        %canvas#canvas
+        .container
         .debug
         %a.save-link{ :href => "#" } Save
         %a.open-link{ :href => "#" } Open
