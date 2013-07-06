@@ -157,8 +157,13 @@
         }
       });
       return $(document).keydown(function(e) {
+        var tag;
+        tag = e.target.tagName.toLowerCase();
         if (e.keyCode === 16) {
           _this.shiftPressed = true;
+        }
+        if (tag === "input" || tag === "textarea") {
+          return;
         }
         if (e.keyCode === 8) {
           if (_this.selectedElements.length > 0) {
