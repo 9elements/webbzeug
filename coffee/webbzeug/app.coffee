@@ -119,8 +119,12 @@ window.Webbzeug.App = class App
         @shiftPressed = false
 
     $(document).keydown (e) =>
+      tag = e.target.tagName.toLowerCase()
+
       if e.keyCode is 16
         @shiftPressed = true
+
+      return if tag is "input" or tag is "textarea"
       if e.keyCode is 8
         if @selectedElements.length > 0
           e.preventDefault()
