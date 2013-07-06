@@ -10,10 +10,10 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
       eyeY: { name: 'Eye Y', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
       eyeZ: { name: 'Eye Z', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
       ###
-      lightX: { name: 'Light X', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
-      lightY: { name: 'Light Y', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
-      lightZ: { name: 'Light Z', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
-      power: { name: 'Power', type: 'integer', min: 0.1, max: 100, default: 20, scrollPrecision: 1 },
+      lightX: { name: 'Light X', type: 'float', min: -300, max: 300, default: 100, scrollPrecision: 1 }
+      lightY: { name: 'Light Y', type: 'float', min: -300, max: 300, default: 100, scrollPrecision: 1 }
+      lightZ: { name: 'Light Z', type: 'float', min: 0, max: 300, default: 200, scrollPrecision: 1 }
+      power: { name: 'Power', type: 'integer', min: 1, max: 200, default: 60, scrollPrecision: 1 },
       diffuseColor: { name: 'Diffuse', type: 'color', default: '#000000' },
       reflectionColor: { name: 'Reflection', type: 'color', default: '#000000' }
     }
@@ -47,22 +47,24 @@ window.Webbzeug.Actions.Light = class LightAction extends Webbzeug.Action
     return { errors: errors, warnings: warnings }
 
   setUniforms: ->
-    ###
-    x = parseInt @getParameter('contrast')
-    x /= 255.0
-    x *= 2.0
-    @directLightMaterial.uniforms['contrast'].value = x
 
-    x = parseInt @getParameter('brightness')
-    x /= 255.0
-    x *= 2.0
-    @directLightMaterial.uniforms['brightness'].value = x
+    x = parseInt @getParameter('power')
+    @directLightMaterial.uniforms['specularPower'].value = x / 10
 
-    x = parseInt @getParameter('saturation')
-    x /= 255.0
-    x *= 2.0
-    @directLightMaterial.uniforms['saturation'].value = x
-    ###
+    x = parseInt @getParameter('lightX') * 10
+    y = parseInt @getParameter('lightY') * 10
+    z = parseInt @getParameter('lightZ') * 10
+    @directLightMaterial.uniforms['vLightPosition'].value = new THREE.Vector3(x,y,z)
+
+    colorRGB = Webbzeug.Utilities.getRgb2 @getParameter('diffuseColor')
+    @directLightMaterial.uniforms[ "diffuseR" ].value = colorRGB[0] / 255.0
+    @directLightMaterial.uniforms[ "diffuseG" ].value = colorRGB[1] / 255.0
+    @directLightMaterial.uniforms[ "diffuseB" ].value = colorRGB[2] / 255.0
+
+    colorRGB = Webbzeug.Utilities.getRgb2 @getParameter('reflectionColor')
+    @directLightMaterial.uniforms[ "specularR" ].value = colorRGB[0] / 255.0
+    @directLightMaterial.uniforms[ "specularG" ].value = colorRGB[1] / 255.0
+    @directLightMaterial.uniforms[ "specularB" ].value = colorRGB[2] / 255.0
 
   render: (inputs) ->
     super()

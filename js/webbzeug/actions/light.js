@@ -34,33 +34,33 @@
         lightX: {
           name: 'Light X',
           type: 'float',
-          min: -1,
-          max: 1,
-          "default": 0.5,
-          scrollPrecision: 0.001
+          min: -300,
+          max: 300,
+          "default": 100,
+          scrollPrecision: 1
         },
         lightY: {
           name: 'Light Y',
           type: 'float',
-          min: -1,
-          max: 1,
-          "default": 0.5,
-          scrollPrecision: 0.001
+          min: -300,
+          max: 300,
+          "default": 100,
+          scrollPrecision: 1
         },
         lightZ: {
           name: 'Light Z',
           type: 'float',
-          min: -1,
-          max: 1,
-          "default": 0.5,
-          scrollPrecision: 0.001
+          min: 0,
+          max: 300,
+          "default": 200,
+          scrollPrecision: 1
         },
         power: {
           name: 'Power',
           type: 'integer',
-          min: 0.1,
-          max: 100,
-          "default": 20,
+          min: 1,
+          max: 200,
+          "default": 60,
           scrollPrecision: 1
         },
         diffuseColor: {
@@ -116,23 +116,21 @@
     };
 
     LightAction.prototype.setUniforms = function() {
-      /*
-          x = parseInt @getParameter('contrast')
-          x /= 255.0
-          x *= 2.0
-          @directLightMaterial.uniforms['contrast'].value = x
-      
-          x = parseInt @getParameter('brightness')
-          x /= 255.0
-          x *= 2.0
-          @directLightMaterial.uniforms['brightness'].value = x
-      
-          x = parseInt @getParameter('saturation')
-          x /= 255.0
-          x *= 2.0
-          @directLightMaterial.uniforms['saturation'].value = x
-      */
-
+      var colorRGB, x, y, z;
+      x = parseInt(this.getParameter('power'));
+      this.directLightMaterial.uniforms['specularPower'].value = x / 10;
+      x = parseInt(this.getParameter('lightX') * 10);
+      y = parseInt(this.getParameter('lightY') * 10);
+      z = parseInt(this.getParameter('lightZ') * 10);
+      this.directLightMaterial.uniforms['vLightPosition'].value = new THREE.Vector3(x, y, z);
+      colorRGB = Webbzeug.Utilities.getRgb2(this.getParameter('diffuseColor'));
+      this.directLightMaterial.uniforms["diffuseR"].value = colorRGB[0] / 255.0;
+      this.directLightMaterial.uniforms["diffuseG"].value = colorRGB[1] / 255.0;
+      this.directLightMaterial.uniforms["diffuseB"].value = colorRGB[2] / 255.0;
+      colorRGB = Webbzeug.Utilities.getRgb2(this.getParameter('reflectionColor'));
+      this.directLightMaterial.uniforms["specularR"].value = colorRGB[0] / 255.0;
+      this.directLightMaterial.uniforms["specularG"].value = colorRGB[1] / 255.0;
+      return this.directLightMaterial.uniforms["specularB"].value = colorRGB[2] / 255.0;
     };
 
     LightAction.prototype.render = function(inputs) {

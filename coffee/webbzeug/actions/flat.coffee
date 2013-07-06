@@ -21,8 +21,6 @@ window.Webbzeug.Actions.Flat = class FlatAction extends Webbzeug.Action
       @flatMaterial = new THREE.ShaderMaterial (THREE.FlatShader)
       @screenAlignedQuadMesh.material = @flatMaterial
 
-    console.log @flatMaterial.uniforms
-    console.log THREE.FlatShader
     colorRGB = Webbzeug.Utilities.getRgb2 @getParameter('color')
     @flatMaterial.uniforms[ "r" ].value = colorRGB[0] / 255.0
     @flatMaterial.uniforms[ "g" ].value = colorRGB[1] / 255.0

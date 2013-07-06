@@ -51,8 +51,6 @@
         this.flatMaterial = new THREE.ShaderMaterial(THREE.FlatShader);
         this.screenAlignedQuadMesh.material = this.flatMaterial;
       }
-      console.log(this.flatMaterial.uniforms);
-      console.log(THREE.FlatShader);
       colorRGB = Webbzeug.Utilities.getRgb2(this.getParameter('color'));
       this.flatMaterial.uniforms["r"].value = colorRGB[0] / 255.0;
       this.flatMaterial.uniforms["g"].value = colorRGB[1] / 255.0;
