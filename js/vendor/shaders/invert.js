@@ -1,7 +1,7 @@
 /**
  * @author Kastor
  *
- * here we haz some shaders to combine
+ * invert shader... inverts the input
  */
 
 THREE.InvertShader = {
