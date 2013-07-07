@@ -1,31 +1,24 @@
 window.Webbzeug ?= {}
 window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
   constructor: (@app, saveLink, loadInput, exportLink) ->
+    @pngExporter = new Webbzeug.PNGExporter
     @exporter = new Webbzeug.Exporter
     @importer = new Webbzeug.Importer @app
+    @jsonExporter = new Webbzeug.JSONExporter
+    @jsonImporter = new Webbzeug.JSONImporter @app
+
     saveLink.click =>
       if filename = prompt('Please enter a filename:', 'workspace.webb')
 
         unless filename.match /\.webb$/i
           filename = filename + '.webb'
-
-        url = @exporter.actionsToDataURL @app.actions
-        if url?
-          downloadDataURI
-            filename: filename
-            data: url
+        @jsonExporter.exportJSON filename, @app.actions
 
     exportLink.click =>
       if filename = prompt('Please enter a filename:', 'workspace.png')
-
         unless filename.match /\.png$/i
           filename = filename + '.png'
-
-        url = @exporter.renderedToDataURL()
-        if url?
-          downloadDataURI
-            filename: filename
-            data: url
+        @pngExporter.exportPNG filename
 
     loadInput.change (evt) =>
       evt.stopPropagation()
@@ -42,7 +35,7 @@ window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
           @importer.importDataURL(data)
       )(file)
       reader.readAsDataURL(file)
-  
+
   openData: (data) ->
     @app.reset()
     @importer.loadData data
