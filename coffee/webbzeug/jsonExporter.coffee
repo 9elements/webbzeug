@@ -5,7 +5,6 @@ window.Webbzeug.JSONExporter = class JSONExporter
     actions = []
 
     for i, appAction of appActions
-
       action = {
         x: appAction.x
         y: appAction.y
@@ -17,6 +16,8 @@ window.Webbzeug.JSONExporter = class JSONExporter
       actions.push action
 
     jsonString = JSON.stringify(actions)
-    console.log jsonString
-
-    #JSON.stringify ()
+    url = "data:application/octet-stream;base64," + Base64.encode(jsonString)
+    if url?
+      downloadDataURI
+        filename: filename
+        data: url

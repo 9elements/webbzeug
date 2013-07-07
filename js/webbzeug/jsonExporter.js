@@ -10,7 +10,7 @@
     function JSONExporter() {}
 
     JSONExporter.prototype.exportJSON = function(filename, appActions) {
-      var action, actions, appAction, i, jsonString;
+      var action, actions, appAction, i, jsonString, url;
       actions = [];
       for (i in appActions) {
         appAction = appActions[i];
@@ -25,7 +25,13 @@
         actions.push(action);
       }
       jsonString = JSON.stringify(actions);
-      return console.log(jsonString);
+      url = "data:application/octet-stream;base64," + Base64.encode(jsonString);
+      if (url != null) {
+        return downloadDataURI({
+          filename: filename,
+          data: url
+        });
+      }
     };
 
     return JSONExporter;
