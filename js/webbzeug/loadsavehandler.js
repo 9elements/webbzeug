@@ -44,7 +44,7 @@
             var data;
             data = e.target.result;
             _this.app.reset();
-            return _this.importer.importDataURL(data);
+            return _this.jsonImporter.loadData(data);
           };
         })(file);
         return reader.readAsDataURL(file);

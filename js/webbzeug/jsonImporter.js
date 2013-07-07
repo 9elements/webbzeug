@@ -15,9 +15,12 @@
     }
 
     JSONImporter.prototype.loadData = function(data) {
-      this.data = data;
-      this.maxIndex = 0;
-      return this.app.incrementalIndex = this.maxIndex + 1;
+      var actions, b64encodedData, splitData;
+      splitData = data.split('base64,');
+      b64encodedData = splitData[1];
+      data = Base64.decode(b64encodedData);
+      actions = JSON.parse(data);
+      return console.log(actions);
     };
 
     return JSONImporter;

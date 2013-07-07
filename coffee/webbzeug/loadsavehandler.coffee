@@ -32,7 +32,7 @@ window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
           data = e.target.result
 
           @app.reset()
-          @importer.importDataURL(data)
+          @jsonImporter.loadData(data)
       )(file)
       reader.readAsDataURL(file)
 
