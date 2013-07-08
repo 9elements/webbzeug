@@ -72,6 +72,16 @@
       return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
     };
 
+    BlurAction.prototype.renderGauss = function(inputs) {};
+
+    BlurAction.prototype.renderHorizontalPass = function(inputs) {
+      if (!(this.horizonalGaussBlurMaterial != null)) {
+        return this.horizonalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.HorizontalGaussianShader);
+      }
+    };
+
+    BlurAction.prototype.renderVerticalPass = function(inputs) {};
+
     BlurAction.prototype.render = function(inputs) {
       BlurAction.__super__.render.call(this);
       switch (this.getParameter('type')) {

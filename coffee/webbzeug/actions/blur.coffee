@@ -30,6 +30,14 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
     @discBlurMaterial.uniforms['discRadius'].value = strength * 0.0007
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
 
+  renderGauss: (inputs) ->
+
+  renderHorizontalPass: (inputs) ->
+    if not @horizonalGaussBlurMaterial?
+      @horizonalGaussBlurMaterial = new THREE.ShaderMaterial (THREE.HorizontalGaussianShader)
+
+  renderVerticalPass: (inputs) ->
+
   render: (inputs) ->
     super()
     switch @getParameter('type')

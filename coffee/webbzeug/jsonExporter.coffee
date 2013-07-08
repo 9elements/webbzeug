@@ -11,7 +11,6 @@ window.Webbzeug.JSONExporter = class JSONExporter
         width: appAction.width
         index: appAction.index
         type: appAction.type
-        type: Webbzeug.Utilities.stringToByte(appAction.type)
         parameters: appAction.parameters
       }
       actions.push action
