@@ -19,7 +19,11 @@
           y: appAction.y,
           width: appAction.width,
           index: appAction.index,
+<<<<<<< HEAD
           type: appAction.type,
+=======
+          type: Webbzeug.Utilities.stringToByte(appAction.type),
+>>>>>>> cb4de6c311123d1c4c127415871ff95ac14d1a76
           parameters: appAction.parameters
         };
         actions.push(action);

@@ -27,7 +27,3 @@ window.Webbzeug.JSONImporter = class JSONImporter
     @app.applyActionToElement action.type, action.x, action.y, action.width, action.index, el
 
     @maxIndex = Math.max(action.index, @maxIndex)
-
-
-
-
