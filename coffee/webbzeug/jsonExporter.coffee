@@ -15,7 +15,13 @@ window.Webbzeug.JSONExporter = class JSONExporter
       }
       actions.push action
 
-    jsonString = JSON.stringify(actions)
+    fileContent = {
+      version: Webbzeug.Version,
+      ID: "Webbzeug file",
+      actions:actions
+    }
+
+    jsonString = JSON.stringify(fileContent)
     url = "data:application/octet-stream;base64," + Base64.encode(jsonString)
     if url?
       downloadDataURI
