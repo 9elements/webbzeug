@@ -38,7 +38,8 @@
           type: 'enum',
           values: {
             disc: 'Disc',
-            gauss: 'Gauss'
+            gauss: 'Gauss',
+            triangle: 'Triangle'
           },
           "default": 'disc'
         }
@@ -73,6 +74,39 @@
       return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
     };
 
+    BlurAction.prototype.renderTriangle = function(inputs) {
+      var i, strength, _i, _results;
+      this.copyInputToRenderTarget(inputs[0]);
+      strength = parseInt(this.getParameter('strength'));
+      _results = [];
+      for (i = _i = 0; 0 <= strength ? _i < strength : _i > strength; i = 0 <= strength ? ++_i : --_i) {
+        this.renderHorizontalTrianglePass();
+        _results.push(this.renderVerticalTrianglePass());
+      }
+      return _results;
+    };
+
+    BlurAction.prototype.renderHorizontalTrianglePass = function(input) {
+      this.createTempTarget();
+      if (!(this.horizonalTriangleBlurMaterial != null)) {
+        this.horizonalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurH);
+      }
+      this.screenAlignedQuadMesh.material = this.horizonalTriangleBlurMaterial;
+      this.horizonalTriangleBlurMaterial.uniforms['tDiffuse'].value = this.renderTarget;
+      this.horizonalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(1.0 / 256.0, 0);
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, true);
+    };
+
+    BlurAction.prototype.renderVerticalTrianglePass = function() {
+      if (!(this.verticalTriangleBlurMaterial != null)) {
+        this.verticalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurV);
+      }
+      this.screenAlignedQuadMesh.material = this.verticalTriangleBlurMaterial;
+      this.verticalTriangleBlurMaterial.uniforms['tDiffuse'].value = this.tempTarget;
+      this.verticalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(0, 1.0 / 256.0);
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+    };
+
     BlurAction.prototype.renderGauss = function(inputs) {
       var i, strength, _i, _results;
       this.copyInputToRenderTarget(inputs[0]);
@@ -80,7 +114,7 @@
       _results = [];
       for (i = _i = 0; 0 <= strength ? _i < strength : _i > strength; i = 0 <= strength ? ++_i : --_i) {
         this.renderHorizontalGaussPass();
-        _results.push(this.renderVerticalPass());
+        _results.push(this.renderVerticalGaussPass());
       }
       return _results;
     };
@@ -96,7 +130,7 @@
       return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, true);
     };
 
-    BlurAction.prototype.renderVerticalPass = function() {
+    BlurAction.prototype.renderVerticalGaussPass = function() {
       if (!(this.verticalGaussBlurMaterial != null)) {
         this.verticalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.VerticalGaussianShader);
       }
@@ -123,6 +157,9 @@
           break;
         case 'gauss':
           this.renderGauss(inputs);
+          break;
+        case 'triangle':
+          this.renderTriangle(inputs);
       }
       return this.renderTarget;
     };

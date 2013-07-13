@@ -6,7 +6,7 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
   availableParameters: ->
     {
       strength: { name: 'Strength', type: 'integer', default: 1, min: 1 , max: 30, scrollPrecision: 1 },
-      type: { name: 'Type', type: 'enum', values: { disc: 'Disc',gauss: 'Gauss'}, default: 'disc' }
+      type: { name: 'Type', type: 'enum', values: { disc: 'Disc',gauss: 'Gauss', triangle: 'Triangle'}, default: 'disc' }
     }
 
   validations: (contexts) ->
@@ -30,13 +30,40 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
     @discBlurMaterial.uniforms['discRadius'].value = strength * 0.0007
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
 
+  renderTriangle: (inputs) ->
+    @copyInputToRenderTarget inputs[0]
+
+    strength = parseInt @getParameter('strength')
+    for i in [0...strength]
+      @renderHorizontalTrianglePass()
+      @renderVerticalTrianglePass()
+
+  renderHorizontalTrianglePass: (input) ->
+    @createTempTarget()
+
+    if not @horizonalTriangleBlurMaterial?
+      @horizonalTriangleBlurMaterial = new THREE.ShaderMaterial (THREE.TriangleBlurH)
+    @screenAlignedQuadMesh.material = @horizonalTriangleBlurMaterial
+    @horizonalTriangleBlurMaterial.uniforms['tDiffuse'].value = @renderTarget
+    @horizonalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(1.0 / 256.0, 0)
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, true
+
+  renderVerticalTrianglePass: ->
+    if not @verticalTriangleBlurMaterial?
+      @verticalTriangleBlurMaterial = new THREE.ShaderMaterial (THREE.TriangleBlurV)
+    @screenAlignedQuadMesh.material = @verticalTriangleBlurMaterial
+    @verticalTriangleBlurMaterial.uniforms['tDiffuse'].value = @tempTarget
+    @verticalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(0, 1.0 / 256.0)
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+
+
   renderGauss: (inputs) ->
     @copyInputToRenderTarget inputs[0]
 
     strength = parseInt @getParameter('strength')
     for i in [0...strength]
       @renderHorizontalGaussPass()
-      @renderVerticalPass()
+      @renderVerticalGaussPass()
 
   renderHorizontalGaussPass: (input) ->
     @createTempTarget()
@@ -48,7 +75,7 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
     @horizonalGaussBlurMaterial.uniforms['h'].value = 1.0 / 256.0
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, true
 
-  renderVerticalPass: ->
+  renderVerticalGaussPass: ->
     if not @verticalGaussBlurMaterial?
       @verticalGaussBlurMaterial = new THREE.ShaderMaterial (THREE.VerticalGaussianShader)
     @screenAlignedQuadMesh.material = @verticalGaussBlurMaterial
@@ -70,6 +97,8 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
         @renderDisc inputs
       when 'gauss'
         @renderGauss inputs
+      when 'triangle'
+        @renderTriangle inputs
 
     return @renderTarget
 
