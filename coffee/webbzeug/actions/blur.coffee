@@ -34,26 +34,27 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
     @copyInputToRenderTarget inputs[0]
 
     strength = parseInt @getParameter('strength')
-    for i in [0...strength]
-      @renderHorizontalTrianglePass()
-      @renderVerticalTrianglePass()
+    #for i in [0...strength]
+    @renderHorizontalTrianglePass()
+    @renderVerticalTrianglePass()
 
   renderHorizontalTrianglePass: (input) ->
     @createTempTarget()
-
+    strength = parseInt @getParameter('strength')
     if not @horizonalTriangleBlurMaterial?
       @horizonalTriangleBlurMaterial = new THREE.ShaderMaterial (THREE.TriangleBlurH)
     @screenAlignedQuadMesh.material = @horizonalTriangleBlurMaterial
     @horizonalTriangleBlurMaterial.uniforms['tDiffuse'].value = @renderTarget
-    @horizonalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(1.0 / 256.0, 0)
+    @horizonalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(strength/ 256.0, 0)
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, true
 
   renderVerticalTrianglePass: ->
+    strength = parseInt @getParameter('strength')
     if not @verticalTriangleBlurMaterial?
       @verticalTriangleBlurMaterial = new THREE.ShaderMaterial (THREE.TriangleBlurV)
     @screenAlignedQuadMesh.material = @verticalTriangleBlurMaterial
     @verticalTriangleBlurMaterial.uniforms['tDiffuse'].value = @tempTarget
-    @verticalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(0, 1.0 / 256.0)
+    @verticalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(0, strength / 256.0)
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
 
 

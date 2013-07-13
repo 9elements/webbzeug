@@ -75,35 +75,35 @@
     };
 
     BlurAction.prototype.renderTriangle = function(inputs) {
-      var i, strength, _i, _results;
+      var strength;
       this.copyInputToRenderTarget(inputs[0]);
       strength = parseInt(this.getParameter('strength'));
-      _results = [];
-      for (i = _i = 0; 0 <= strength ? _i < strength : _i > strength; i = 0 <= strength ? ++_i : --_i) {
-        this.renderHorizontalTrianglePass();
-        _results.push(this.renderVerticalTrianglePass());
-      }
-      return _results;
+      this.renderHorizontalTrianglePass();
+      return this.renderVerticalTrianglePass();
     };
 
     BlurAction.prototype.renderHorizontalTrianglePass = function(input) {
+      var strength;
       this.createTempTarget();
+      strength = parseInt(this.getParameter('strength'));
       if (!(this.horizonalTriangleBlurMaterial != null)) {
         this.horizonalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurH);
       }
       this.screenAlignedQuadMesh.material = this.horizonalTriangleBlurMaterial;
       this.horizonalTriangleBlurMaterial.uniforms['tDiffuse'].value = this.renderTarget;
-      this.horizonalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(1.0 / 256.0, 0);
+      this.horizonalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(strength / 256.0, 0);
       return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, true);
     };
 
     BlurAction.prototype.renderVerticalTrianglePass = function() {
+      var strength;
+      strength = parseInt(this.getParameter('strength'));
       if (!(this.verticalTriangleBlurMaterial != null)) {
         this.verticalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurV);
       }
       this.screenAlignedQuadMesh.material = this.verticalTriangleBlurMaterial;
       this.verticalTriangleBlurMaterial.uniforms['tDiffuse'].value = this.tempTarget;
-      this.verticalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(0, 1.0 / 256.0);
+      this.verticalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(0, strength / 256.0);
       return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
     };
 
