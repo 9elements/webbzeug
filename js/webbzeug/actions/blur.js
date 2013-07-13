@@ -37,7 +37,8 @@
           name: 'Type',
           type: 'enum',
           values: {
-            disc: 'Disc'
+            disc: 'Disc',
+            gauss: 'Gauss'
           },
           "default": 'disc'
         }
@@ -72,21 +73,56 @@
       return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
     };
 
-    BlurAction.prototype.renderGauss = function(inputs) {};
-
-    BlurAction.prototype.renderHorizontalPass = function(inputs) {
-      if (!(this.horizonalGaussBlurMaterial != null)) {
-        return this.horizonalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.HorizontalGaussianShader);
+    BlurAction.prototype.renderGauss = function(inputs) {
+      var i, strength, _i, _results;
+      this.copyInputToRenderTarget(inputs[0]);
+      strength = parseInt(this.getParameter('strength'));
+      _results = [];
+      for (i = _i = 0; 0 <= strength ? _i < strength : _i > strength; i = 0 <= strength ? ++_i : --_i) {
+        this.renderHorizontalGaussPass();
+        _results.push(this.renderVerticalPass());
       }
+      return _results;
     };
 
-    BlurAction.prototype.renderVerticalPass = function(inputs) {};
+    BlurAction.prototype.renderHorizontalGaussPass = function(input) {
+      this.createTempTarget();
+      if (!(this.horizonalGaussBlurMaterial != null)) {
+        this.horizonalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.HorizontalGaussianShader);
+      }
+      this.screenAlignedQuadMesh.material = this.horizonalGaussBlurMaterial;
+      this.horizonalGaussBlurMaterial.uniforms['tDiffuse'].value = this.renderTarget;
+      this.horizonalGaussBlurMaterial.uniforms['h'].value = 1.0 / 256.0;
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, true);
+    };
+
+    BlurAction.prototype.renderVerticalPass = function() {
+      if (!(this.verticalGaussBlurMaterial != null)) {
+        this.verticalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.VerticalGaussianShader);
+      }
+      this.screenAlignedQuadMesh.material = this.verticalGaussBlurMaterial;
+      this.verticalGaussBlurMaterial.uniforms['tDiffuse'].value = this.tempTarget;
+      this.verticalGaussBlurMaterial.uniforms['v'].value = 1.0 / 256.0;
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+    };
+
+    BlurAction.prototype.copyInputToRenderTarget = function(input) {
+      if (!(this.copyMaterial != null)) {
+        this.copyMaterial = new THREE.ShaderMaterial(THREE.CopyShader);
+      }
+      this.screenAlignedQuadMesh.material = this.copyMaterial;
+      this.copyMaterial.uniforms['tDiffuse'].value = input;
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+    };
 
     BlurAction.prototype.render = function(inputs) {
       BlurAction.__super__.render.call(this);
       switch (this.getParameter('type')) {
         case 'disc':
           this.renderDisc(inputs);
+          break;
+        case 'gauss':
+          this.renderGauss(inputs);
       }
       return this.renderTarget;
     };

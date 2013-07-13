@@ -6,7 +6,7 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
   availableParameters: ->
     {
       strength: { name: 'Strength', type: 'integer', default: 1, min: 1 , max: 30, scrollPrecision: 1 },
-      type: { name: 'Type', type: 'enum', values: { disc: 'Disc'}, default: 'disc' }
+      type: { name: 'Type', type: 'enum', values: { disc: 'Disc',gauss: 'Gauss'}, default: 'disc' }
     }
 
   validations: (contexts) ->
@@ -31,18 +31,45 @@ window.Webbzeug.Actions.Blur = class BlurAction extends Webbzeug.Action
     @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
 
   renderGauss: (inputs) ->
+    @copyInputToRenderTarget inputs[0]
 
-  renderHorizontalPass: (inputs) ->
+    strength = parseInt @getParameter('strength')
+    for i in [0...strength]
+      @renderHorizontalGaussPass()
+      @renderVerticalPass()
+
+  renderHorizontalGaussPass: (input) ->
+    @createTempTarget()
+
     if not @horizonalGaussBlurMaterial?
       @horizonalGaussBlurMaterial = new THREE.ShaderMaterial (THREE.HorizontalGaussianShader)
+    @screenAlignedQuadMesh.material = @horizonalGaussBlurMaterial
+    @horizonalGaussBlurMaterial.uniforms['tDiffuse'].value = @renderTarget
+    @horizonalGaussBlurMaterial.uniforms['h'].value = 1.0 / 256.0
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, true
 
-  renderVerticalPass: (inputs) ->
+  renderVerticalPass: ->
+    if not @verticalGaussBlurMaterial?
+      @verticalGaussBlurMaterial = new THREE.ShaderMaterial (THREE.VerticalGaussianShader)
+    @screenAlignedQuadMesh.material = @verticalGaussBlurMaterial
+    @verticalGaussBlurMaterial.uniforms['tDiffuse'].value = @tempTarget
+    @verticalGaussBlurMaterial.uniforms['v'].value = 1.0 / 256.0
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+
+  copyInputToRenderTarget: (input) ->
+    if not @copyMaterial?
+      @copyMaterial = new THREE.ShaderMaterial (THREE.CopyShader)
+    @screenAlignedQuadMesh.material = @copyMaterial
+    @copyMaterial.uniforms['tDiffuse'].value = input
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
 
   render: (inputs) ->
     super()
     switch @getParameter('type')
       when 'disc'
         @renderDisc inputs
+      when 'gauss'
+        @renderGauss inputs
 
     return @renderTarget
 
