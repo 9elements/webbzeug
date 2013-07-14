@@ -115,23 +115,23 @@ window.Webbzeug.App = class App
   ###
   handleKeyboardInput: ->
     $(document).keyup (e) =>
-      if e.keyCode is 16
+      if e.keyCode is 16 # shift
         @shiftPressed = false
 
     $(document).keydown (e) =>
       tag = e.target.tagName.toLowerCase()
 
-      if e.keyCode is 16
+      if e.keyCode is 16 #shit
         @shiftPressed = true
 
       return if tag is "input" or tag is "textarea"
-      if e.keyCode is 8
+      if e.keyCode is 8 # delete
         if @selectedElements.length > 0
           e.preventDefault()
 
           @removeElements @selectedElements
 
-      if e.keyCode is 32
+      if e.keyCode is 32 #space
         e.preventDefault()
         if @selectedActionIndex
           $('.workspace .action').removeClass('watched')
@@ -309,9 +309,9 @@ window.Webbzeug.App = class App
           @applyActionToElement @selectedActionId, x, y, 3, @incrementalIndex, @selectedElement
 
           @incrementalIndex++
-
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
+        @renderAll()
 
     $('.workspace-wrapper').mouseenter onMouseEnter
     $('.workspace-wrapper').mousemove  onMouseMove
@@ -349,7 +349,6 @@ window.Webbzeug.App = class App
       $(document).one 'mouseup', (e) =>
         $(document).off 'mousemove', handleMouseMove
         selectionRectEl.fadeOut 'fast'
-
         @handleSelectIntersection selectionRect
 
         return
@@ -413,6 +412,7 @@ window.Webbzeug.App = class App
 
       $(document).mouseup (e) =>
         $(document).off 'mousemove', handleMouseMove
+        console.log "2"
 
         action = @actions[editingElement.attr('data-index')]
         action.width = Math.round(editingElement.width() / @gridWidth)
@@ -468,7 +468,11 @@ window.Webbzeug.App = class App
       action.y = Math.round(element.position().top  / @gridHeight)
 
       action.updatedAt = +new Date()
-      @updateParentsRecursively action
+
+    if @selectedElements?
+      if @selectedElements.length > 0
+        @renderAll()
+      #@updateParentsRecursively action
 
   handleElementClick: (e, element) ->
     @selectedActionIndex = element.attr('data-index')
@@ -641,6 +645,7 @@ window.Webbzeug.App = class App
           @findChildrenRecursively possibleChildAction
 
   updateParentsRecursively: (action) ->
+    console.log action.type
     if action.parent?
       action.parent.updatedAt = +new Date()
       @updateParentsRecursively action.parent

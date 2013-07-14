@@ -382,7 +382,8 @@
             _this.incrementalIndex++;
           }
           _this.selectedElement = null;
-          return _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
+          _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
+          return _this.renderAll();
         }
       };
       $('.workspace-wrapper').mouseenter(onMouseEnter);
@@ -486,6 +487,7 @@
         return $(document).mouseup(function(e) {
           var action;
           $(document).off('mousemove', handleMouseMove);
+          console.log("2");
           action = _this.actions[editingElement.attr('data-index')];
           return action.width = Math.round(editingElement.width() / _this.gridWidth);
         });
@@ -544,18 +546,20 @@
     };
 
     App.prototype.updateElementPositions = function() {
-      var action, element, _i, _len, _ref1, _results;
+      var action, element, _i, _len, _ref1;
       _ref1 = this.selectedElements;
-      _results = [];
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         element = _ref1[_i];
         action = this.actions[element.attr('data-index')];
         action.x = Math.round(element.position().left / this.gridWidth);
         action.y = Math.round(element.position().top / this.gridHeight);
         action.updatedAt = +new Date();
-        _results.push(this.updateParentsRecursively(action));
       }
-      return _results;
+      if (this.selectedElements != null) {
+        if (this.selectedElements.length > 0) {
+          return this.renderAll();
+        }
+      }
     };
 
     App.prototype.handleElementClick = function(e, element) {
@@ -778,6 +782,7 @@
     };
 
     App.prototype.updateParentsRecursively = function(action) {
+      console.log(action.type);
       if (action.parent != null) {
         action.parent.updatedAt = +new Date();
         return this.updateParentsRecursively(action.parent);
