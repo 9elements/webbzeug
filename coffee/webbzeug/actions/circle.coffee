@@ -44,9 +44,9 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
 
   render: (inputs) ->
     super()
-    if @screenAlignedQuadMesh.material is null
+    if not @glowMaterial?
       @glowMaterial = new THREE.ShaderMaterial (THREE.GlowShader)
-      @screenAlignedQuadMesh.material = @glowMaterial
+    @screenAlignedQuadMesh.material = @glowMaterial
     @setUniforms()
     if inputs.length > 0
       @glowMaterial.uniforms['input1'].value = inputs[0]

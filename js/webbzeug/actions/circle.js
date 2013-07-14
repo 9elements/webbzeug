@@ -114,10 +114,10 @@
 
     CircleAction.prototype.render = function(inputs) {
       CircleAction.__super__.render.call(this);
-      if (this.screenAlignedQuadMesh.material === null) {
+      if (!(this.glowMaterial != null)) {
         this.glowMaterial = new THREE.ShaderMaterial(THREE.GlowShader);
-        this.screenAlignedQuadMesh.material = this.glowMaterial;
       }
+      this.screenAlignedQuadMesh.material = this.glowMaterial;
       this.setUniforms();
       if (inputs.length > 0) {
         this.glowMaterial.uniforms['input1'].value = inputs[0];
