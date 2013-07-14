@@ -8,6 +8,7 @@
   window.Webbzeug.Version = '0.0.2';
 
   window.Webbzeug.App = App = (function() {
+    var _this = this;
 
     App.prototype.textureSize = 256;
 
@@ -818,6 +819,18 @@
       return $('.debug').text('rendered in ' + this.renderTime + 'ms');
     };
 
+    $(window).resize(function() {
+      var size;
+      size = $(window).width();
+      console.log(size);
+      if (size < 800) {
+        size = 800;
+      }
+      return $('div.workspace-wrapper, div.workspace').css({
+        width: size - 280
+      });
+    });
+
     App.prototype.renderAction = function(action) {
       var child, children, startTime, texture, textures, _i, _len;
       if (action == null) {
@@ -838,6 +851,6 @@
 
     return App;
 
-  })();
+  }).call(this);
 
 }).call(this);

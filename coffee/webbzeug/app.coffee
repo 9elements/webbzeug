@@ -686,6 +686,12 @@ window.Webbzeug.App = class App
 
     $('.debug').text 'rendered in ' + @renderTime + 'ms'
 
+  $(window).resize =>
+    size = $(window).width()
+    console.log size
+    if size < 800
+      size = 800
+    $('div.workspace-wrapper, div.workspace').css({ width: size - 280 })
 
   renderAction: (action) ->
     unless action?
