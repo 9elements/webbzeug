@@ -35,7 +35,7 @@
         },
         zoom: {
           name: 'Zoom',
-          type: 'integer',
+          type: 'float',
           min: 1,
           max: 255,
           "default": 10,
@@ -45,46 +45,39 @@
     };
 
     RotoZoomAction.prototype.validations = function(contexts) {
-      var warnings;
+      var errors, warnings;
+      errors = [];
       warnings = [];
       if (contexts.length > 1) {
-        warnings.push('Rotozoom will only use the first input.');
+        warnings.push('Rotozoom will only use one input.');
+      }
+      if (contexts.length < 1) {
+        errors.push('Rotozoom needs one input.');
       }
       return {
+        errors: errors,
         warnings: warnings
       };
     };
 
-    RotoZoomAction.prototype.render = function(contexts) {
-      var cosrot, cosx, cosy, inputImageData, k, offsetInput, offsetOutput, outputImageData, rotation, sinrot, sinx, siny, x, xsrc, y, ysrc, zoom, _i, _j, _k;
-      RotoZoomAction.__super__.render.call(this);
-      if (contexts.length === 0) {
-        console.log("Dude an inverter needs an input");
-        return;
-      }
+    RotoZoomAction.prototype.setUniforms = function() {
+      var rotation, zoom;
       rotation = this.getParameter('rotation');
-      zoom = this.getParameter('zoom') / 10;
-      inputImageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      outputImageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      cosrot = Math.cos(rotation) * zoom;
-      sinrot = Math.sin(rotation) * zoom;
-      for (y = _i = 0; _i < 256; y = ++_i) {
-        cosy = cosrot * (y - 128);
-        siny = sinrot * (y - 128);
-        for (x = _j = 0; _j < 256; x = ++_j) {
-          cosx = cosrot * (x - 128);
-          sinx = sinrot * (x - 128);
-          xsrc = parseInt(cosx - siny - 128) & 255;
-          ysrc = parseInt(sinx + cosy - 128) & 255;
-          offsetInput = (ysrc << 10) + (xsrc << 2);
-          offsetOutput = (y << 10) + (x << 2);
-          for (k = _k = 0; _k < 4; k = ++_k) {
-            outputImageData.data[offsetOutput + k] = inputImageData.data[offsetInput + k];
-          }
-        }
+      this.rotozoomMaterial.uniforms['rotation'].value = rotation;
+      zoom = this.getParameter('zoom');
+      return this.rotozoomMaterial.uniforms['zoom'].value = zoom / 10.0;
+    };
+
+    RotoZoomAction.prototype.render = function(inputs) {
+      RotoZoomAction.__super__.render.call(this);
+      if (this.screenAlignedQuadMesh.material === null) {
+        this.rotozoomMaterial = new THREE.ShaderMaterial(THREE.RotoZoomShader);
+        this.screenAlignedQuadMesh.material = this.rotozoomMaterial;
       }
-      this.context.putImageData(outputImageData, 0, 0);
-      return this.context;
+      this.rotozoomMaterial.uniforms['input1'].value = inputs[0];
+      this.setUniforms();
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
     };
 
     return RotoZoomAction;

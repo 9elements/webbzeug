@@ -6,47 +6,33 @@ window.Webbzeug.Actions.RotoZoom = class RotoZoomAction extends Webbzeug.Action
   availableParameters: ->
     {
       rotation: { name: 'Rotation', type: 'float', min: 0, max: Math.PI * 2, default: 0, scrollPrecision: 0.01 },
-      zoom: { name: 'Zoom', type: 'integer', min: 1, max: 255, default: 10, scrollPrecision: 1 }
+      zoom: { name: 'Zoom', type: 'float', min: 1, max: 255, default: 10, scrollPrecision: 1 }
     }
 
   validations: (contexts) ->
+    errors = []
     warnings = []
     if contexts.length > 1
-      warnings.push 'Rotozoom will only use the first input.'
+      warnings.push 'Rotozoom will only use one input.'
+    if contexts.length < 1
+      errors.push 'Rotozoom needs one input.'
+    return { errors: errors, warnings: warnings }
 
-    return { warnings: warnings }
-
-  render: (contexts) ->
-    super()
-    if contexts.length == 0
-      console.log "Dude an inverter needs an input"
-      return
-
+  setUniforms: ->
     rotation = @getParameter('rotation')
-    zoom  = @getParameter('zoom') / 10
+    @rotozoomMaterial.uniforms['rotation'].value = rotation
 
-    # How to copy the image data from one context to another
-    inputImageData = contexts[0].getImageData 0, 0, @app.getWidth(), @app.getHeight()
-    outputImageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
+    zoom = @getParameter('zoom')
+    @rotozoomMaterial.uniforms['zoom'].value = zoom / 10.0
 
-    cosrot = Math.cos(rotation)*zoom
-    sinrot = Math.sin(rotation)*zoom
+  render: (inputs) ->
+    super()
+    if @screenAlignedQuadMesh.material is null
+      @rotozoomMaterial = new THREE.ShaderMaterial (THREE.RotoZoomShader)
+      @screenAlignedQuadMesh.material = @rotozoomMaterial
 
-    for y in [0...256]
-      cosy = cosrot * (y - 128)
-      siny = sinrot * (y - 128)
-      for x in [0...256]
-        cosx = cosrot * (x - 128)
-        sinx = sinrot * (x - 128)
+    @rotozoomMaterial.uniforms['input1'].value = inputs[0]
+    @setUniforms()
 
-        xsrc = parseInt(cosx - siny - 128) & 255
-        ysrc = parseInt(sinx + cosy - 128) & 255
-
-        offsetInput  = (ysrc << 10) + (xsrc << 2)
-        offsetOutput = (y << 10) + (x << 2)
-
-        for k in [0...4]
-          outputImageData.data[offsetOutput + k] = inputImageData.data[offsetInput + k]
-
-    @context.putImageData outputImageData, 0, 0 
-    return @context
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+    return @renderTarget
