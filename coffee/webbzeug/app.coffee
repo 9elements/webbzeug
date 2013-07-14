@@ -167,7 +167,8 @@ window.Webbzeug.App = class App
     self = this
     $('.navigation li ul li').click (e) ->
       e.preventDefault()
-
+      if self.selectedElement? or selectedElements?
+        return
       self.handleWorkspaceClick()
 
       self.selectedActionId = $(this).attr('data-id')

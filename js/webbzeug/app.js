@@ -219,6 +219,9 @@
       self = this;
       return $('.navigation li ul li').click(function(e) {
         e.preventDefault();
+        if ((self.selectedElement != null) || (typeof selectedElements !== "undefined" && selectedElements !== null)) {
+          return;
+        }
         self.handleWorkspaceClick();
         self.selectedActionId = $(this).attr('data-id');
         self.selectedActionName = $(this).text();

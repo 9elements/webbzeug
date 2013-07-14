@@ -27,11 +27,11 @@
       return {
         rotation: {
           name: 'Rotation',
-          type: 'float',
+          type: 'integer',
           min: 0,
-          max: Math.PI * 2,
+          max: 360,
           "default": 0,
-          scrollPrecision: 0.01
+          scrollPrecision: 1
         },
         zoom: {
           name: 'Zoom',
@@ -63,6 +63,7 @@
     RotoZoomAction.prototype.setUniforms = function() {
       var rotation, zoom;
       rotation = this.getParameter('rotation');
+      rotation = rotation / 180 * Math.PI;
       this.rotozoomMaterial.uniforms['rotation'].value = rotation;
       zoom = this.getParameter('zoom');
       return this.rotozoomMaterial.uniforms['zoom'].value = zoom / 10.0;

@@ -5,7 +5,7 @@ window.Webbzeug.Actions.RotoZoom = class RotoZoomAction extends Webbzeug.Action
   name: 'Rotozoom'
   availableParameters: ->
     {
-      rotation: { name: 'Rotation', type: 'float', min: 0, max: Math.PI * 2, default: 0, scrollPrecision: 0.01 },
+      rotation: { name: 'Rotation', type: 'integer', min: 0, max: 360, default: 0, scrollPrecision: 1 },
       zoom: { name: 'Zoom', type: 'float', min: 1, max: 255, default: 10, scrollPrecision: 1 }
     }
 
@@ -20,6 +20,7 @@ window.Webbzeug.Actions.RotoZoom = class RotoZoomAction extends Webbzeug.Action
 
   setUniforms: ->
     rotation = @getParameter('rotation')
+    rotation = rotation / 180 *  Math.PI
     @rotozoomMaterial.uniforms['rotation'].value = rotation
 
     zoom = @getParameter('zoom')
