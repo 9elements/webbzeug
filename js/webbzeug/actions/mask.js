@@ -42,31 +42,17 @@
       };
     };
 
-    MaskAction.prototype.render = function(contexts) {
-      var avg, bd, gd, i, imageData, imgA, imgB, index, maskData, rd, _i, _ref2;
+    MaskAction.prototype.render = function(inputs) {
       MaskAction.__super__.render.call(this);
-      if (contexts.length !== 3) {
-        console.log("Dude a mask needs three inputs");
-        return false;
+      if (this.screenAlignedQuadMesh.material === null) {
+        this.maskMaterial = new THREE.ShaderMaterial(THREE.MaskShader);
+        this.screenAlignedQuadMesh.material = this.maskMaterial;
       }
-      maskData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      imgA = contexts[1].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      imgB = contexts[2].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      imageData[0] = 255;
-      for (i = _i = 0, _ref2 = imageData.data.length / 4; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        index = i << 2;
-        avg = Math.floor((maskData.data[index] + maskData.data[index + 1] + maskData.data[index + 2]) / 3);
-        rd = imgB.data[index] - imgA.data[index];
-        gd = imgB.data[index + 1] - imgA.data[index + 1];
-        bd = imgB.data[index + 2] - imgA.data[index + 2];
-        imageData.data[index] = imgA.data[index] + (rd * (avg / 255));
-        imageData.data[index + 1] = imgA.data[index + 1] + (gd * (avg / 255));
-        imageData.data[index + 2] = imgA.data[index + 2] + (bd * (avg / 255));
-        imageData.data[index + 3] = 255;
-      }
-      this.context.putImageData(imageData, 0, 0);
-      return this.context;
+      this.maskMaterial.uniforms['input1'].value = inputs[0];
+      this.maskMaterial.uniforms['input2'].value = inputs[1];
+      this.maskMaterial.uniforms['blendMap'].value = inputs[2];
+      this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.renderTarget;
     };
 
     return MaskAction;

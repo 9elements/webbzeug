@@ -3,10 +3,10 @@ window.Webbzeug.ClassMap =
   ###
     generative actions
   ###
-  cell:
-    name: 'Cell'
+  rectangle:
+    name: 'Rect'
     type: 'generative'
-    class: Webbzeug.Actions.Cell
+    class: Webbzeug.Actions.Rectangle
   circle:
     name: 'Circle'
     type: 'generative'
@@ -15,6 +15,10 @@ window.Webbzeug.ClassMap =
     name: 'Flat'
     type: 'generative'
     class: Webbzeug.Actions.Flat
+  cell:
+    name: 'Cell'
+    type: 'generative'
+    class: Webbzeug.Actions.Cell
   fractal:
     name: 'Fractal'
     type: 'generative'
@@ -23,10 +27,6 @@ window.Webbzeug.ClassMap =
     name: 'Pixels'
     type: 'generative'
     class: Webbzeug.Actions.Pixels
-  rectangle:
-    name: 'Rect'
-    type: 'generative'
-    class: Webbzeug.Actions.Rectangle
 
   ###
     Processive actions
@@ -75,6 +75,10 @@ window.Webbzeug.ClassMap =
     name: 'RotoZoom'
     type: 'processive'
     class: Webbzeug.Actions.RotoZoom
+  color:
+    name: 'Color'
+    type: 'processive'
+    class: Webbzeug.Actions.Color
 
   ###
     Memory actions
