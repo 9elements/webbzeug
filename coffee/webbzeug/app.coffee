@@ -19,6 +19,11 @@ window.Webbzeug.App = class App
     @handleNavigation()
     @handleMultipleSelection()
     @handleKeyboardInput()
+    size = $(window).width()
+    console.log size
+    if size < 800
+      size = 800
+    $('div.workspace-wrapper, div.workspace').css({ width: size - 280 })
 
   loadSamples: ->
     samplesSelect = $('select.samples')
@@ -235,6 +240,7 @@ window.Webbzeug.App = class App
     @actionsArr.push action
 
     @handleElementClick null, element
+    console.log "added click"
     element.click (e) =>
       @handleElementClick e, element
 
@@ -306,6 +312,7 @@ window.Webbzeug.App = class App
         y = Math.round(@selectedElement.position().top  / @gridHeight)
 
         if @selectedActionId
+          console.log "315"
           @applyActionToElement @selectedActionId, x, y, 3, @incrementalIndex, @selectedElement
 
           @incrementalIndex++
@@ -412,8 +419,6 @@ window.Webbzeug.App = class App
 
       $(document).mouseup (e) =>
         $(document).off 'mousemove', handleMouseMove
-        console.log "2"
-
         action = @actions[editingElement.attr('data-index')]
         action.width = Math.round(editingElement.width() / @gridWidth)
 
@@ -462,13 +467,14 @@ window.Webbzeug.App = class App
       return
 
   updateElementPositions: ->
+    console.log "len ", @selectedElements.length
     for element in @selectedElements
       action = @actions[element.attr('data-index')]
       action.x = Math.round(element.position().left / @gridWidth)
       action.y = Math.round(element.position().top  / @gridHeight)
 
       action.updatedAt = +new Date()
-
+      console.log action.type
     if @selectedElements?
       if @selectedElements.length > 0
         @renderAll()
@@ -696,6 +702,7 @@ window.Webbzeug.App = class App
   renderAction: (action) ->
     unless action?
       return false
+    console.log "rendering : ",action.type
 
     children = action.children
 

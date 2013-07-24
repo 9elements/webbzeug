@@ -19,6 +19,7 @@
     App.prototype.shiftPressed = false;
 
     function App(container) {
+      var size;
       this.container = container;
       this.workspace = $('.workspace');
       this.initRenderer();
@@ -30,6 +31,14 @@
       this.handleNavigation();
       this.handleMultipleSelection();
       this.handleKeyboardInput();
+      size = $(window).width();
+      console.log(size);
+      if (size < 800) {
+        size = 800;
+      }
+      $('div.workspace-wrapper, div.workspace').css({
+        width: size - 280
+      });
     }
 
     App.prototype.loadSamples = function() {
@@ -300,6 +309,7 @@
       this.actions[index] = action;
       this.actionsArr.push(action);
       this.handleElementClick(null, element);
+      console.log("added click");
       element.click(function(e) {
         return _this.handleElementClick(e, element);
       });
@@ -379,6 +389,7 @@
           x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
           if (_this.selectedActionId) {
+            console.log("315");
             _this.applyActionToElement(_this.selectedActionId, x, y, 3, _this.incrementalIndex, _this.selectedElement);
             _this.incrementalIndex++;
           }
@@ -488,7 +499,6 @@
         return $(document).mouseup(function(e) {
           var action;
           $(document).off('mousemove', handleMouseMove);
-          console.log("2");
           action = _this.actions[editingElement.attr('data-index')];
           return action.width = Math.round(editingElement.width() / _this.gridWidth);
         });
@@ -548,6 +558,7 @@
 
     App.prototype.updateElementPositions = function() {
       var action, element, _i, _len, _ref1;
+      console.log("len ", this.selectedElements.length);
       _ref1 = this.selectedElements;
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         element = _ref1[_i];
@@ -555,6 +566,7 @@
         action.x = Math.round(element.position().left / this.gridWidth);
         action.y = Math.round(element.position().top / this.gridHeight);
         action.updatedAt = +new Date();
+        console.log(action.type);
       }
       if (this.selectedElements != null) {
         if (this.selectedElements.length > 0) {
@@ -836,6 +848,7 @@
       if (action == null) {
         return false;
       }
+      console.log("rendering : ", action.type);
       children = action.children;
       textures = [];
       for (_i = 0, _len = children.length; _i < _len; _i++) {
