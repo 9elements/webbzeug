@@ -5,4 +5,5 @@
 .Trashes
 
 .sass/
+.sass-cache/
 .rb-env*
