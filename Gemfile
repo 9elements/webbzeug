@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 # Guard
 group :guard do
+  gem 'growl'
   gem 'guard'
 
   gem 'guard-coffeescript'

@@ -55,8 +55,7 @@ strong {
   -webkit-font-smoothing: antialiased; }
 
 .app-wrapper {
-  width: 100%;
-  min-width: 800px;
+  width: 980px;
   margin: auto;
   padding-top: 20px;
   overflow: hidden;
@@ -104,9 +103,7 @@ strong {
 
 ul.nav {
   float: left;
-  margin-left: 20px;
-  position: absolute;
-  left: 280px}
+  margin-left: 20px; }
   ul.nav li a {
     display: block;
     font: bold 13px "Helvetica Neue", Helvetica, Arial;
@@ -124,7 +121,6 @@ header, .sidebar {
   height: 50px; }
   header .header-wrapper, header.sidebar, .sidebar .header-wrapper, .sidebar.sidebar {
     width: 980px;
-
     margin: auto; }
     header .header-wrapper .logo, header.sidebar .logo, .sidebar .header-wrapper .logo, .sidebar.sidebar .logo {
       width: 100px;
@@ -132,22 +128,15 @@ header, .sidebar {
       background: url("/images/logo.png") no-repeat center center;
       display: block;
       float: left;
-      left: 0;
-      position: absolute;
       margin-right: 10px; }
     header .header-wrapper .claim, header .header-wrapper .authors, header.sidebar .claim, header.sidebar .authors, .sidebar .header-wrapper .claim, .sidebar .header-wrapper .authors, .sidebar.sidebar .claim, .sidebar.sidebar .authors {
       float: left;
       font: normal 9px Verdana;
       color: white;
       margin-top: 19px;
-      opacity: 0.7;
-      left: 120px;
-      position: absolute;}
+      opacity: 0.7; }
     header .header-wrapper .authors, header.sidebar .authors, .sidebar .header-wrapper .authors, .sidebar.sidebar .authors {
-      float: right;
-      position: absolute;
-      min-width: 200px;
-      left: 80%;}
+      float: right; }
       header .header-wrapper .authors a, header.sidebar .authors a, .sidebar .header-wrapper .authors a, .sidebar.sidebar .authors a {
         color: #398cf2;
         text-decoration: none; }
@@ -159,7 +148,6 @@ header, .sidebar {
   *zoom: 1;
   margin-bottom: 10px;
   overflow: visible;
-  margin-left: 10px;
   height: 30px; }
   .navigation .type {
     font: bold 10px Verdana;
@@ -254,8 +242,7 @@ header, .sidebar {
   overflow: scroll;
   border-radius: 3px;
   z-index: 1;
-  position: absolute;
-  left: 8px;}
+  position: absolute; }
   .workspace-wrapper .workspace {
     width: 100%;
     height: 100%;
@@ -353,7 +340,7 @@ header, .sidebar {
 .workspace-wrapper .parameters {
   width: 250px;
   height: 300px;
-  background: #333333;
+  background: white;
   border-radius: 5px;
   padding: 15px;
   position: absolute;
@@ -367,19 +354,9 @@ header, .sidebar {
     *zoom: 1;
     height: 30px; }
     .workspace-wrapper .parameters ul li .label {
-      padding-top: 4px;
-      color: white;
       width: 80px;
       float: left; }
-    .workspace-wrapper .parameters ul li select {
-      background-color: #222222;
-      color: white;}
     .workspace-wrapper .parameters ul li input {
-      color:white;
-      background: #222222;
-      border-style: solid;
-      border-color: #444444;
-      border-radius: 5px;
       float: left; }
     .workspace-wrapper .parameters ul li .value {
       float: left;

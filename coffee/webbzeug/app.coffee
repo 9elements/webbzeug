@@ -20,10 +20,10 @@ window.Webbzeug.App = class App
     @handleMultipleSelection()
     @handleKeyboardInput()
     size = $(window).width()
-    console.log size
-    if size < 800
-      size = 800
-    $('div.workspace-wrapper, div.workspace').css({ width: size - 280 })
+    #console.log size
+    #if size < 800
+    #  size = 800
+    #$('div.workspace-wrapper, div.workspace').css({ width: size - 280 })
 
   loadSamples: ->
     samplesSelect = $('select.samples')
@@ -47,7 +47,7 @@ window.Webbzeug.App = class App
     initializes the THREE.js renderer
   ###
   initRenderer: ->
-    console.log "init renderer"
+    #console.log "init renderer"
     @renderer = new THREE.WebGLRenderer antialias: false, preserveDrawingBuffer: true
     @renderer.setSize @textureSize, @textureSize
     @renderer.autoClear = false
@@ -240,7 +240,7 @@ window.Webbzeug.App = class App
     @actionsArr.push action
 
     @handleElementClick null, element
-    console.log "added click"
+    #console.log "added click"
     element.click (e) =>
       @handleElementClick e, element
 
@@ -312,7 +312,6 @@ window.Webbzeug.App = class App
         y = Math.round(@selectedElement.position().top  / @gridHeight)
 
         if @selectedActionId
-          console.log "315"
           @applyActionToElement @selectedActionId, x, y, 3, @incrementalIndex, @selectedElement
 
           @incrementalIndex++
@@ -467,14 +466,13 @@ window.Webbzeug.App = class App
       return
 
   updateElementPositions: ->
-    console.log "len ", @selectedElements.length
     for element in @selectedElements
       action = @actions[element.attr('data-index')]
       action.x = Math.round(element.position().left / @gridWidth)
       action.y = Math.round(element.position().top  / @gridHeight)
 
       action.updatedAt = +new Date()
-      console.log action.type
+      #console.log action.type
     if @selectedElements?
       if @selectedElements.length > 0
         @renderAll()
@@ -609,6 +607,8 @@ window.Webbzeug.App = class App
     unless @watchedActionIndex
       return
 
+    console.log "==============================="
+
     @deleteTree()
 
     @actionsArr.sort @actionsSorter
@@ -626,6 +626,8 @@ window.Webbzeug.App = class App
 
 
   findChildrenRecursively: (action) ->
+    console.log "-------------------------"
+    console.log action.index
     action.children = []
     # if we deal with a load action we must find its save and go on there with recursion
     if action.type is 'load'
@@ -648,10 +650,12 @@ window.Webbzeug.App = class App
           action.children.push possibleChildAction
           possibleChildAction.parent = action
 
+          console.log possibleChildAction.index
+
           @findChildrenRecursively possibleChildAction
 
   updateParentsRecursively: (action) ->
-    console.log action.type
+    #console.log action.type
     if action.parent?
       action.parent.updatedAt = +new Date()
       @updateParentsRecursively action.parent
@@ -694,15 +698,15 @@ window.Webbzeug.App = class App
 
   $(window).resize =>
     size = $(window).width()
-    console.log size
-    if size < 800
-      size = 800
-    $('div.workspace-wrapper, div.workspace').css({ width: size - 280 })
+    #console.log size
+    #if size < 800
+    #  size = 800
+    #$('div.workspace-wrapper, div.workspace').css({ width: size - 280 })
 
   renderAction: (action) ->
     unless action?
       return false
-    console.log "rendering : ",action.type
+    #console.log "rendering : ",action.type
 
     children = action.children
 

@@ -32,13 +32,6 @@
       this.handleMultipleSelection();
       this.handleKeyboardInput();
       size = $(window).width();
-      console.log(size);
-      if (size < 800) {
-        size = 800;
-      }
-      $('div.workspace-wrapper, div.workspace').css({
-        width: size - 280
-      });
     }
 
     App.prototype.loadSamples = function() {
@@ -76,7 +69,6 @@
 
 
     App.prototype.initRenderer = function() {
-      console.log("init renderer");
       this.renderer = new THREE.WebGLRenderer({
         antialias: false,
         preserveDrawingBuffer: true
@@ -309,7 +301,6 @@
       this.actions[index] = action;
       this.actionsArr.push(action);
       this.handleElementClick(null, element);
-      console.log("added click");
       element.click(function(e) {
         return _this.handleElementClick(e, element);
       });
@@ -389,7 +380,6 @@
           x = Math.round(_this.selectedElement.position().left / _this.gridWidth);
           y = Math.round(_this.selectedElement.position().top / _this.gridHeight);
           if (_this.selectedActionId) {
-            console.log("315");
             _this.applyActionToElement(_this.selectedActionId, x, y, 3, _this.incrementalIndex, _this.selectedElement);
             _this.incrementalIndex++;
           }
@@ -558,7 +548,6 @@
 
     App.prototype.updateElementPositions = function() {
       var action, element, _i, _len, _ref1;
-      console.log("len ", this.selectedElements.length);
       _ref1 = this.selectedElements;
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         element = _ref1[_i];
@@ -566,7 +555,6 @@
         action.x = Math.round(element.position().left / this.gridWidth);
         action.y = Math.round(element.position().top / this.gridHeight);
         action.updatedAt = +new Date();
-        console.log(action.type);
       }
       if (this.selectedElements != null) {
         if (this.selectedElements.length > 0) {
@@ -739,6 +727,7 @@
       if (!this.watchedActionIndex) {
         return;
       }
+      console.log("===============================");
       this.deleteTree();
       this.actionsArr.sort(this.actionsSorter);
       watchedAction = this.actions[this.watchedActionIndex];
@@ -757,6 +746,8 @@
 
     App.prototype.findChildrenRecursively = function(action) {
       var possibleChildAction, _i, _j, _len, _len1, _ref1, _ref2, _results;
+      console.log("-------------------------");
+      console.log(action.index);
       action.children = [];
       if (action.type === 'load') {
         _ref1 = this.actionsArr;
@@ -783,6 +774,7 @@
           if (!(possibleChildAction.x >= action.x + action.width || possibleChildAction.x + possibleChildAction.width <= action.x)) {
             action.children.push(possibleChildAction);
             possibleChildAction.parent = action;
+            console.log(possibleChildAction.index);
             _results.push(this.findChildrenRecursively(possibleChildAction));
           } else {
             _results.push(void 0);
@@ -795,7 +787,6 @@
     };
 
     App.prototype.updateParentsRecursively = function(action) {
-      console.log(action.type);
       if (action.parent != null) {
         action.parent.updatedAt = +new Date();
         return this.updateParentsRecursively(action.parent);
@@ -833,14 +824,7 @@
 
     $(window).resize(function() {
       var size;
-      size = $(window).width();
-      console.log(size);
-      if (size < 800) {
-        size = 800;
-      }
-      return $('div.workspace-wrapper, div.workspace').css({
-        width: size - 280
-      });
+      return size = $(window).width();
     });
 
     App.prototype.renderAction = function(action) {
@@ -848,7 +832,6 @@
       if (action == null) {
         return false;
       }
-      console.log("rendering : ", action.type);
       children = action.children;
       textures = [];
       for (_i = 0, _len = children.length; _i < _len; _i++) {
