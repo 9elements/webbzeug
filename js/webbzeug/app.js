@@ -179,6 +179,7 @@
             $('.workspace .action').removeClass('watched');
             $('.workspace .action[data-index=' + _this.selectedActionIndex + ']').addClass('watched');
             _this.watchedActionIndex = _this.selectedActionIndex;
+            console.log("AAAAAAAAA");
             return _this.renderAll();
           }
         }
@@ -385,6 +386,7 @@
           }
           _this.selectedElement = null;
           _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
+          console.log("BBBBBBBBBBBBB");
           return _this.renderAll();
         }
       };
@@ -558,6 +560,7 @@
       }
       if (this.selectedElements != null) {
         if (this.selectedElements.length > 0) {
+          console.log("CCCCCCCCCCCCC");
           return this.renderAll();
         }
       }
@@ -621,6 +624,7 @@
               _key = key;
               return select.change(function() {
                 action.setParameter(_key, select.val());
+                console.log("DDDDDDDDDDDD");
                 return self.renderAll();
               });
             })());
@@ -654,6 +658,7 @@
                   newVal = parseInt(newVal);
                 }
                 action.setParameter(_key, newVal);
+                console.log("EEEEEEEEEEEE");
                 return self.renderAll();
               });
             })());
@@ -677,6 +682,7 @@
                     backgroundColor: color
                   });
                   action.setParameter(_key, color);
+                  console.log("FFFFFFFFFFFFF");
                   return self.renderAll();
                 }
               });
@@ -727,7 +733,6 @@
       if (!this.watchedActionIndex) {
         return;
       }
-      console.log("===============================");
       this.deleteTree();
       this.actionsArr.sort(this.actionsSorter);
       watchedAction = this.actions[this.watchedActionIndex];
@@ -746,8 +751,6 @@
 
     App.prototype.findChildrenRecursively = function(action) {
       var possibleChildAction, _i, _j, _len, _len1, _ref1, _ref2, _results;
-      console.log("-------------------------");
-      console.log(action.index);
       action.children = [];
       if (action.type === 'load') {
         _ref1 = this.actionsArr;
@@ -774,7 +777,6 @@
           if (!(possibleChildAction.x >= action.x + action.width || possibleChildAction.x + possibleChildAction.width <= action.x)) {
             action.children.push(possibleChildAction);
             possibleChildAction.parent = action;
-            console.log(possibleChildAction.index);
             _results.push(this.findChildrenRecursively(possibleChildAction));
           } else {
             _results.push(void 0);

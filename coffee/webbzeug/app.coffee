@@ -143,7 +143,7 @@ window.Webbzeug.App = class App
           $('.workspace .action[data-index=' + @selectedActionIndex + ']').addClass('watched')
 
           @watchedActionIndex = @selectedActionIndex
-
+          console.log "AAAAAAAAA"
           @renderAll()
 
   ###
@@ -317,6 +317,7 @@ window.Webbzeug.App = class App
           @incrementalIndex++
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
+        console.log "BBBBBBBBBBBBB"
         @renderAll()
 
     $('.workspace-wrapper').mouseenter onMouseEnter
@@ -475,6 +476,7 @@ window.Webbzeug.App = class App
       #console.log action.type
     if @selectedElements?
       if @selectedElements.length > 0
+        console.log "CCCCCCCCCCCCC"
         @renderAll()
       #@updateParentsRecursively action
 
@@ -529,7 +531,7 @@ window.Webbzeug.App = class App
             _key = key
             select.change ->
               action.setParameter _key, select.val()
-
+              console.log "DDDDDDDDDDDD"
               self.renderAll()
           )()
 
@@ -562,7 +564,7 @@ window.Webbzeug.App = class App
                 newVal = parseInt(newVal)
 
               action.setParameter _key, newVal
-
+              console.log "EEEEEEEEEEEE"
               self.renderAll()
           )()
 
@@ -586,7 +588,7 @@ window.Webbzeug.App = class App
                   backgroundColor: color
 
                 action.setParameter _key, color
-
+                console.log "FFFFFFFFFFFFF"
                 self.renderAll()
           )()
 
@@ -606,9 +608,6 @@ window.Webbzeug.App = class App
   buildTree: ->
     unless @watchedActionIndex
       return
-
-    console.log "==============================="
-
     @deleteTree()
 
     @actionsArr.sort @actionsSorter
@@ -626,8 +625,6 @@ window.Webbzeug.App = class App
 
 
   findChildrenRecursively: (action) ->
-    console.log "-------------------------"
-    console.log action.index
     action.children = []
     # if we deal with a load action we must find its save and go on there with recursion
     if action.type is 'load'
@@ -649,9 +646,6 @@ window.Webbzeug.App = class App
         if !(possibleChildAction.x >= action.x + action.width or possibleChildAction.x + possibleChildAction.width <= action.x)
           action.children.push possibleChildAction
           possibleChildAction.parent = action
-
-          console.log possibleChildAction.index
-
           @findChildrenRecursively possibleChildAction
 
   updateParentsRecursively: (action) ->
