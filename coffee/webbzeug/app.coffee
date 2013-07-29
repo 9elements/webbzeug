@@ -20,10 +20,6 @@ window.Webbzeug.App = class App
     @handleMultipleSelection()
     @handleKeyboardInput()
     size = $(window).width()
-    #console.log size
-    #if size < 800
-    #  size = 800
-    #$('div.workspace-wrapper, div.workspace').css({ width: size - 280 })
 
   loadSamples: ->
     samplesSelect = $('select.samples')
@@ -47,12 +43,9 @@ window.Webbzeug.App = class App
     initializes the THREE.js renderer
   ###
   initRenderer: ->
-    #console.log "init renderer"
     @renderer = new THREE.WebGLRenderer antialias: false, preserveDrawingBuffer: true
     @renderer.setSize @textureSize, @textureSize
     @renderer.autoClear = false
-    console.log @renderer
-    console.log @container
 
     @container.append @renderer.domElement
 
@@ -67,19 +60,6 @@ window.Webbzeug.App = class App
     @screenAlignedQuadMesh = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), @copyMaterial)
     @renderToTextureScene = new THREE.Scene();
     @renderToTextureScene.add( @screenAlignedQuadMesh );
-
-
-  ###
-  setupCanvas: ->
-    console.log @canvas
-    @gl = @canvas.getContext("experimental-webgl")
-    if (!@gl)
-      console.log "Can't init WebGl context braw"
-    else
-      console.log "WebGL init works"
-    @width = @canvas.width
-    @height = @canvas.height
-  ###
 
   buildGrid: ->
     rows = 30
@@ -143,7 +123,6 @@ window.Webbzeug.App = class App
           $('.workspace .action[data-index=' + @selectedActionIndex + ']').addClass('watched')
 
           @watchedActionIndex = @selectedActionIndex
-          console.log "AAAAAAAAA"
           @renderAll()
 
   ###
@@ -240,7 +219,6 @@ window.Webbzeug.App = class App
     @actionsArr.push action
 
     @handleElementClick null, element
-    #console.log "added click"
     element.click (e) =>
       @handleElementClick e, element
 
@@ -317,7 +295,6 @@ window.Webbzeug.App = class App
           @incrementalIndex++
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
-        console.log "BBBBBBBBBBBBB"
         @renderAll()
 
     $('.workspace-wrapper').mouseenter onMouseEnter
@@ -474,10 +451,8 @@ window.Webbzeug.App = class App
       action.y = Math.round(element.position().top  / @gridHeight)
 
       action.updatedAt = +new Date()
-      #console.log action.type
     if @selectedElements?
       if @selectedElements.length > 0
-        console.log "CCCCCCCCCCCCC"
         @renderAll()
       #@updateParentsRecursively action
 
@@ -532,7 +507,6 @@ window.Webbzeug.App = class App
             _key = key
             select.change ->
               action.setParameter _key, select.val()
-              console.log "DDDDDDDDDDDD"
               self.renderAll()
           )()
 
@@ -565,7 +539,6 @@ window.Webbzeug.App = class App
                 newVal = parseInt(newVal)
 
               action.setParameter _key, newVal
-              console.log "EEEEEEEEEEEE"
               self.renderAll()
           )()
 
@@ -589,7 +562,6 @@ window.Webbzeug.App = class App
                   backgroundColor: color
 
                 action.setParameter _key, color
-                console.log "FFFFFFFFFFFFF"
                 self.renderAll()
           )()
 
@@ -650,7 +622,6 @@ window.Webbzeug.App = class App
           @findChildrenRecursively possibleChildAction
 
   updateParentsRecursively: (action) ->
-    #console.log action.type
     if action.parent?
       action.parent.updatedAt = +new Date()
       @updateParentsRecursively action.parent

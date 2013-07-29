@@ -75,8 +75,6 @@
       });
       this.renderer.setSize(this.textureSize, this.textureSize);
       this.renderer.autoClear = false;
-      console.log(this.renderer);
-      console.log(this.container);
       this.container.append(this.renderer.domElement);
       this.canvas = this.renderer.domElement;
       this.width = this.canvas.width;
@@ -90,19 +88,6 @@
       this.renderToTextureScene = new THREE.Scene();
       return this.renderToTextureScene.add(this.screenAlignedQuadMesh);
     };
-
-    /*
-      setupCanvas: ->
-        console.log @canvas
-        @gl = @canvas.getContext("experimental-webgl")
-        if (!@gl)
-          console.log "Can't init WebGl context braw"
-        else
-          console.log "WebGL init works"
-        @width = @canvas.width
-        @height = @canvas.height
-    */
-
 
     App.prototype.buildGrid = function() {
       var c, colDiv, cols, grid, r, rowDiv, rows, _i, _j, _results;
@@ -179,7 +164,6 @@
             $('.workspace .action').removeClass('watched');
             $('.workspace .action[data-index=' + _this.selectedActionIndex + ']').addClass('watched');
             _this.watchedActionIndex = _this.selectedActionIndex;
-            console.log("AAAAAAAAA");
             return _this.renderAll();
           }
         }
@@ -386,7 +370,6 @@
           }
           _this.selectedElement = null;
           _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
-          console.log("BBBBBBBBBBBBB");
           return _this.renderAll();
         }
       };
@@ -561,7 +544,6 @@
       }
       if (this.selectedElements != null) {
         if (this.selectedElements.length > 0) {
-          console.log("CCCCCCCCCCCCC");
           return this.renderAll();
         }
       }
@@ -625,7 +607,6 @@
               _key = key;
               return select.change(function() {
                 action.setParameter(_key, select.val());
-                console.log("DDDDDDDDDDDD");
                 return self.renderAll();
               });
             })());
@@ -659,7 +640,6 @@
                   newVal = parseInt(newVal);
                 }
                 action.setParameter(_key, newVal);
-                console.log("EEEEEEEEEEEE");
                 return self.renderAll();
               });
             })());
@@ -683,7 +663,6 @@
                     backgroundColor: color
                   });
                   action.setParameter(_key, color);
-                  console.log("FFFFFFFFFFFFF");
                   return self.renderAll();
                 }
               });
