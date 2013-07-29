@@ -61,7 +61,7 @@
           name: 'Glow',
           type: 'integer',
           min: 0,
-          max: 255,
+          max: 254,
           "default": 128,
           scrollPrecision: 1
         },

@@ -739,6 +739,7 @@
           if (possibleChildAction.type === 'save') {
             if (possibleChildAction.getParameter(0) === action.getParameter(0)) {
               action.children.push(possibleChildAction);
+              possibleChildAction.parent = action;
               this.findChildrenRecursively(possibleChildAction);
               return;
             }

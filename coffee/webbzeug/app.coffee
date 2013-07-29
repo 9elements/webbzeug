@@ -605,6 +605,7 @@ window.Webbzeug.App = class App
         if possibleChildAction.type is 'save'
           if possibleChildAction.getParameter(0) is action.getParameter(0)
             action.children.push possibleChildAction
+            possibleChildAction.parent = action
             @findChildrenRecursively possibleChildAction
             return
       return

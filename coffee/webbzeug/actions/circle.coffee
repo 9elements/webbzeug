@@ -9,7 +9,7 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
       y:  { name: 'Y', type: 'integer', min: 0, max: 255, default: 128, scrollPrecision: 1 },
       radiusX:  { name: 'Radius X', type: 'integer', min: 0, max: 256, default: 128, scrollPrecision: 1 },
       radiusY:  { name: 'Radius Y', type: 'integer', min: 0, max: 256, default: 128, scrollPrecision: 1 },
-      glow:  { name: 'Glow', type: 'integer', min: 0, max: 255, default: 128, scrollPrecision: 1 },
+      glow:  { name: 'Glow', type: 'integer', min: 0, max: 254, default: 128, scrollPrecision: 1 },
       alpha:  { name: 'Alpha', type: 'integer', min: 0, max: 255, default: 255, scrollPrecision: 1 },
       color: { name: 'Color', type: 'color', default: 'rgba(255,255,255,1)' }
     }
