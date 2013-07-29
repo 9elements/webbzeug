@@ -5,8 +5,7 @@ window.Webbzeug.Action = class Action
     @children = []
     @parent   = null
 
-    @updatedAt  = +new Date()
-    @renderedAt = 0
+    @needsUpdate = true
 
     @parameters = {}
     for parameter, info of @availableParameters()
@@ -63,15 +62,9 @@ window.Webbzeug.Action = class Action
     return @renderTarget
 
   render: (textures) ->
-    @renderedAt = +new Date()
-    #@canvas = $('<canvas>').get(0) # create a new canvas dom-object
+    @needsUpdate = false
 
-    #@canvas.width = @app.getWidth()
-    #@canvas.height = @app.getHeight()
-
-    #@context = @canvas.getContext("2d")
-
-  willRender: -> @updatedAt > @renderedAt
+  willRender: -> @needsUpdate
 
   # Children
   deleteChildren:   -> @children = []
@@ -80,7 +73,7 @@ window.Webbzeug.Action = class Action
   getParameter: (parameter) -> @parameters[parameter]
   setParameter: (parameter, value) ->
     @parameters[parameter] = value
-    @updatedAt = +new Date()
+    @needsUpdate = true
 
     # Recursively build tree to find parents that should be rendered as well
     @app.buildTree()

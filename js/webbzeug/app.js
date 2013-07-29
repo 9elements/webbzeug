@@ -540,7 +540,7 @@
         action = this.actions[element.attr('data-index')];
         action.x = Math.round(element.position().left / this.gridWidth);
         action.y = Math.round(element.position().top / this.gridHeight);
-        action.updatedAt = +new Date();
+        action.needsUpdate = true;
       }
       if (this.selectedElements != null) {
         if (this.selectedElements.length > 0) {
@@ -771,7 +771,7 @@
 
     App.prototype.updateParentsRecursively = function(action) {
       if (action.parent != null) {
-        action.parent.updatedAt = +new Date();
+        action.parent.needsUpdate = true;
         return this.updateParentsRecursively(action.parent);
       }
     };

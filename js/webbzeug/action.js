@@ -18,8 +18,7 @@
       this.index = index;
       this.children = [];
       this.parent = null;
-      this.updatedAt = +new Date();
-      this.renderedAt = 0;
+      this.needsUpdate = true;
       this.parameters = {};
       _ref1 = this.availableParameters();
       for (parameter in _ref1) {
@@ -103,11 +102,11 @@
     };
 
     Action.prototype.render = function(textures) {
-      return this.renderedAt = +new Date();
+      return this.needsUpdate = false;
     };
 
     Action.prototype.willRender = function() {
-      return this.updatedAt > this.renderedAt;
+      return this.needsUpdate;
     };
 
     Action.prototype.deleteChildren = function() {
@@ -124,7 +123,7 @@
 
     Action.prototype.setParameter = function(parameter, value) {
       this.parameters[parameter] = value;
-      this.updatedAt = +new Date();
+      this.needsUpdate = true;
       this.app.buildTree();
       this.app.updateParentsRecursively(this);
       return this.setCaption(this.caption());

@@ -450,7 +450,7 @@ window.Webbzeug.App = class App
       action.x = Math.round(element.position().left / @gridWidth)
       action.y = Math.round(element.position().top  / @gridHeight)
 
-      action.updatedAt = +new Date()
+      action.needsUpdate = true
     if @selectedElements?
       if @selectedElements.length > 0
         @renderAll()
@@ -624,7 +624,7 @@ window.Webbzeug.App = class App
 
   updateParentsRecursively: (action) ->
     if action.parent?
-      action.parent.updatedAt = +new Date()
+      action.parent.needsUpdate = true
       @updateParentsRecursively action.parent
 
   setFramebuffer: (fbo, width, height) ->
