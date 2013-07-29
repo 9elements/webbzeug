@@ -543,6 +543,7 @@
         $(document).mousemove(handleMouseMove);
         $(document).mouseup(function(e) {
           $(document).off('mousemove', handleMouseMove);
+          $(document).off('mouseup');
           _this.updateElementPositions();
         });
       });

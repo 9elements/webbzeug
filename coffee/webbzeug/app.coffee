@@ -462,6 +462,7 @@ window.Webbzeug.App = class App
 
       $(document).mouseup (e) =>
         $(document).off 'mousemove', handleMouseMove
+        $(document).off 'mouseup'
         @updateElementPositions()
         return
       return
