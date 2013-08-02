@@ -20,6 +20,7 @@ window.Webbzeug.App = class App
     @handleMultipleSelection()
     @handleKeyboardInput()
     size = $(window).width()
+    @resizeWindow()
 
   loadSamples: ->
     samplesSelect = $('select.samples')
@@ -677,11 +678,27 @@ window.Webbzeug.App = class App
     $('.debug').text 'rendered in ' + @renderTime + 'ms'
 
   $(window).resize =>
-    size = $(window).width()
-    #console.log size
-    #if size < 800
-    #  size = 800
-    #$('div.workspace-wrapper, div.workspace').css({ width: size - 280 })
+    width = $(window).width()
+    if width < 600
+      width = 600
+    $('div.workspace-wrapper, div.workspace').css({ width: width - 280 })
+
+    height = $(window).height()
+    if height < 600
+      height = 600
+    $('div.workspace-wrapper, div.workspace').css({ height: height - 115 })
+
+  resizeWindow: ->
+    width = $(window).width()
+    if width < 600
+      width = 600
+    $('div.workspace-wrapper, div.workspace').css({ width: width - 280 })
+
+    height = $(window).height()
+    if height < 600
+      height = 600
+    $('div.workspace-wrapper, div.workspace').css({ height: height - 115 })
+
 
   renderAction: (action) ->
     unless action?

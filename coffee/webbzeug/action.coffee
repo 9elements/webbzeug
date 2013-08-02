@@ -34,10 +34,8 @@ window.Webbzeug.Action = class Action
     @tempTarget = new THREE.WebGLRenderTarget( width, height, parameters )
 
   availableParameters: -> {}
-  validations: -> return {}
 
-  copyRendered: (contexts) ->
-    console.log "someone called me"
+  validations: -> return {}
 
   ###
   this is called from the tree renderer

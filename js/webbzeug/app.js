@@ -32,6 +32,7 @@
       this.handleMultipleSelection();
       this.handleKeyboardInput();
       size = $(window).width();
+      this.resizeWindow();
     }
 
     App.prototype.loadSamples = function() {
@@ -822,9 +823,40 @@
     };
 
     $(window).resize(function() {
-      var size;
-      return size = $(window).width();
+      var height, width;
+      width = $(window).width();
+      if (width < 600) {
+        width = 600;
+      }
+      $('div.workspace-wrapper, div.workspace').css({
+        width: width - 280
+      });
+      height = $(window).height();
+      if (height < 600) {
+        height = 600;
+      }
+      return $('div.workspace-wrapper, div.workspace').css({
+        height: height - 115
+      });
     });
+
+    App.prototype.resizeWindow = function() {
+      var height, width;
+      width = $(window).width();
+      if (width < 600) {
+        width = 600;
+      }
+      $('div.workspace-wrapper, div.workspace').css({
+        width: width - 280
+      });
+      height = $(window).height();
+      if (height < 600) {
+        height = 600;
+      }
+      return $('div.workspace-wrapper, div.workspace').css({
+        height: height - 115
+      });
+    };
 
     App.prototype.renderAction = function(action) {
       var child, children, startTime, texture, textures, _i, _len;

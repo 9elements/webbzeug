@@ -72,10 +72,6 @@
       return {};
     };
 
-    Action.prototype.copyRendered = function(contexts) {
-      return console.log("someone called me");
-    };
-
     /*
       this is called from the tree renderer
     */
