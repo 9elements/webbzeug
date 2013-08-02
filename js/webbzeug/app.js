@@ -371,10 +371,7 @@
           _this.selectedElement = null;
           _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
           watchedAction = _this.actions[_this.watchedActionIndex];
-          if (watchedAction != null) {
-            watchedAction.needsUpdate = true;
-            _this.updateParentsRecursively(watchedAction);
-          }
+          _this.updateAllActions();
           return _this.renderAll();
         }
       };
@@ -537,8 +534,19 @@
       });
     };
 
+    App.prototype.updateAllActions = function() {
+      var action, _i, _len, _ref1, _results;
+      _ref1 = this.actionsArr;
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        action = _ref1[_i];
+        _results.push(action != null ? action.needsUpdate = true : void 0);
+      }
+      return _results;
+    };
+
     App.prototype.updateElementPositions = function() {
-      var action, element, watchedAction, _i, _len, _ref1;
+      var action, element, _i, _len, _ref1;
       _ref1 = this.selectedElements;
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         element = _ref1[_i];
@@ -547,11 +555,7 @@
         action.y = Math.round(element.position().top / this.gridHeight);
         action.needsUpdate = true;
       }
-      watchedAction = this.actions[this.watchedActionIndex];
-      if (watchedAction != null) {
-        watchedAction.needsUpdate = true;
-        this.updateParentsRecursively(watchedAction);
-      }
+      this.updateAllActions();
       if (this.selectedElements != null) {
         if (this.selectedElements.length > 0) {
           return this.renderAll();
@@ -780,9 +784,11 @@
     };
 
     App.prototype.updateParentsRecursively = function(action) {
-      if (action.parent != null) {
-        action.parent.needsUpdate = true;
-        return this.updateParentsRecursively(action.parent);
+      if (!action.needsUpdate) {
+        action.needsUpdate = true;
+        if (action.parent != null) {
+          return this.updateParentsRecursively(action.parent);
+        }
       }
     };
 

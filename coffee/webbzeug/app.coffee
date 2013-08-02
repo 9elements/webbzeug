@@ -296,9 +296,7 @@ window.Webbzeug.App = class App
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
         watchedAction = @actions[@watchedActionIndex]
-        if watchedAction?
-          watchedAction.needsUpdate = true
-          @updateParentsRecursively watchedAction
+        @updateAllActions()
 
         @renderAll()
 
@@ -449,6 +447,10 @@ window.Webbzeug.App = class App
         return
       return
 
+  updateAllActions: ->
+    for action in @actionsArr
+      action?.needsUpdate = true;
+
   updateElementPositions: ->
     for element in @selectedElements
       action = @actions[element.attr('data-index')]
@@ -456,15 +458,11 @@ window.Webbzeug.App = class App
       action.y = Math.round(element.position().top  / @gridHeight)
       action.needsUpdate = true
 
-    watchedAction = @actions[@watchedActionIndex]
-    if watchedAction?
-      watchedAction.needsUpdate = true
-      @updateParentsRecursively watchedAction
+    @updateAllActions()
 
     if @selectedElements?
       if @selectedElements.length > 0
         @renderAll()
-      #@updateParentsRecursively action
 
   handleElementClick: (e, element) ->
     @selectedActionIndex = element.attr('data-index')
@@ -633,9 +631,10 @@ window.Webbzeug.App = class App
           @findChildrenRecursively possibleChildAction
 
   updateParentsRecursively: (action) ->
-    if action.parent?
-      action.parent.needsUpdate = true
-      @updateParentsRecursively action.parent
+    if(!action.needsUpdate)
+      action.needsUpdate = true
+      if action.parent?
+        @updateParentsRecursively action.parent
 
   setFramebuffer: (fbo, width, height) ->
     #// make this the framebuffer we are rendering to.
