@@ -37,4 +37,4 @@ window.Webbzeug.LoadSaveHandler = class LoadSaveHandler
 
   openData: (data) ->
     @app.reset()
-    @importer.loadData data
+    @jsonImporter.loadData data

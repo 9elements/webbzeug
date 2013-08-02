@@ -1,14 +1,10 @@
 [
-  { 
-    "name": "Bio Hazard", 
-    "file": "bio.webb"
-  },
-  {
-    "name": "Floor Texture",
-    "file": "floor-tex.webb"
-  },
   {
     "name": "9e",
-    "file": "9e.webb"
+    "file": "9e_sample.webb"
+  },
+  {
+    "name": "Bio Hazard",
+    "file": "bio_sample.webb"
   }
 ]

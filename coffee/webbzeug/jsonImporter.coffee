@@ -3,10 +3,12 @@ window.Webbzeug.JSONImporter = class JSONImporter
   debug: true
   constructor: (@app) -> return
   loadData: (data) ->
-    splitData      = data.split 'base64,'
-    b64encodedData = splitData[1]
-    data           = Base64.decode b64encodedData
+    if data.substr(0,5) == 'data:'
+      splitData      = data.split 'base64,'
+      b64encodedData = splitData[1]
+      data           = Base64.decode b64encodedData
 
+    console.log data
     decodedData = JSON.parse(data)
 
     if @fileVersionNewer decodedData.version

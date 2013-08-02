@@ -16,9 +16,12 @@
 
     JSONImporter.prototype.loadData = function(data) {
       var b64encodedData, decodedData, splitData;
-      splitData = data.split('base64,');
-      b64encodedData = splitData[1];
-      data = Base64.decode(b64encodedData);
+      if (data.substr(0, 5) === 'data:') {
+        splitData = data.split('base64,');
+        b64encodedData = splitData[1];
+        data = Base64.decode(b64encodedData);
+      }
+      console.log(data);
       decodedData = JSON.parse(data);
       if (this.fileVersionNewer(decodedData.version)) {
         alert('This file has been created with a newer version of webbzeug! (' + decodedData.version + ' > ' + Webbzeug.Version);

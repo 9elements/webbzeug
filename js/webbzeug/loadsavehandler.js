@@ -53,7 +53,7 @@
 
     LoadSaveHandler.prototype.openData = function(data) {
       this.app.reset();
-      return this.importer.loadData(data);
+      return this.jsonImporter.loadData(data);
     };
 
     return LoadSaveHandler;

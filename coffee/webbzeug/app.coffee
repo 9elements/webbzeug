@@ -511,9 +511,9 @@ window.Webbzeug.App = class App
             if action.getParameter(key) is optKey
               option.attr 'selected', 'selected'
 
-          (->
+          (=>
             _key = key
-            select.change ->
+            select.change =>
               action.setParameter _key, select.val()
               #@updateParentsRecursively action
               @updateAllActions()

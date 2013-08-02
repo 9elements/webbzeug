@@ -74,10 +74,10 @@
       type: 'processive',
       "class": Webbzeug.Actions.Light
     },
-    mask: {
-      name: 'Mask',
+    blend: {
+      name: 'Blend',
       type: 'processive',
-      "class": Webbzeug.Actions.Mask
+      "class": Webbzeug.Actions.Blend
     },
     mirror: {
       name: 'Mirror',

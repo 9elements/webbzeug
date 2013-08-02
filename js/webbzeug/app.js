@@ -621,7 +621,7 @@
               _key = key;
               return select.change(function() {
                 action.setParameter(_key, select.val());
-                this.updateAllActions();
+                _this.updateAllActions();
                 return self.renderAll();
               });
             })());
