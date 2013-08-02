@@ -22,6 +22,7 @@
           type: appAction.type,
           parameters: appAction.parameters
         };
+        console.log(appAction.type);
         actions.push(action);
       }
       fileContent = {

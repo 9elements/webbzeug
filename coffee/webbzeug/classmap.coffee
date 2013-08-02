@@ -31,8 +31,8 @@ window.Webbzeug.ClassMap =
   ###
     Processive actions
   ###
-  contrastBrightnss:
-    name: 'Cont/Bri'
+  contrastBrightness:
+    name: 'ContBri'
     type: 'processive'
     class: Webbzeug.Actions.ContrastBrightness
   blur:

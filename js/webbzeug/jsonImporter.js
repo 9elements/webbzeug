@@ -33,6 +33,7 @@
       actions = data;
       for (i in actions) {
         action = actions[i];
+        console.log(action.type);
         this.extractAction(action);
       }
       return this.app.incrementalIndex = this.maxIndex + 1;

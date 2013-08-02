@@ -15,12 +15,12 @@ window.Webbzeug.JSONImporter = class JSONImporter
 
     @extractData decodedData.actions
 
-
   extractData: (data) ->
     @maxIndex = 0
     actions = data
 
     for i, action of actions
+      console.log action.type
       @extractAction action
 
     @app.incrementalIndex = @maxIndex + 1
