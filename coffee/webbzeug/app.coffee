@@ -295,6 +295,11 @@ window.Webbzeug.App = class App
           @incrementalIndex++
         @selectedElement = null
         @selectedActionId = @selectedActionType = @selectedActionName = null
+        watchedAction = @actions[@watchedActionIndex]
+        if watchedAction?
+          watchedAction.needsUpdate = true
+          @updateParentsRecursively watchedAction
+
         @renderAll()
 
     $('.workspace-wrapper').mouseenter onMouseEnter
@@ -449,8 +454,13 @@ window.Webbzeug.App = class App
       action = @actions[element.attr('data-index')]
       action.x = Math.round(element.position().left / @gridWidth)
       action.y = Math.round(element.position().top  / @gridHeight)
-
       action.needsUpdate = true
+
+    watchedAction = @actions[@watchedActionIndex]
+    if watchedAction?
+      watchedAction.needsUpdate = true
+      @updateParentsRecursively watchedAction
+
     if @selectedElements?
       if @selectedElements.length > 0
         @renderAll()

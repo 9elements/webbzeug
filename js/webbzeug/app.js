@@ -357,7 +357,7 @@
         }
       };
       onMouseDown = function(e) {
-        var x, y;
+        var watchedAction, x, y;
         $('.workspace-wrapper').off('mouseenter', onMouseEnter);
         $('.workspace-wrapper').off('mousemove', onMouseMove);
         $('.workspace-wrapper').off('mousedown', onMouseDown);
@@ -370,6 +370,11 @@
           }
           _this.selectedElement = null;
           _this.selectedActionId = _this.selectedActionType = _this.selectedActionName = null;
+          watchedAction = _this.actions[_this.watchedActionIndex];
+          if (watchedAction != null) {
+            watchedAction.needsUpdate = true;
+            _this.updateParentsRecursively(watchedAction);
+          }
           return _this.renderAll();
         }
       };
@@ -533,7 +538,7 @@
     };
 
     App.prototype.updateElementPositions = function() {
-      var action, element, _i, _len, _ref1;
+      var action, element, watchedAction, _i, _len, _ref1;
       _ref1 = this.selectedElements;
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         element = _ref1[_i];
@@ -541,6 +546,11 @@
         action.x = Math.round(element.position().left / this.gridWidth);
         action.y = Math.round(element.position().top / this.gridHeight);
         action.needsUpdate = true;
+      }
+      watchedAction = this.actions[this.watchedActionIndex];
+      if (watchedAction != null) {
+        watchedAction.needsUpdate = true;
+        this.updateParentsRecursively(watchedAction);
       }
       if (this.selectedElements != null) {
         if (this.selectedElements.length > 0) {
