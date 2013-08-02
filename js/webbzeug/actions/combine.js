@@ -83,19 +83,15 @@
         this.createTempTarget();
       }
       useRenderTargetAsBuffer = inputs.length % 2 === 0;
-      console.log(useRenderTargetAsBuffer);
       this.combineMaterial.uniforms['input1'].value = inputs[0];
       for (i = _i = 1, _ref2 = inputs.length; 1 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 1 <= _ref2 ? ++_i : --_i) {
-        console.log(i);
         this.combineMaterial.uniforms['input2'].value = inputs[i];
         if (useRenderTargetAsBuffer) {
           this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, false);
           this.combineMaterial.uniforms['input1'].value = this.renderTarget;
-          console.log('renderTarget');
         } else {
           this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, false);
           this.combineMaterial.uniforms['input1'].value = this.tempTarget;
-          console.log('tempTarget');
         }
         useRenderTargetAsBuffer = !useRenderTargetAsBuffer;
       }

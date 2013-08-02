@@ -44,6 +44,7 @@
       el = this.app.newActionElement(action.x * this.app.gridWidth, action.y * this.app.gridHeight, Webbzeug.ClassMap[action.type].name, action.width, Webbzeug.ClassMap[action.type].type);
       appAction = this.app.applyActionToElement(action.type, action.x, action.y, action.width, action.index, el);
       appAction.parameters = action.parameters;
+      console.log(action.parameters);
       return this.maxIndex = Math.max(action.index, this.maxIndex);
     };
 

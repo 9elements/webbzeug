@@ -30,7 +30,7 @@ window.Webbzeug.JSONImporter = class JSONImporter
     appAction = @app.applyActionToElement action.type, action.x, action.y, action.width, action.index, el
 
     appAction.parameters = action.parameters
-
+    console.log action.parameters
     @maxIndex = Math.max(action.index, @maxIndex)
 
   fileVersionNewer: (fileVersion) ->

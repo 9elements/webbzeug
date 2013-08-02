@@ -51,21 +51,17 @@ window.Webbzeug.Actions.Combine = class CombineAction extends Webbzeug.Action
       @createTempTarget()
 
     useRenderTargetAsBuffer = (inputs.length) % 2 is 0
-    console.log useRenderTargetAsBuffer
 
     @combineMaterial.uniforms['input1'].value = inputs[0]
 
     for i in [1...inputs.length]
-      console.log i
       @combineMaterial.uniforms['input2'].value = inputs[i]
       if useRenderTargetAsBuffer
         @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, false
         @combineMaterial.uniforms['input1'].value = @renderTarget
-        console.log 'renderTarget'
       else
         @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, false
         @combineMaterial.uniforms['input1'].value = @tempTarget
-        console.log 'tempTarget'
       useRenderTargetAsBuffer = !useRenderTargetAsBuffer
 
     return @renderTarget

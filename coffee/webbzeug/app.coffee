@@ -456,7 +456,6 @@ window.Webbzeug.App = class App
       action = @actions[element.attr('data-index')]
       action.x = Math.round(element.position().left / @gridWidth)
       action.y = Math.round(element.position().top  / @gridHeight)
-      action.needsUpdate = true
 
     @updateAllActions()
 
@@ -515,6 +514,8 @@ window.Webbzeug.App = class App
             _key = key
             select.change ->
               action.setParameter _key, select.val()
+              #@updateParentsRecursively action
+              @updateAllActions()
               self.renderAll()
           )()
 
@@ -538,7 +539,7 @@ window.Webbzeug.App = class App
           (=>
             _input = input
             _key   = key
-            _input.change ->
+            _input.change =>
               newVal = _input.val()
 
               if !!(newVal % 1)
@@ -547,6 +548,8 @@ window.Webbzeug.App = class App
                 newVal = parseInt(newVal)
 
               action.setParameter _key, newVal
+              @updateAllActions()
+              #@updateParentsRecursively action
               self.renderAll()
           )()
 
@@ -563,13 +566,15 @@ window.Webbzeug.App = class App
             _input = input
             _input.ColorPicker
               color: color
-              onChange: (hsb, hex, rgb) ->
+              onChange: (hsb, hex, rgb) =>
                 color = "rgb(#{rgb.r}, #{rgb.g}, #{rgb.b})"
 
                 _input.css
                   backgroundColor: color
 
                 action.setParameter _key, color
+                @updateAllActions()
+                #@updateParentsRecursively action
                 self.renderAll()
           )()
 
@@ -631,10 +636,9 @@ window.Webbzeug.App = class App
           @findChildrenRecursively possibleChildAction
 
   updateParentsRecursively: (action) ->
-    if(!action.needsUpdate)
-      action.needsUpdate = true
-      if action.parent?
-        @updateParentsRecursively action.parent
+    action.needsUpdate = true
+    if action.parent?
+      @updateParentsRecursively action.parent
 
   setFramebuffer: (fbo, width, height) ->
     #// make this the framebuffer we are rendering to.

@@ -553,7 +553,6 @@
         action = this.actions[element.attr('data-index')];
         action.x = Math.round(element.position().left / this.gridWidth);
         action.y = Math.round(element.position().top / this.gridHeight);
-        action.needsUpdate = true;
       }
       this.updateAllActions();
       if (this.selectedElements != null) {
@@ -621,6 +620,7 @@
               _key = key;
               return select.change(function() {
                 action.setParameter(_key, select.val());
+                this.updateAllActions();
                 return self.renderAll();
               });
             })());
@@ -654,6 +654,7 @@
                   newVal = parseInt(newVal);
                 }
                 action.setParameter(_key, newVal);
+                _this.updateAllActions();
                 return self.renderAll();
               });
             })());
@@ -677,6 +678,7 @@
                     backgroundColor: color
                   });
                   action.setParameter(_key, color);
+                  _this.updateAllActions();
                   return self.renderAll();
                 }
               });
@@ -784,11 +786,9 @@
     };
 
     App.prototype.updateParentsRecursively = function(action) {
-      if (!action.needsUpdate) {
-        action.needsUpdate = true;
-        if (action.parent != null) {
-          return this.updateParentsRecursively(action.parent);
-        }
+      action.needsUpdate = true;
+      if (action.parent != null) {
+        return this.updateParentsRecursively(action.parent);
       }
     };
 
