@@ -23,6 +23,10 @@ window.Webbzeug.ClassMap =
     name: 'Fractal'
     type: 'generative'
     class: Webbzeug.Actions.Fractal
+  perlin:
+    name: 'Perlin'
+    type: 'generative'
+    class: Webbzeug.Actions.Perlin
   pixels:
     name: 'Pixels'
     type: 'generative'
@@ -31,6 +35,10 @@ window.Webbzeug.ClassMap =
   ###
     Processive actions
   ###
+  combine:
+    name: 'Combine'
+    type: 'processive'
+    class: Webbzeug.Actions.Combine
   contrastBrightness:
     name: 'ContBri'
     type: 'processive'
@@ -39,10 +47,10 @@ window.Webbzeug.ClassMap =
     name: 'Blur'
     type: 'processive'
     class: Webbzeug.Actions.Blur
-  combine:
-    name: 'Combine'
+  directional:
+    name: 'Directional'
     type: 'processive'
-    class: Webbzeug.Actions.Combine
+    class: Webbzeug.Actions.Directional
   distort:
     name: 'Distort'
     type: 'processive'

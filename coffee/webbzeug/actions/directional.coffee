@@ -6,9 +6,9 @@ window.Webbzeug.Actions.Directional = class DirectionalAction extends Webbzeug.A
   availableParameters: ->
     {
       strength: { name: 'Strength', type: 'integer', default: 1, min: 1 , max: 30, scrollPrecision: 1 },
-      type: { name: 'Type', type: 'enum', values: { gauss: 'Gauss', triangle: 'Triangle'}, default: 'gauss' }
+      type: { name: 'Type', type: 'enum', values: { gauss: 'Gauss', triangle: 'Triangle'}, default: 'gauss' },
       direction: { name: "Direction", type: 'enum', values: { vertical: 'Vertical', horizontal: 'Horizontal'}, default: 'horizontal' }
-  }
+    }
 
   validations: (contexts) ->
     warnings = []
@@ -52,39 +52,41 @@ window.Webbzeug.Actions.Directional = class DirectionalAction extends Webbzeug.A
 
     strength = parseInt @getParameter('strength')
     renderToTarget = false
-    for i in [0...strength]
-      if @getParameter('direction') is 'vertical'
-        @renderVerticalGaussPass renderToTarget
-      else
-        @renderHorizontalGaussPass renderToTarget
-      renderTarget = !renderTarget
-
-  renderHorizontalGaussPass: (renderToTarget) ->
     @createTempTarget()
-    @source = @renderTarget
-    @destination = @tempTarget
 
+    for i in [0...strength]
+      source = @renderTarget
+      destination = @tempTarget
+
+      if renderToTarget
+        source = @tempTarget
+        destination = @renderTarget
+
+      if @getParameter('direction') is 'vertical'
+        @renderVerticalGaussPass source, destination, renderToTarget
+      else
+        @renderHorizontalGaussPass source, destination, renderToTarget
+      renderToTarget = !renderToTarget
+    # in the end the result may is on the temp target.
+    # in that case we may need to copy it to the actual renderTarget
     if renderToTarget
-      @source = @tempTarget
-      @destination = @renderTarget
+       @copyInputToRenderTarget @tempTarget
 
-
+  renderHorizontalGaussPass: (source, destination, renderToTarget) ->
     if not @horizonalGaussBlurMaterial?
       @horizonalGaussBlurMaterial = new THREE.ShaderMaterial (THREE.HorizontalGaussianShader)
     @screenAlignedQuadMesh.material = @horizonalGaussBlurMaterial
-    @horizonalGaussBlurMaterial.uniforms['tDiffuse'].value = @renderTarget
+    @horizonalGaussBlurMaterial.uniforms['tDiffuse'].value = source
     @horizonalGaussBlurMaterial.uniforms['h'].value = 1.0 / 256.0
-    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @tempTarget, true
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, destination, true
 
-  renderVerticalGaussPass: (renderToTarget) ->
-    @createTempTarget()
-
+  renderVerticalGaussPass: (source, destination, renderToTarget) ->
     if not @verticalGaussBlurMaterial?
       @verticalGaussBlurMaterial = new THREE.ShaderMaterial (THREE.VerticalGaussianShader)
     @screenAlignedQuadMesh.material = @verticalGaussBlurMaterial
-    @verticalGaussBlurMaterial.uniforms['tDiffuse'].value = @tempTarget
+    @verticalGaussBlurMaterial.uniforms['tDiffuse'].value = source
     @verticalGaussBlurMaterial.uniforms['v'].value = 1.0 / 256.0
-    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, @renderTarget, true
+    @app.renderer.render @renderToTextureScene , @app.renderToTextureCamera, destination, true
 
   copyInputToRenderTarget: (input) ->
     if not @copyMaterial?
@@ -96,8 +98,6 @@ window.Webbzeug.Actions.Directional = class DirectionalAction extends Webbzeug.A
   render: (inputs) ->
     super()
     switch @getParameter('type')
-      when 'disc'
-        @renderDisc inputs
       when 'gauss'
         @renderGauss inputs
       when 'triangle'

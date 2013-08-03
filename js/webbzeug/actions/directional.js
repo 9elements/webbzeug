@@ -37,11 +37,19 @@
           name: 'Type',
           type: 'enum',
           values: {
-            disc: 'Disc',
             gauss: 'Gauss',
             triangle: 'Triangle'
           },
-          "default": 'disc'
+          "default": 'gauss'
+        },
+        direction: {
+          name: "Direction",
+          type: 'enum',
+          values: {
+            vertical: 'Vertical',
+            horizontal: 'Horizontal'
+          },
+          "default": 'horizontal'
         }
       };
     };
@@ -62,82 +70,83 @@
       };
     };
 
-    DirectionalAction.prototype.renderDisc = function(inputs) {
-      var strength;
-      if (!(this.discBlurMaterial != null)) {
-        this.discBlurMaterial = new THREE.ShaderMaterial(THREE.DiscBlur);
-      }
-      this.screenAlignedQuadMesh.material = this.discBlurMaterial;
-      this.discBlurMaterial.uniforms['tDiffuse'].value = inputs[0];
-      strength = parseInt(this.getParameter('strength'));
-      this.discBlurMaterial.uniforms['discRadius'].value = strength * 0.0007;
-      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
-    };
-
     DirectionalAction.prototype.renderTriangle = function(inputs) {
       var strength;
-      this.copyInputToRenderTarget(inputs[0]);
       strength = parseInt(this.getParameter('strength'));
-      this.renderHorizontalTrianglePass();
-      return this.renderVerticalTrianglePass();
+      if (this.getParameter('direction') === 'vertical') {
+        return this.renderVerticalTrianglePass(inputs[0]);
+      } else {
+        return this.renderHorizontalTrianglePass(inputs[0]);
+      }
     };
 
     DirectionalAction.prototype.renderHorizontalTrianglePass = function(input) {
       var strength;
-      this.createTempTarget();
       strength = parseInt(this.getParameter('strength'));
       if (!(this.horizonalTriangleBlurMaterial != null)) {
         this.horizonalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurH);
       }
       this.screenAlignedQuadMesh.material = this.horizonalTriangleBlurMaterial;
-      this.horizonalTriangleBlurMaterial.uniforms['tDiffuse'].value = this.renderTarget;
+      this.horizonalTriangleBlurMaterial.uniforms['tDiffuse'].value = input;
       this.horizonalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(strength / 256.0, 0);
-      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, true);
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
     };
 
-    DirectionalAction.prototype.renderVerticalTrianglePass = function() {
+    DirectionalAction.prototype.renderVerticalTrianglePass = function(input) {
       var strength;
       strength = parseInt(this.getParameter('strength'));
       if (!(this.verticalTriangleBlurMaterial != null)) {
         this.verticalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurV);
       }
       this.screenAlignedQuadMesh.material = this.verticalTriangleBlurMaterial;
-      this.verticalTriangleBlurMaterial.uniforms['tDiffuse'].value = this.tempTarget;
+      this.verticalTriangleBlurMaterial.uniforms['tDiffuse'].value = input;
       this.verticalTriangleBlurMaterial.uniforms['delta'].value = new THREE.Vector2(0, strength / 256.0);
       return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
     };
 
     DirectionalAction.prototype.renderGauss = function(inputs) {
-      var i, strength, _i, _results;
+      var destination, i, renderToTarget, source, strength, _i;
       this.copyInputToRenderTarget(inputs[0]);
       strength = parseInt(this.getParameter('strength'));
-      _results = [];
+      renderToTarget = false;
+      this.createTempTarget();
       for (i = _i = 0; 0 <= strength ? _i < strength : _i > strength; i = 0 <= strength ? ++_i : --_i) {
-        this.renderHorizontalGaussPass();
-        _results.push(this.renderVerticalGaussPass());
+        source = this.renderTarget;
+        destination = this.tempTarget;
+        if (renderToTarget) {
+          source = this.tempTarget;
+          destination = this.renderTarget;
+        }
+        if (this.getParameter('direction') === 'vertical') {
+          this.renderVerticalGaussPass(source, destination, renderToTarget);
+        } else {
+          this.renderHorizontalGaussPass(source, destination, renderToTarget);
+        }
+        renderToTarget = !renderToTarget;
       }
-      return _results;
+      if (renderToTarget) {
+        return this.copyInputToRenderTarget(this.tempTarget);
+      }
     };
 
-    DirectionalAction.prototype.renderHorizontalGaussPass = function(input) {
-      this.createTempTarget();
+    DirectionalAction.prototype.renderHorizontalGaussPass = function(source, destination, renderToTarget) {
       if (!(this.horizonalGaussBlurMaterial != null)) {
         this.horizonalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.HorizontalGaussianShader);
       }
       this.screenAlignedQuadMesh.material = this.horizonalGaussBlurMaterial;
-      this.horizonalGaussBlurMaterial.uniforms['tDiffuse'].value = this.renderTarget;
+      this.horizonalGaussBlurMaterial.uniforms['tDiffuse'].value = source;
       this.horizonalGaussBlurMaterial.uniforms['h'].value = 1.0 / 256.0;
-      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.tempTarget, true);
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, destination, true);
     };
 
-    DirectionalAction.prototype.renderVerticalGaussPass = function() {
+    DirectionalAction.prototype.renderVerticalGaussPass = function(source, destination, renderToTarget) {
       if (!(this.verticalGaussBlurMaterial != null)) {
         this.verticalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.VerticalGaussianShader);
       }
       this.screenAlignedQuadMesh.material = this.verticalGaussBlurMaterial;
-      this.verticalGaussBlurMaterial.uniforms['tDiffuse'].value = this.tempTarget;
+      this.verticalGaussBlurMaterial.uniforms['tDiffuse'].value = source;
       this.verticalGaussBlurMaterial.uniforms['v'].value = 1.0 / 256.0;
-      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, true);
+      return this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, destination, true);
     };
 
     DirectionalAction.prototype.copyInputToRenderTarget = function(input) {
@@ -152,9 +161,6 @@
     DirectionalAction.prototype.render = function(inputs) {
       DirectionalAction.__super__.render.call(this);
       switch (this.getParameter('type')) {
-        case 'disc':
-          this.renderDisc(inputs);
-          break;
         case 'gauss':
           this.renderGauss(inputs);
           break;

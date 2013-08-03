@@ -35,6 +35,11 @@
       type: 'generative',
       "class": Webbzeug.Actions.Fractal
     },
+    perlin: {
+      name: 'Perlin',
+      type: 'generative',
+      "class": Webbzeug.Actions.Perlin
+    },
     pixels: {
       name: 'Pixels',
       type: 'generative',
@@ -44,6 +49,11 @@
         Processive actions
     */
 
+    combine: {
+      name: 'Combine',
+      type: 'processive',
+      "class": Webbzeug.Actions.Combine
+    },
     contrastBrightness: {
       name: 'ContBri',
       type: 'processive',
@@ -54,10 +64,10 @@
       type: 'processive',
       "class": Webbzeug.Actions.Blur
     },
-    combine: {
-      name: 'Combine',
+    directional: {
+      name: 'Directional',
       type: 'processive',
-      "class": Webbzeug.Actions.Combine
+      "class": Webbzeug.Actions.Directional
     },
     distort: {
       name: 'Distort',
