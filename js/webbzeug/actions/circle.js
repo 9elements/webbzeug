@@ -97,7 +97,7 @@
       x = parseInt(this.getParameter('x') - 128.0);
       this.glowMaterial.uniforms['x'].value = x / 255.0;
       y = parseInt(this.getParameter('y') - 128.0);
-      this.glowMaterial.uniforms['y'].value = y / 255.0;
+      this.glowMaterial.uniforms['y'].value = -(y / 255.0);
       sx = parseInt(this.getParameter('radiusX'));
       this.glowMaterial.uniforms['sx'].value = sx / 255.0;
       sy = parseInt(this.getParameter('radiusY'));

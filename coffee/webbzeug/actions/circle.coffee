@@ -25,7 +25,7 @@ window.Webbzeug.Actions.Circle = class CircleAction extends Webbzeug.Action
     x = parseInt @getParameter('x') - 128.0
     @glowMaterial.uniforms['x'].value = x / 255.0
     y = parseInt @getParameter('y') - 128.0
-    @glowMaterial.uniforms['y'].value = y / 255.0
+    @glowMaterial.uniforms['y'].value =  -(y / 255.0)
 
     sx = parseInt @getParameter('radiusX')
     @glowMaterial.uniforms['sx'].value = sx / 255.0
