@@ -6,7 +6,7 @@ window.Webbzeug.Actions.Directional = class DirectionalAction extends Webbzeug.A
   availableParameters: ->
     {
       strength: { name: 'Strength', type: 'integer', default: 1, min: 1 , max: 30, scrollPrecision: 1 },
-      type: { name: 'Type', type: 'enum', values: { gauss: 'Gauss', triangle: 'Triangle'}, default: 'gauss' },
+      #type: { name: 'Type', type: 'enum', values: { gauss: 'Gauss', triangle: 'Triangle'}, default: 'gauss' },
       direction: { name: "Direction", type: 'enum', values: { vertical: 'Vertical', horizontal: 'Horizontal'}, default: 'horizontal' }
     }
 
@@ -29,6 +29,7 @@ window.Webbzeug.Actions.Directional = class DirectionalAction extends Webbzeug.A
       @renderHorizontalTrianglePass inputs[0]
 
   renderHorizontalTrianglePass: (input) ->
+    console.log "render tri horizontal"
     strength = parseInt @getParameter('strength')
     if not @horizonalTriangleBlurMaterial?
       @horizonalTriangleBlurMaterial = new THREE.ShaderMaterial (THREE.TriangleBlurH)
@@ -97,11 +98,14 @@ window.Webbzeug.Actions.Directional = class DirectionalAction extends Webbzeug.A
 
   render: (inputs) ->
     super()
+    @renderGauss inputs
+    ###
+    console.log @getParameter('type')
     switch @getParameter('type')
       when 'gauss'
         @renderGauss inputs
       when 'triangle'
         @renderTriangle inputs
-
+    ###
     return @renderTarget
 

@@ -33,15 +33,6 @@
           max: 30,
           scrollPrecision: 1
         },
-        type: {
-          name: 'Type',
-          type: 'enum',
-          values: {
-            gauss: 'Gauss',
-            triangle: 'Triangle'
-          },
-          "default": 'gauss'
-        },
         direction: {
           name: "Direction",
           type: 'enum',
@@ -82,6 +73,7 @@
 
     DirectionalAction.prototype.renderHorizontalTrianglePass = function(input) {
       var strength;
+      console.log("render tri horizontal");
       strength = parseInt(this.getParameter('strength'));
       if (!(this.horizonalTriangleBlurMaterial != null)) {
         this.horizonalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurH);
@@ -160,13 +152,16 @@
 
     DirectionalAction.prototype.render = function(inputs) {
       DirectionalAction.__super__.render.call(this);
-      switch (this.getParameter('type')) {
-        case 'gauss':
-          this.renderGauss(inputs);
-          break;
-        case 'triangle':
-          this.renderTriangle(inputs);
-      }
+      this.renderGauss(inputs);
+      /*
+          console.log @getParameter('type')
+          switch @getParameter('type')
+            when 'gauss'
+              @renderGauss inputs
+            when 'triangle'
+              @renderTriangle inputs
+      */
+
       return this.renderTarget;
     };
 
