@@ -828,9 +828,6 @@
       $('div.workspace-wrapper, div.workspace').css({
         width: width - 280
       });
-      $('div.right-wrapper').css({
-        'margin-left': width - 265
-      });
       height = $(window).height();
       return $('div.workspace-wrapper, div.workspace').css({
         height: height - 115
@@ -842,9 +839,6 @@
       width = $(window).width();
       $('div.workspace-wrapper, div.workspace').css({
         width: width - 280
-      });
-      $('div.right-wrapper').css({
-        'margin-left': width - 265
       });
       height = $(window).height();
       return $('div.workspace-wrapper, div.workspace').css({

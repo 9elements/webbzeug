@@ -64,8 +64,7 @@ strong {
   float: right;
   width: 265px;
   height: 400px;
-  margin-left: 600px;
-  position: absolute; }
+  position: relative; }
   .right-wrapper canvas {
     background: black;
     width: 256px;

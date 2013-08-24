@@ -680,7 +680,6 @@ window.Webbzeug.App = class App
   $(window).resize =>
     width = $(window).width()
     $('div.workspace-wrapper, div.workspace').css({ width: width - 280 })
-    $('div.right-wrapper').css({ 'margin-left': width - 265 })
 
     height = $(window).height()
     $('div.workspace-wrapper, div.workspace').css({ height: height - 115 })
@@ -688,7 +687,6 @@ window.Webbzeug.App = class App
   resizeWindow: ->
     width = $(window).width()
     $('div.workspace-wrapper, div.workspace').css({ width: width - 280 })
-    $('div.right-wrapper').css({ 'margin-left': width - 265 })
 
     height = $(window).height()
     $('div.workspace-wrapper, div.workspace').css({ height: height - 115 })
