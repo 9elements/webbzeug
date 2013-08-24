@@ -55,6 +55,7 @@ strong {
   -webkit-font-smoothing: antialiased; }
 
 .app-wrapper {
+  width: 980px;
   margin: auto;
   padding-top: 20px;
   overflow: hidden;

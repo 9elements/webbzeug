@@ -60,6 +60,14 @@
           max: 255,
           "default": Math.round(Math.random() * 255),
           scrollPrecision: 1
+        },
+        amount: {
+          name: 'Amount',
+          type: 'integer',
+          min: 1,
+          max: 20,
+          "default": 17,
+          scrollPrecision: 1
         }
       };
     };
@@ -76,16 +84,28 @@
     };
 
     PixelsAction.prototype.createPatternOnCanvas = function() {
-      var custRnd, i, imageData, index, rand, _i, _ref2;
+      var amount, custRnd, i, imageData, index, putPixel, rand, randomNormalizer, _i, _ref2;
+      randomNormalizer = Math.pow(2, 50);
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       custRnd = CustomRandom(this.getParameter('seed'));
       for (i = _i = 0, _ref2 = imageData.data.length / 4; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        rand = custRnd.next() / Math.pow(2, 50);
-        rand = rand * 255;
-        index = i << 2;
-        imageData.data[index] = rand;
-        imageData.data[index + 1] = rand;
-        imageData.data[index + 2] = rand;
+        putPixel = custRnd.next() / randomNormalizer * 20;
+        amount = this.getParameter('amount');
+        if (i < 10) {
+          console.log(putPixel, amount);
+        }
+        if (amount > putPixel) {
+          rand = custRnd.next() / randomNormalizer;
+          rand = rand * 255;
+          index = i << 2;
+          imageData.data[index] = rand;
+          imageData.data[index + 1] = rand;
+          imageData.data[index + 2] = rand;
+        } else {
+          imageData.data[index] = 0;
+          imageData.data[index + 1] = 0;
+          imageData.data[index + 2] = 0;
+        }
         imageData.data[index + 3] = 255;
       }
       this.context.putImageData(imageData, 0, 0);
