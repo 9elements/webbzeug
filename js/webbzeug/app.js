@@ -825,16 +825,13 @@
     $(window).resize(function() {
       var height, width;
       width = $(window).width();
-      if (width < 600) {
-        width = 600;
-      }
       $('div.workspace-wrapper, div.workspace').css({
         width: width - 280
       });
+      $('div.right-wrapper').css({
+        'margin-left': width - 265
+      });
       height = $(window).height();
-      if (height < 600) {
-        height = 600;
-      }
       return $('div.workspace-wrapper, div.workspace').css({
         height: height - 115
       });
@@ -843,16 +840,13 @@
     App.prototype.resizeWindow = function() {
       var height, width;
       width = $(window).width();
-      if (width < 600) {
-        width = 600;
-      }
       $('div.workspace-wrapper, div.workspace').css({
         width: width - 280
       });
+      $('div.right-wrapper').css({
+        'margin-left': width - 265
+      });
       height = $(window).height();
-      if (height < 600) {
-        height = 600;
-      }
       return $('div.workspace-wrapper, div.workspace').css({
         height: height - 115
       });
