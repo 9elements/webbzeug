@@ -65,8 +65,8 @@
           name: 'Amount',
           type: 'integer',
           min: 1,
-          max: 20,
-          "default": 17,
+          max: 17,
+          "default": 1,
           scrollPrecision: 1
         }
       };
@@ -83,30 +83,37 @@
       };
     };
 
+    PixelsAction.prototype.clearCanvas = function(imageData) {
+      var i, index, _i, _ref2, _results;
+      _results = [];
+      for (i = _i = 0, _ref2 = imageData.data.length / 4; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+        index = i * 4;
+        imageData.data[index] = 0;
+        imageData.data[index + 1] = 0;
+        imageData.data[index + 2] = 0;
+        _results.push(imageData.data[index + 3] = 255);
+      }
+      return _results;
+    };
+
     PixelsAction.prototype.createPatternOnCanvas = function() {
-      var amount, custRnd, i, imageData, index, putPixel, rand, randomNormalizer, _i, _ref2;
+      var custRnd, height, i, imageData, index, pixelCount, rand, randomNormalizer, width, x, y, _i;
       randomNormalizer = Math.pow(2, 50);
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
+      pixelCount = Math.pow(2, this.getParameter('amount'));
       custRnd = CustomRandom(this.getParameter('seed'));
-      for (i = _i = 0, _ref2 = imageData.data.length / 4; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        putPixel = custRnd.next() / randomNormalizer * 20;
-        amount = this.getParameter('amount');
-        if (i < 10) {
-          console.log(putPixel, amount);
-        }
-        if (amount > putPixel) {
-          rand = custRnd.next() / randomNormalizer;
-          rand = rand * 255;
-          index = i << 2;
-          imageData.data[index] = rand;
-          imageData.data[index + 1] = rand;
-          imageData.data[index + 2] = rand;
-        } else {
-          imageData.data[index] = 0;
-          imageData.data[index + 1] = 0;
-          imageData.data[index + 2] = 0;
-        }
-        imageData.data[index + 3] = 255;
+      width = this.app.getWidth();
+      height = this.app.getHeight();
+      this.clearCanvas(imageData);
+      for (i = _i = 0; 0 <= pixelCount ? _i < pixelCount : _i > pixelCount; i = 0 <= pixelCount ? ++_i : --_i) {
+        rand = custRnd.next() / randomNormalizer;
+        rand = rand * 255;
+        x = Math.round(custRnd.next() / randomNormalizer * width);
+        y = Math.round(custRnd.next() / randomNormalizer * height);
+        index = x * 4 + y * 4 * width;
+        imageData.data[index] = rand;
+        imageData.data[index + 1] = rand;
+        imageData.data[index + 2] = rand;
       }
       this.context.putImageData(imageData, 0, 0);
       return this.context;

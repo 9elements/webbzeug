@@ -33,7 +33,7 @@ window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
   availableParameters: ->
     {
       seed:   { name: 'Seed', type: 'integer', min: 0, max: 255, default: Math.round(Math.random() * 255), scrollPrecision: 1 },
-      amount: { name: 'Amount', type: 'integer', min: 1, max: 20, default: 17, scrollPrecision: 1 }
+      amount: { name: 'Amount', type: 'integer', min: 1, max: 17, default: 1, scrollPrecision: 1 }
     }
 
   validations: (contexts) ->
@@ -43,30 +43,39 @@ window.Webbzeug.Actions.Pixels = class PixelsAction extends Webbzeug.Action
 
     return { warnings: warnings }
 
+  clearCanvas: (imageData) ->
+    for i in [0...imageData.data.length / 4]
+      index = i * 4
+      imageData.data[index] = 0
+      imageData.data[index + 1] = 0
+      imageData.data[index + 2] = 0
+      imageData.data[index + 3] = 255
+
   createPatternOnCanvas: ->
     randomNormalizer = Math.pow(2, 50)
     imageData = @context.getImageData 0, 0, @app.getWidth(), @app.getHeight()
 
+    pixelCount = Math.pow(2, @getParameter('amount'))
     custRnd = CustomRandom(@getParameter('seed'))
-    for i in [0...imageData.data.length / 4]
-      putPixel = custRnd.next() / randomNormalizer * 20
-      amount = @getParameter('amount')
-      if i < 10
-        console.log putPixel, amount
-      if amount > putPixel
-        rand = custRnd.next() / randomNormalizer
-        rand = rand * 255
-        index = (i << 2)
-        imageData.data[index] = rand
-        imageData.data[index + 1] = rand
-        imageData.data[index + 2] = rand
-      else
-        imageData.data[index] = 0
-        imageData.data[index + 1] = 0
-        imageData.data[index + 2] = 0
-      imageData.data[index + 3] = 255
+
+    width = @app.getWidth()
+    height = @app.getHeight()
+
+    @clearCanvas imageData
+
+    for i in [0...pixelCount]
+      rand = custRnd.next() / randomNormalizer
+      rand = rand * 255
+      x = Math.round ( custRnd.next() / randomNormalizer * width )
+      y = Math.round ( custRnd.next() / randomNormalizer * height )
+      index = x * 4 + y * 4 * width;
+      imageData.data[index] = rand
+      imageData.data[index + 1] = rand
+      imageData.data[index + 2] = rand
+
 
     @context.putImageData imageData, 0, 0
+
     return @context
 
   render: (inputs) ->
