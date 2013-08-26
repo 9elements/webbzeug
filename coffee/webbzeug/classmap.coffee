@@ -87,6 +87,10 @@ window.Webbzeug.ClassMap =
     name: 'Color'
     type: 'processive'
     class: Webbzeug.Actions.Color
+  range:
+    name: 'Range'
+    type: 'processive'
+    class: Webbzeug.Actions.Range
 
   ###
     Memory actions

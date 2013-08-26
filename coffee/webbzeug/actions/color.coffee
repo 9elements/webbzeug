@@ -12,9 +12,9 @@ window.Webbzeug.Actions.Color = class ColorAction extends Webbzeug.Action
     errors = []
     warnings = []
     if contexts.length > 1
-      warnings.push 'ContrastBrightness will only use one input.'
+      warnings.push 'color will only use one input.'
     if contexts.length < 1
-      errors.push 'ContrastBrightness needs one input.'
+      errors.push 'color needs exactly one input.'
 
     return { errors: errors, warnings: warnings }
 
