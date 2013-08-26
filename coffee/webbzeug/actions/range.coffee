@@ -1,8 +1,8 @@
 window.Webbzeug ?= {}
 window.Webbzeug.Actions ?= {}
 window.Webbzeug.Actions.Range = class RangeAction extends Webbzeug.Action
-  type: 'color'
-  name: 'Color'
+  type: 'range'
+  name: 'Range'
   availableParameters: ->
     {
       minColor: { name: 'MinColor', type: 'color', default: 'rgba(0,0,0,1)' }

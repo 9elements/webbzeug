@@ -19,9 +19,9 @@
       return RangeAction.__super__.constructor.apply(this, arguments);
     }
 
-    RangeAction.prototype.type = 'color';
+    RangeAction.prototype.type = 'range';
 
-    RangeAction.prototype.name = 'Color';
+    RangeAction.prototype.name = 'Range';
 
     RangeAction.prototype.availableParameters = function() {
       return {

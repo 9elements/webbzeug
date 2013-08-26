@@ -79,6 +79,10 @@ window.Webbzeug.ClassMap =
     name: 'Normal'
     type: 'processive'
     class: Webbzeug.Actions.Normal
+  range:
+    name: 'Range'
+    type: 'processive'
+    class: Webbzeug.Actions.Range
   rotozoom:
     name: 'RotoZoom'
     type: 'processive'
@@ -87,10 +91,6 @@ window.Webbzeug.ClassMap =
     name: 'Color'
     type: 'processive'
     class: Webbzeug.Actions.Color
-  range:
-    name: 'Range'
-    type: 'processive'
-    class: Webbzeug.Actions.Range
 
   ###
     Memory actions

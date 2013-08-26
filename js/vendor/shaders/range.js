@@ -10,7 +10,7 @@ THREE.RangeShader = {
     input1:  { type: "t", value: 0, texture: null },
     lowerR:  { type: "f", value: 0},
     lowerG:  { type: "f", value: 0},
-    lowerB:  { type: "f", value: 0}
+    lowerB:  { type: "f", value: 0},
     upperR:  { type: "f", value: 1},
     upperG:  { type: "f", value: 1},
     upperB:  { type: "f", value: 1}
@@ -30,9 +30,13 @@ THREE.RangeShader = {
   ].join("\n"),
 
   fragmentShader: [
-    "uniform float r;",
-    "uniform float g;",
-    "uniform float b;",
+    "uniform float lowerR;",
+    "uniform float lowerG;",
+    "uniform float lowerB;",
+
+    "uniform float upperR;",
+    "uniform float upperG;",
+    "uniform float upperB;",
 
     "uniform sampler2D input1;",
     "varying vec2 vUv;",

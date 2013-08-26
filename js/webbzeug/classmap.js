@@ -104,6 +104,11 @@
       type: 'processive',
       "class": Webbzeug.Actions.Normal
     },
+    range: {
+      name: 'Range',
+      type: 'processive',
+      "class": Webbzeug.Actions.Range
+    },
     rotozoom: {
       name: 'RotoZoom',
       type: 'processive',
@@ -113,11 +118,6 @@
       name: 'Color',
       type: 'processive',
       "class": Webbzeug.Actions.Color
-    },
-    range: {
-      name: 'Range',
-      type: 'processive',
-      "class": Webbzeug.Actions.Range
     },
     /*
         Memory actions
