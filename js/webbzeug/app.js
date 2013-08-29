@@ -1,7 +1,7 @@
 (function() {
-  var App, _ref;
+  var App;
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
@@ -60,12 +60,12 @@
     };
 
     /*
-        ------------------------------------------------------------- Setup
+      ------------------------------------------------------------- Setup
     */
 
 
     /*
-        initializes the THREE.js renderer
+      initializes the THREE.js renderer
     */
 
 
@@ -133,7 +133,7 @@
     };
 
     /*
-        Keyboard input
+      Keyboard input
     */
 
 
@@ -172,17 +172,17 @@
     };
 
     /*
-        Navigation
+      Navigation
     */
 
 
     App.prototype.handleNavigation = function() {
-      var action, actionLi, actions, actionsUl, dropdownImg, name, navigationWrapper, self, type, typeLi, types, _i, _len, _name, _ref1, _ref2;
+      var action, actionLi, actions, actionsUl, dropdownImg, name, navigationWrapper, self, type, typeLi, types, _i, _len, _name, _ref;
       types = {};
-      _ref1 = Webbzeug.ClassMap;
-      for (name in _ref1) {
-        action = _ref1[name];
-        if ((_ref2 = types[_name = action.type]) == null) {
+      _ref = Webbzeug.ClassMap;
+      for (name in _ref) {
+        action = _ref[name];
+        if (types[_name = action.type] == null) {
           types[_name] = [];
         }
         action.id = name;
@@ -218,7 +218,7 @@
     };
 
     /*
-        Action creation / handling / dragging / resizing
+      Action creation / handling / dragging / resizing
     */
 
 
@@ -385,7 +385,7 @@
       var selectionRectEl,
         _this = this;
       selectionRectEl = $('.selection');
-      return this.workspace.mousedown(function(e) {
+      return $('.workspace-wrapper').mousedown(function(e) {
         var handleMouseMove, selectionRect;
         e.preventDefault();
         selectionRect = {};
@@ -418,7 +418,7 @@
     };
 
     App.prototype.handleSelectIntersection = function(selectionRect) {
-      var action, intersectingActions, offsetX, offsetY, r1, r2, selectedElements, _i, _len, _ref1;
+      var action, intersectingActions, offsetX, offsetY, r1, r2, selectedElements, _i, _len, _ref;
       intersectingActions = [];
       offsetX = this.workspace.offset().left;
       offsetY = this.workspace.offset().top;
@@ -438,9 +438,9 @@
       this.selectedElements = [];
       if (r2.width > 0 || r2.height > 0) {
         selectedElements = [];
-        _ref1 = this.actionsArr;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          action = _ref1[_i];
+        _ref = this.actionsArr;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          action = _ref[_i];
           r1 = {
             left: action.x * this.gridWidth + offsetX,
             top: action.y * this.gridHeight + offsetY,
@@ -482,12 +482,12 @@
         });
       });
       return $(element).mousedown(function(e) {
-        var handleMouseMove, initMousePos, initPosHash, otherElement, _i, _j, _len, _len1, _ref1, _ref2;
+        var handleMouseMove, initMousePos, initPosHash, otherElement, _i, _j, _len, _len1, _ref, _ref1;
         e.stopPropagation();
         if (!$(element).hasClass('selected')) {
-          _ref1 = _this.selectedElements;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            otherElement = _ref1[_i];
+          _ref = _this.selectedElements;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            otherElement = _ref[_i];
             $(otherElement).removeClass('selected');
           }
           _this.selectedElements = [element];
@@ -498,16 +498,16 @@
           y: e.pageY
         };
         initPosHash = {};
-        _ref2 = _this.selectedElements;
-        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-          element = _ref2[_j];
+        _ref1 = _this.selectedElements;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          element = _ref1[_j];
           initPosHash[element.attr('data-index')] = {
             x: element.position().left,
             y: element.position().top
           };
         }
         handleMouseMove = function(e) {
-          var distPos, newLeft, newTop, offsetX, offsetY, _k, _len2, _ref3;
+          var distPos, newLeft, newTop, offsetX, offsetY, _k, _len2, _ref2;
           e.preventDefault();
           offsetX = $('.workspace').offset().left;
           offsetY = $('.workspace').offset().top;
@@ -515,9 +515,9 @@
             x: e.pageX - initMousePos.x,
             y: e.pageY - initMousePos.y
           };
-          _ref3 = _this.selectedElements;
-          for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-            element = _ref3[_k];
+          _ref2 = _this.selectedElements;
+          for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+            element = _ref2[_k];
             newLeft = initPosHash[element.attr('data-index')].x + distPos.x;
             newTop = initPosHash[element.attr('data-index')].y + distPos.y;
             element.css({
@@ -536,21 +536,21 @@
     };
 
     App.prototype.updateAllActions = function() {
-      var action, _i, _len, _ref1, _results;
-      _ref1 = this.actionsArr;
+      var action, _i, _len, _ref, _results;
+      _ref = this.actionsArr;
       _results = [];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        action = _ref1[_i];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        action = _ref[_i];
         _results.push(action != null ? action.needsUpdate = true : void 0);
       }
       return _results;
     };
 
     App.prototype.updateElementPositions = function() {
-      var action, element, _i, _len, _ref1;
-      _ref1 = this.selectedElements;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        element = _ref1[_i];
+      var action, element, _i, _len, _ref;
+      _ref = this.selectedElements;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        element = _ref[_i];
         action = this.actions[element.attr('data-index')];
         action.x = Math.round(element.position().left / this.gridWidth);
         action.y = Math.round(element.position().top / this.gridHeight);
@@ -574,12 +574,12 @@
     };
 
     /*
-        Parameters
+      Parameters
     */
 
 
     App.prototype.showParameters = function(e, action) {
-      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, val, _ref1, _results,
+      var attributes, availableParameters, color, info, input, key, label, li, optKey, option, select, self, settingsUl, val, _ref, _results,
         _this = this;
       self = this;
       this.settingsWindow = $('.workspace-wrapper .parameters');
@@ -606,9 +606,9 @@
             li = $('<li>').appendTo(settingsUl);
             label = $('<div>').addClass('label').text((info.name || key) + ':').appendTo(li);
             select = $('<select>').appendTo(li);
-            _ref1 = info.values;
-            for (optKey in _ref1) {
-              val = _ref1[optKey];
+            _ref = info.values;
+            for (optKey in _ref) {
+              val = _ref[optKey];
               option = $('<option>').attr({
                 value: optKey
               }).text(val).appendTo(select);
@@ -693,18 +693,18 @@
     };
 
     App.prototype.deleteTree = function() {
-      var action, index, _ref1, _results;
-      _ref1 = this.actions;
+      var action, index, _ref, _results;
+      _ref = this.actions;
       _results = [];
-      for (index in _ref1) {
-        action = _ref1[index];
+      for (index in _ref) {
+        action = _ref[index];
         _results.push(action.deleteChildren());
       }
       return _results;
     };
 
     /*
-        Helper functions for actions
+      Helper functions for actions
     */
 
 
@@ -721,7 +721,7 @@
     };
 
     /*
-        Tree building / handling
+      Tree building / handling
     */
 
 
@@ -747,12 +747,12 @@
     };
 
     App.prototype.findChildrenRecursively = function(action) {
-      var possibleChildAction, _i, _j, _len, _len1, _ref1, _ref2, _results;
+      var possibleChildAction, _i, _j, _len, _len1, _ref, _ref1, _results;
       action.children = [];
       if (action.type === 'load') {
-        _ref1 = this.actionsArr;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          possibleChildAction = _ref1[_i];
+        _ref = this.actionsArr;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          possibleChildAction = _ref[_i];
           if (possibleChildAction.type === 'save') {
             if (possibleChildAction.getParameter(0) === action.getParameter(0)) {
               action.children.push(possibleChildAction);
@@ -764,10 +764,10 @@
         }
         return;
       }
-      _ref2 = this.actionsArr;
+      _ref1 = this.actionsArr;
       _results = [];
-      for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-        possibleChildAction = _ref2[_j];
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        possibleChildAction = _ref1[_j];
         if (possibleChildAction === action) {
           continue;
         }
@@ -798,7 +798,7 @@
     };
 
     /*
-        Rendering
+      Rendering
     */
 
 

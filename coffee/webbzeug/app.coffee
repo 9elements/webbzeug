@@ -307,7 +307,7 @@ window.Webbzeug.App = class App
 
   handleMultipleSelection: (element) ->
     selectionRectEl = $('.selection')
-    @workspace.mousedown (e) =>
+    $('.workspace-wrapper').mousedown (e) =>
       e.preventDefault()
 
       selectionRect = {}
