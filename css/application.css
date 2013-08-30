@@ -251,14 +251,10 @@ header, .sidebar {
     z-index: 2; }
   .workspace-wrapper .grid {
     position: absolute;
-    z-index: 1; }
-    .workspace-wrapper .grid .grid-row {
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      border-style: inset; }
-    .workspace-wrapper .grid .grid-col {
-      position: absolute;
-      top: 0;
-      border-right: 1px solid rgba(255, 255, 255, 0.05); }
+    z-index: 1;
+    background: url("/images/grid.png");
+    width: 100%;
+    height: 100%; }
   .workspace-wrapper .popup {
     border-radius: 3px;
     position: absolute;

@@ -8,8 +8,6 @@
   window.Webbzeug.Version = '0.0.2';
 
   window.Webbzeug.App = App = (function() {
-    var _this = this;
-
     App.prototype.textureSize = 256;
 
     App.prototype.gridHeight = 28;
@@ -19,20 +17,21 @@
     App.prototype.shiftPressed = false;
 
     function App(container) {
-      var size;
+      var _this = this;
       this.container = container;
       this.workspace = $('.workspace');
       this.initRenderer();
       this.initRenderToTextureStuff();
-      this.buildGrid();
       this.reset();
       this.loadSamples();
       this.loadSaveHandler = new Webbzeug.LoadSaveHandler(this, $('.save-link'), $('input#file'), $('.export-link'));
       this.handleNavigation();
       this.handleMultipleSelection();
       this.handleKeyboardInput();
-      size = $(window).width();
       this.resizeWindow();
+      $(window).resize(function() {
+        return _this.resizeWindow();
+      });
     }
 
     App.prototype.loadSamples = function() {
@@ -88,35 +87,6 @@
       this.screenAlignedQuadMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.copyMaterial);
       this.renderToTextureScene = new THREE.Scene();
       return this.renderToTextureScene.add(this.screenAlignedQuadMesh);
-    };
-
-    App.prototype.buildGrid = function() {
-      var c, colDiv, cols, grid, r, rowDiv, rows, _i, _j, _results;
-      rows = 30;
-      cols = 50;
-      grid = this.workspace.parent().find('.grid');
-      grid.css({
-        width: (cols + 1) * this.gridWidth,
-        height: (rows + 1) * this.gridHeight
-      });
-      this.workspace.css({
-        width: (cols + 1) * this.gridWidth,
-        height: (rows + 1) * this.gridHeight
-      });
-      for (r = _i = 0; 0 <= rows ? _i < rows : _i > rows; r = 0 <= rows ? ++_i : --_i) {
-        rowDiv = $('<div>').addClass('grid-row').css({
-          height: this.gridHeight - 1
-        }).appendTo(grid);
-      }
-      _results = [];
-      for (c = _j = 0; 0 <= cols ? _j < cols : _j > cols; c = 0 <= cols ? ++_j : --_j) {
-        _results.push(colDiv = $('<div>').addClass('grid-col').css({
-          width: this.gridWidth,
-          height: grid.height(),
-          left: this.gridWidth * c
-        }).appendTo(grid));
-      }
-      return _results;
     };
 
     App.prototype.reset = function() {
@@ -385,7 +355,7 @@
       var selectionRectEl,
         _this = this;
       selectionRectEl = $('.selection');
-      return $('.workspace-wrapper').mousedown(function(e) {
+      return $('.workspace').mousedown(function(e) {
         var handleMouseMove, selectionRect;
         e.preventDefault();
         selectionRect = {};
@@ -822,18 +792,6 @@
       return $('.debug').text('rendered in ' + this.renderTime + 'ms');
     };
 
-    $(window).resize(function() {
-      var height, width;
-      width = $(window).width();
-      $('div.workspace-wrapper, div.workspace').css({
-        width: width - 280
-      });
-      height = $(window).height();
-      return $('div.workspace-wrapper, div.workspace').css({
-        height: height - 115
-      });
-    });
-
     App.prototype.resizeWindow = function() {
       var height, width;
       width = $(window).width();
@@ -866,6 +824,6 @@
 
     return App;
 
-  }).call(this);
+  })();
 
 }).call(this);

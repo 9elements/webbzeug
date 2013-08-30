@@ -9,7 +9,6 @@ window.Webbzeug.App = class App
     @workspace = $('.workspace')
     @initRenderer()
     @initRenderToTextureStuff()
-    @buildGrid()
     @reset()
 
     @loadSamples()
@@ -19,8 +18,10 @@ window.Webbzeug.App = class App
     @handleNavigation()
     @handleMultipleSelection()
     @handleKeyboardInput()
-    size = $(window).width()
+
     @resizeWindow()
+    $(window).resize =>
+      @resizeWindow()
 
   loadSamples: ->
     samplesSelect = $('select.samples')
@@ -61,26 +62,6 @@ window.Webbzeug.App = class App
     @screenAlignedQuadMesh = new THREE.Mesh( new THREE.PlaneGeometry( 2, 2 ), @copyMaterial)
     @renderToTextureScene = new THREE.Scene();
     @renderToTextureScene.add( @screenAlignedQuadMesh );
-
-  buildGrid: ->
-    rows = 30
-    cols = 50
-
-    grid = @workspace.parent().find '.grid'
-
-    grid.css
-      width: (cols + 1) * @gridWidth
-      height: (rows + 1) * @gridHeight
-
-    @workspace.css
-      width: (cols + 1) * @gridWidth
-      height: (rows + 1) * @gridHeight
-
-    for r in [0...rows]
-      rowDiv = $('<div>').addClass('grid-row').css(height: @gridHeight - 1).appendTo grid
-
-    for c in [0...cols]
-      colDiv = $('<div>').addClass('grid-col').css(width: @gridWidth, height: grid.height(), left: @gridWidth * c).appendTo grid
 
   reset: ->
     @memory = []
@@ -307,7 +288,7 @@ window.Webbzeug.App = class App
 
   handleMultipleSelection: (element) ->
     selectionRectEl = $('.selection')
-    $('.workspace-wrapper').mousedown (e) =>
+    $('.workspace').mousedown (e) =>
       e.preventDefault()
 
       selectionRect = {}
@@ -677,20 +658,12 @@ window.Webbzeug.App = class App
 
     $('.debug').text 'rendered in ' + @renderTime + 'ms'
 
-  $(window).resize =>
-    width = $(window).width()
-    $('div.workspace-wrapper, div.workspace').css({ width: width - 280 })
-
-    height = $(window).height()
-    $('div.workspace-wrapper, div.workspace').css({ height: height - 115 })
-
   resizeWindow: ->
     width = $(window).width()
     $('div.workspace-wrapper, div.workspace').css({ width: width - 280 })
 
     height = $(window).height()
     $('div.workspace-wrapper, div.workspace').css({ height: height - 115 })
-
 
   renderAction: (action) ->
     unless action?
