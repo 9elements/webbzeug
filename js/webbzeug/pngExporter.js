@@ -1,12 +1,11 @@
 (function() {
-  var PNGExporter, _ref;
+  var PNGExporter;
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
   window.Webbzeug.PNGExporter = PNGExporter = (function() {
-
     function PNGExporter() {}
 
     PNGExporter.prototype.exportPNG = function(filename) {

@@ -1,22 +1,22 @@
 (function() {
-  var CombineAction, _base, _ref, _ref1,
+  var CombineAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
-  if ((_ref1 = (_base = window.Webbzeug).Actions) == null) {
+  if ((_base = window.Webbzeug).Actions == null) {
     _base.Actions = {};
   }
 
   window.Webbzeug.Actions.Combine = CombineAction = (function(_super) {
-
     __extends(CombineAction, _super);
 
     function CombineAction() {
-      return CombineAction.__super__.constructor.apply(this, arguments);
+      _ref = CombineAction.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     CombineAction.prototype.type = 'combine';
@@ -72,7 +72,7 @@
     };
 
     CombineAction.prototype.render = function(inputs) {
-      var i, useRenderTargetAsBuffer, _i, _ref2;
+      var i, useRenderTargetAsBuffer, _i, _ref1;
       CombineAction.__super__.render.call(this);
       if (inputs.length < 2) {
         return false;
@@ -84,7 +84,7 @@
       }
       useRenderTargetAsBuffer = inputs.length % 2 === 0;
       this.combineMaterial.uniforms['input1'].value = inputs[0];
-      for (i = _i = 1, _ref2 = inputs.length; 1 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 1 <= _ref2 ? ++_i : --_i) {
+      for (i = _i = 1, _ref1 = inputs.length; 1 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 1 <= _ref1 ? ++_i : --_i) {
         this.combineMaterial.uniforms['input2'].value = inputs[i];
         if (useRenderTargetAsBuffer) {
           this.app.renderer.render(this.renderToTextureScene, this.app.renderToTextureCamera, this.renderTarget, false);

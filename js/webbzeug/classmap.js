@@ -1,13 +1,11 @@
 (function() {
-  var _ref;
-
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
   window.Webbzeug.ClassMap = {
     /*
-        generative actions
+      generative actions
     */
 
     rectangle: {
@@ -46,7 +44,7 @@
       "class": Webbzeug.Actions.Pixels
     },
     /*
-        Processive actions
+      Processive actions
     */
 
     combine: {
@@ -119,8 +117,13 @@
       type: 'processive',
       "class": Webbzeug.Actions.Color
     },
+    fxaa: {
+      name: 'Fxaa',
+      type: 'processive',
+      "class": Webbzeug.Actions.Fxaa
+    },
     /*
-        Memory actions
+      Memory actions
     */
 
     load: {

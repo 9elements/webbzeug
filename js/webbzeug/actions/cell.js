@@ -27,25 +27,24 @@
         }
     }
 };
-
-  var CellAction, _base, _ref, _ref1,
+  var CellAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
-  if ((_ref1 = (_base = window.Webbzeug).Actions) == null) {
+  if ((_base = window.Webbzeug).Actions == null) {
     _base.Actions = {};
   }
 
   window.Webbzeug.Actions.Cell = CellAction = (function(_super) {
-
     __extends(CellAction, _super);
 
     function CellAction() {
-      return CellAction.__super__.constructor.apply(this, arguments);
+      _ref = CellAction.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     CellAction.prototype.type = 'cell';
@@ -98,7 +97,7 @@
     CellAction.prototype.render = function(inputs) {
       var cellTexture;
       CellAction.__super__.render.call(this);
-      if (!(this.canvas != null)) {
+      if (this.canvas == null) {
         this.createCanvas();
       }
       this.createPatternOnCanvas();
@@ -113,7 +112,7 @@
     };
 
     CellAction.prototype.createPatternOnCanvas = function() {
-      var dist, distances, gridPosX, gridPosY, gridPxSize, gridSize, gridX, gridY, h, imageData, index, lastMinDist, maxDist, minDist, originalGridX, originalGridY, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5,
+      var dist, distances, gridPosX, gridPosY, gridPxSize, gridSize, gridX, gridY, h, imageData, index, lastMinDist, maxDist, minDist, originalGridX, originalGridY, point, points, px, py, value, w, x, y, _i, _j, _k, _l, _ref1, _ref2, _ref3, _ref4,
         _this = this;
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
       gridSize = parseInt(this.getParameter('gridSize'));
@@ -128,7 +127,7 @@
           gridPosY = Math.floor(y / gridPxSize);
           distances = [];
           minDist = maxDist;
-          for (gridX = _k = _ref2 = gridPosX - 1, _ref3 = gridPosX + 1; _ref2 <= _ref3 ? _k <= _ref3 : _k >= _ref3; gridX = _ref2 <= _ref3 ? ++_k : --_k) {
+          for (gridX = _k = _ref1 = gridPosX - 1, _ref2 = gridPosX + 1; _ref1 <= _ref2 ? _k <= _ref2 : _k >= _ref2; gridX = _ref1 <= _ref2 ? ++_k : --_k) {
             originalGridX = gridX;
             if (gridX < 0) {
               gridX = gridSize + gridX;
@@ -136,7 +135,7 @@
             if (gridX > gridSize - 1) {
               gridX = gridX - gridSize;
             }
-            for (gridY = _l = _ref4 = gridPosY - 1, _ref5 = gridPosY + 1; _ref4 <= _ref5 ? _l <= _ref5 : _l >= _ref5; gridY = _ref4 <= _ref5 ? ++_l : --_l) {
+            for (gridY = _l = _ref3 = gridPosY - 1, _ref4 = gridPosY + 1; _ref3 <= _ref4 ? _l <= _ref4 : _l >= _ref4; gridY = _ref3 <= _ref4 ? ++_l : --_l) {
               originalGridY = gridY;
               if (gridY < 0) {
                 gridY = gridSize + gridY;

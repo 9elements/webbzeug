@@ -1,16 +1,15 @@
 (function() {
-  var Action, _ref;
+  var Action;
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
   window.Webbzeug.Action = Action = (function() {
-
     Action.prototype.width = 3;
 
     function Action(app, x, y, width, index) {
-      var info, parameter, _ref1;
+      var info, parameter, _ref;
       this.app = app;
       this.x = x;
       this.y = y;
@@ -20,9 +19,9 @@
       this.parent = null;
       this.needsUpdate = true;
       this.parameters = {};
-      _ref1 = this.availableParameters();
-      for (parameter in _ref1) {
-        info = _ref1[parameter];
+      _ref = this.availableParameters();
+      for (parameter in _ref) {
+        info = _ref[parameter];
         this.parameters[parameter] = info["default"];
       }
       this.createRenderTarget();
@@ -73,19 +72,19 @@
     };
 
     /*
-      this is called from the tree renderer
+    this is called from the tree renderer
     */
 
 
     Action.prototype.doRender = function(textures) {
-      var valid, _ref1, _ref2;
+      var valid, _ref, _ref1;
       valid = this.validations(textures);
-      if (((_ref1 = valid.warnings) != null ? _ref1.length : void 0) > 0) {
+      if (((_ref = valid.warnings) != null ? _ref.length : void 0) > 0) {
         this.app.displayWarnings(this, valid.warnings);
       } else {
         this.app.removeWarnings(this);
       }
-      if (((_ref2 = valid.errors) != null ? _ref2.length : void 0) > 0) {
+      if (((_ref1 = valid.errors) != null ? _ref1.length : void 0) > 0) {
         this.app.displayErrors(this, valid.errors);
         return false;
       } else {

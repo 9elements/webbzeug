@@ -1,5 +1,5 @@
 (function() {
-  var NormalAction, _base, _ref,
+  var FxaaAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -11,27 +11,27 @@
     _base.Actions = {};
   }
 
-  window.Webbzeug.Actions.Normal = NormalAction = (function(_super) {
-    __extends(NormalAction, _super);
+  window.Webbzeug.Actions.Fxaa = FxaaAction = (function(_super) {
+    __extends(FxaaAction, _super);
 
-    function NormalAction() {
-      _ref = NormalAction.__super__.constructor.apply(this, arguments);
+    function FxaaAction() {
+      _ref = FxaaAction.__super__.constructor.apply(this, arguments);
       return _ref;
     }
 
-    NormalAction.prototype.type = 'normal';
+    FxaaAction.prototype.type = 'fxaa';
 
-    NormalAction.prototype.name = 'Normal';
+    FxaaAction.prototype.name = 'Fxaa';
 
-    NormalAction.prototype.validations = function(contexts) {
+    FxaaAction.prototype.validations = function(contexts) {
       var errors, warnings;
       errors = [];
       warnings = [];
       if (contexts.length > 1) {
-        warnings.push('Normal will only use the first input.');
+        warnings.push('Fxaa will only use the first input.');
       }
       if (contexts.length < 1) {
-        errors.push('Normal needs exactly 1 input.');
+        errors.push('Fxaa needs exactly 1 input.');
       }
       return {
         errors: errors,
@@ -39,10 +39,10 @@
       };
     };
 
-    NormalAction.prototype.render = function(inputs) {
-      NormalAction.__super__.render.call(this);
+    FxaaAction.prototype.render = function(inputs) {
+      FxaaAction.__super__.render.call(this);
       if (this.screenAlignedQuadMesh.material === null) {
-        this.normalMaterial = new THREE.ShaderMaterial(THREE.NormalShader);
+        this.normalMaterial = new THREE.ShaderMaterial(THREE.FxaaShader);
         this.screenAlignedQuadMesh.material = this.normalMaterial;
       }
       this.normalMaterial.uniforms['input1'].value = inputs[0];
@@ -50,7 +50,7 @@
       return this.renderTarget;
     };
 
-    return NormalAction;
+    return FxaaAction;
 
   })(Webbzeug.Action);
 

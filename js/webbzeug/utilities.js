@@ -1,7 +1,5 @@
 (function() {
-  var _ref;
-
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
@@ -80,10 +78,10 @@
       return bytes;
     },
     versionToInt: function(version) {
-      var i, versionInt, versionPart, versionSplit, _i, _ref1;
+      var i, versionInt, versionPart, versionSplit, _i, _ref;
       versionSplit = version.split('.');
       versionInt = 0;
-      for (i = _i = _ref1 = versionSplit.length - 1; _ref1 <= 0 ? _i < 0 : _i > 0; i = _ref1 <= 0 ? ++_i : --_i) {
+      for (i = _i = _ref = versionSplit.length - 1; _ref <= 0 ? _i < 0 : _i > 0; i = _ref <= 0 ? ++_i : --_i) {
         versionPart = versionSplit[i];
         versionInt += (versionSplit.length - i) * versionPart;
       }
@@ -192,6 +190,5 @@
         return rgb;
     }
 };
-
 
 }).call(this);

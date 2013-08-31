@@ -1,12 +1,11 @@
 (function() {
-  var LoadSaveHandler, _ref;
+  var LoadSaveHandler;
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
   window.Webbzeug.LoadSaveHandler = LoadSaveHandler = (function() {
-
     function LoadSaveHandler(app, saveLink, loadInput, exportLink) {
       var _this = this;
       this.app = app;

@@ -1,16 +1,15 @@
 (function() {
-  var Exporter, _ref;
+  var Exporter;
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
   window.Webbzeug.Exporter = Exporter = (function() {
-
     function Exporter() {}
 
     Exporter.prototype.actionsToDataURL = function(actions) {
-      var action, index, param, value, _ref1;
+      var action, index, param, value, _ref;
       this.output = '';
       this.startStream();
       this.output += '\x02';
@@ -27,9 +26,9 @@
         this.output += '\x05';
         this.writeData(action.width);
         this.output += '\x05';
-        _ref1 = action.parameters;
-        for (param in _ref1) {
-          value = _ref1[param];
+        _ref = action.parameters;
+        for (param in _ref) {
+          value = _ref[param];
           this.output += '\x07';
           this.output += Webbzeug.Utilities.stringToByte(param);
           this.output += '\x08';

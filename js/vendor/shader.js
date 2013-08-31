@@ -1,7 +1,5 @@
 (function() {
-
   window.ShaderScript = (function() {
-
     function _Class(url, type) {
       this.url = url;
       this.type = type;

@@ -1,22 +1,22 @@
 (function() {
-  var CircleAction, _base, _ref, _ref1,
+  var CircleAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
-  if ((_ref1 = (_base = window.Webbzeug).Actions) == null) {
+  if ((_base = window.Webbzeug).Actions == null) {
     _base.Actions = {};
   }
 
   window.Webbzeug.Actions.Circle = CircleAction = (function(_super) {
-
     __extends(CircleAction, _super);
 
     function CircleAction() {
-      return CircleAction.__super__.constructor.apply(this, arguments);
+      _ref = CircleAction.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     CircleAction.prototype.type = 'circle';
@@ -114,7 +114,7 @@
 
     CircleAction.prototype.render = function(inputs) {
       CircleAction.__super__.render.call(this);
-      if (!(this.glowMaterial != null)) {
+      if (this.glowMaterial == null) {
         this.glowMaterial = new THREE.ShaderMaterial(THREE.GlowShader);
       }
       this.screenAlignedQuadMesh.material = this.glowMaterial;

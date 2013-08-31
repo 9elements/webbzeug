@@ -1,22 +1,22 @@
 (function() {
-  var BlurAction, _base, _ref, _ref1,
+  var BlurAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
-  if ((_ref1 = (_base = window.Webbzeug).Actions) == null) {
+  if ((_base = window.Webbzeug).Actions == null) {
     _base.Actions = {};
   }
 
   window.Webbzeug.Actions.Blur = BlurAction = (function(_super) {
-
     __extends(BlurAction, _super);
 
     function BlurAction() {
-      return BlurAction.__super__.constructor.apply(this, arguments);
+      _ref = BlurAction.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     BlurAction.prototype.type = 'blur';
@@ -64,7 +64,7 @@
 
     BlurAction.prototype.renderDisc = function(inputs) {
       var strength;
-      if (!(this.discBlurMaterial != null)) {
+      if (this.discBlurMaterial == null) {
         this.discBlurMaterial = new THREE.ShaderMaterial(THREE.DiscBlur);
       }
       this.screenAlignedQuadMesh.material = this.discBlurMaterial;
@@ -86,7 +86,7 @@
       var strength;
       this.createTempTarget();
       strength = parseInt(this.getParameter('strength'));
-      if (!(this.horizonalTriangleBlurMaterial != null)) {
+      if (this.horizonalTriangleBlurMaterial == null) {
         this.horizonalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurH);
       }
       this.screenAlignedQuadMesh.material = this.horizonalTriangleBlurMaterial;
@@ -98,7 +98,7 @@
     BlurAction.prototype.renderVerticalTrianglePass = function() {
       var strength;
       strength = parseInt(this.getParameter('strength'));
-      if (!(this.verticalTriangleBlurMaterial != null)) {
+      if (this.verticalTriangleBlurMaterial == null) {
         this.verticalTriangleBlurMaterial = new THREE.ShaderMaterial(THREE.TriangleBlurV);
       }
       this.screenAlignedQuadMesh.material = this.verticalTriangleBlurMaterial;
@@ -121,7 +121,7 @@
 
     BlurAction.prototype.renderHorizontalGaussPass = function(input) {
       this.createTempTarget();
-      if (!(this.horizonalGaussBlurMaterial != null)) {
+      if (this.horizonalGaussBlurMaterial == null) {
         this.horizonalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.HorizontalGaussianShader);
       }
       this.screenAlignedQuadMesh.material = this.horizonalGaussBlurMaterial;
@@ -131,7 +131,7 @@
     };
 
     BlurAction.prototype.renderVerticalGaussPass = function() {
-      if (!(this.verticalGaussBlurMaterial != null)) {
+      if (this.verticalGaussBlurMaterial == null) {
         this.verticalGaussBlurMaterial = new THREE.ShaderMaterial(THREE.VerticalGaussianShader);
       }
       this.screenAlignedQuadMesh.material = this.verticalGaussBlurMaterial;
@@ -141,7 +141,7 @@
     };
 
     BlurAction.prototype.copyInputToRenderTarget = function(input) {
-      if (!(this.copyMaterial != null)) {
+      if (this.copyMaterial == null) {
         this.copyMaterial = new THREE.ShaderMaterial(THREE.CopyShader);
       }
       this.screenAlignedQuadMesh.material = this.copyMaterial;

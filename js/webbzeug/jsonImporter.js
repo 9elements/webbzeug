@@ -1,12 +1,11 @@
 (function() {
-  var JSONImporter, _ref;
+  var JSONImporter;
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
   window.Webbzeug.JSONImporter = JSONImporter = (function() {
-
     JSONImporter.prototype.debug = true;
 
     function JSONImporter(app) {

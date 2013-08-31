@@ -1,12 +1,11 @@
 (function() {
-  var Importer, _ref;
+  var Importer;
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
   window.Webbzeug.Importer = Importer = (function() {
-
     Importer.prototype.debug = true;
 
     function Importer(app) {
@@ -15,7 +14,7 @@
     }
 
     Importer.prototype.loadData = function(data) {
-      var byte, i, identifier, version, _i, _ref1;
+      var byte, i, identifier, version, _i, _ref;
       this.data = data;
       this.maxIndex = 0;
       this.actions = [];
@@ -27,7 +26,7 @@
       if (this.debug) {
         console.log("Parsing file...");
       }
-      for (i = _i = 3, _ref1 = this.data.length; 3 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 3 <= _ref1 ? ++_i : --_i) {
+      for (i = _i = 3, _ref = this.data.length; 3 <= _ref ? _i < _ref : _i > _ref; i = 3 <= _ref ? ++_i : --_i) {
         byte = this.readBytes(1);
         if (byte === '\x01') {
           version = this.readBytesUntil('\x02');
@@ -145,12 +144,12 @@
     };
 
     Importer.prototype.readBytesUntil = function(findChar, eatChar) {
-      var byte, bytes, i, _i, _ref1;
+      var byte, bytes, i, _i, _ref;
       if (eatChar == null) {
         eatChar = true;
       }
       bytes = '';
-      for (i = _i = 0, _ref1 = this.data.length; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+      for (i = _i = 0, _ref = this.data.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         byte = this.data[i];
         if (byte !== findChar) {
           bytes += byte;

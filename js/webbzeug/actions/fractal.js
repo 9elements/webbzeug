@@ -27,25 +27,24 @@
         }
     }
 };
-
-  var FractalAction, _base, _ref, _ref1,
+  var FractalAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
-  if ((_ref1 = (_base = window.Webbzeug).Actions) == null) {
+  if ((_base = window.Webbzeug).Actions == null) {
     _base.Actions = {};
   }
 
   window.Webbzeug.Actions.Fractal = FractalAction = (function(_super) {
-
     __extends(FractalAction, _super);
 
     function FractalAction() {
-      return FractalAction.__super__.constructor.apply(this, arguments);
+      _ref = FractalAction.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     FractalAction.prototype.type = 'fractal';
@@ -89,7 +88,7 @@
     FractalAction.prototype.render = function(inputs) {
       var fractalTexture;
       FractalAction.__super__.render.call(this);
-      if (!(this.canvas != null)) {
+      if (this.canvas == null) {
         this.createCanvas();
       }
       this.createPatternOnCanvas();
@@ -104,7 +103,7 @@
     };
 
     FractalAction.prototype.createPatternOnCanvas = function() {
-      var center, color, h, imageData, imagePixelData, index, ll, lr, map, roughness, ul, ur, w, x, y, _i, _j, _k, _ref2, _ref3, _ref4;
+      var center, color, h, imageData, imagePixelData, index, ll, lr, map, roughness, ul, ur, w, x, y, _i, _j, _k, _ref1, _ref2, _ref3;
       this.rnd = CustomRandom(this.getParameter('seed'));
       roughness = this.getParameter('roughness') / this.app.getWidth();
       imageData = this.context.getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
@@ -112,7 +111,7 @@
       w = this.app.getWidth();
       h = this.app.getHeight();
       map = [];
-      for (x = _i = 0, _ref2 = w + 1; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; x = 0 <= _ref2 ? ++_i : --_i) {
+      for (x = _i = 0, _ref1 = w + 1; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; x = 0 <= _ref1 ? ++_i : --_i) {
         map[x] = [];
       }
       map[0][0] = this.rnd.next01();
@@ -131,8 +130,8 @@
       map[w][h / 2] = ur + lr + center / 3;
       map[0][h / 2] = ul + ll + center / 3;
       map = this.midpointDisplacement(this.app.getWidth(), map);
-      for (x = _j = 0, _ref3 = this.app.getWidth(); 0 <= _ref3 ? _j < _ref3 : _j > _ref3; x = 0 <= _ref3 ? ++_j : --_j) {
-        for (y = _k = 0, _ref4 = this.app.getHeight(); 0 <= _ref4 ? _k < _ref4 : _k > _ref4; y = 0 <= _ref4 ? ++_k : --_k) {
+      for (x = _j = 0, _ref2 = this.app.getWidth(); 0 <= _ref2 ? _j < _ref2 : _j > _ref2; x = 0 <= _ref2 ? ++_j : --_j) {
+        for (y = _k = 0, _ref3 = this.app.getHeight(); 0 <= _ref3 ? _k < _ref3 : _k > _ref3; y = 0 <= _ref3 ? ++_k : --_k) {
           color = Math.floor(map[x][y] * 250);
           index = ((y * this.app.getWidth()) << 2) + (x << 2);
           imagePixelData[index] = color;
@@ -146,11 +145,11 @@
     };
 
     FractalAction.prototype.midpointDisplacement = function(dimension, map) {
-      var bl, br, center, i, j, newDimension, tl, tr, x, y, _i, _j, _ref2, _ref3;
+      var bl, br, center, i, j, newDimension, tl, tr, x, y, _i, _j, _ref1, _ref2;
       newDimension = dimension / 2;
       if (newDimension > this.unitSize) {
-        for (i = _i = newDimension, _ref2 = this.app.getWidth(); newDimension <= _ref2 ? _i <= _ref2 : _i >= _ref2; i = _i += newDimension) {
-          for (j = _j = newDimension, _ref3 = this.app.getWidth(); newDimension <= _ref3 ? _j <= _ref3 : _j >= _ref3; j = _j += newDimension) {
+        for (i = _i = newDimension, _ref1 = this.app.getWidth(); newDimension > 0 ? _i <= _ref1 : _i >= _ref1; i = _i += newDimension) {
+          for (j = _j = newDimension, _ref2 = this.app.getWidth(); newDimension > 0 ? _j <= _ref2 : _j >= _ref2; j = _j += newDimension) {
             x = i - (newDimension / 2);
             y = j - (newDimension / 2);
             tl = map[i - newDimension][j - newDimension];

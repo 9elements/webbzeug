@@ -2,12 +2,12 @@
 <html>
   <head>
     <title>.webbzeug - procedural graphics in your browser</title>
-    <meta charset='utf-8' />
-    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible' />
-    <meta content='' name='description' />
-    <meta content='width=device-width' name='viewport' />
-    <link href='/css/application.css' rel='stylesheet' />
-    <link href='/css/colorpicker.css' rel='stylesheet' />
+    <meta charset='utf-8'>
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+    <meta content='' name='description'>
+    <meta content='width=device-width' name='viewport'>
+    <link href='/css/application.css' rel='stylesheet'>
+    <link href='/css/colorpicker.css' rel='stylesheet'>
     <script src='/js/vendor/modernizr-2.6.1.min.js'></script>
     <script src='js/vendor/jquery-1.8.0.min.js'></script>
     <script src='js/vendor/jquery.draggable-input.js'></script>
@@ -33,6 +33,7 @@
     <script src='js/vendor/shaders/mask.js'></script>
     <script src='js/vendor/shaders/color.js'></script>
     <script src='js/vendor/shaders/range.js'></script>
+    <script src='js/vendor/shaders/fxaa.js'></script>
     <script src='js/plugins.js'></script>
     <script src='js/webbzeug/action.js'></script>
     <script src='http://download-data-uri.appspot.com/js/download-data-uri.js'></script>
@@ -64,6 +65,7 @@
     <script src='js/webbzeug/actions/range.js'></script>
     <script src='js/webbzeug/actions/color.js'></script>
     <script src='js/webbzeug/actions/directional.js'></script>
+    <script src='js/webbzeug/actions/fxaa.js'></script>
     <!-- /- Memory -->
     <script src='js/webbzeug/actions/save.js'></script>
     <script src='js/webbzeug/actions/load.js'></script>
@@ -115,7 +117,7 @@
         <a class='save-link' href='#'>Save</a>
         <a class='open-link' href='#'>Open</a>
         <a class='export-link' href='#'>Export to .PNG</a>
-        <input id='file' type='file' />
+        <input id='file' type='file'>
         <select class='samples' disabled='disabled'>
           <option value=''>Load Sample</option>
         </select>

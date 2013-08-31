@@ -1,12 +1,11 @@
 (function() {
-  var JSONExporter, _ref;
+  var JSONExporter;
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
   window.Webbzeug.JSONExporter = JSONExporter = (function() {
-
     function JSONExporter() {}
 
     JSONExporter.prototype.exportJSON = function(filename, appActions) {

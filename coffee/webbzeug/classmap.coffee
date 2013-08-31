@@ -91,6 +91,10 @@ window.Webbzeug.ClassMap =
     name: 'Color'
     type: 'processive'
     class: Webbzeug.Actions.Color
+  fxaa:
+    name: 'Fxaa'
+    type: 'processive'
+    class: Webbzeug.Actions.Fxaa
 
   ###
     Memory actions

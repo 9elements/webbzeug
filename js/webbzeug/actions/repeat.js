@@ -1,22 +1,22 @@
 (function() {
-  var RepeatAction, _base, _ref, _ref1,
+  var RepeatAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
-  if ((_ref1 = (_base = window.Webbzeug).Actions) == null) {
+  if ((_base = window.Webbzeug).Actions == null) {
     _base.Actions = {};
   }
 
   window.Webbzeug.Actions.Repeat = RepeatAction = (function(_super) {
-
     __extends(RepeatAction, _super);
 
     function RepeatAction() {
-      return RepeatAction.__super__.constructor.apply(this, arguments);
+      _ref = RepeatAction.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     RepeatAction.prototype.type = 'repeat';
@@ -79,7 +79,7 @@
     };
 
     RepeatAction.prototype.render = function(contexts) {
-      var destIndex, destX, destY, h, i, inputData, outputData, scrollX, scrollXinc, scrollY, scrollYinc, srcIndex, srcX, srcY, w, x, y, _i, _j, _k, _ref2;
+      var destIndex, destX, destY, h, i, inputData, outputData, scrollX, scrollXinc, scrollY, scrollYinc, srcIndex, srcX, srcY, w, x, y, _i, _j, _k, _ref1;
       RepeatAction.__super__.render.call(this);
       this.copyRendered(contexts);
       w = this.app.getWidth();
@@ -92,7 +92,7 @@
         for (y = _j = 0; 0 <= h ? _j < h : _j > h; y = 0 <= h ? ++_j : --_j) {
           scrollX = scrollXinc;
           scrollY = scrollYinc;
-          for (i = _k = 0, _ref2 = parseInt(this.getParameter('count')); 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+          for (i = _k = 0, _ref1 = parseInt(this.getParameter('count')); 0 <= _ref1 ? _k < _ref1 : _k > _ref1; i = 0 <= _ref1 ? ++_k : --_k) {
             srcX = x;
             srcY = y;
             destX = (srcX + scrollX) % w;

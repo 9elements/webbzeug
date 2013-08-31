@@ -1,5 +1,4 @@
 (function() {
-
   window.after = function(t, f) {
     return setTimeout(f, t);
   };

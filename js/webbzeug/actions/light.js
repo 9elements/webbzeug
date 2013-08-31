@@ -1,22 +1,22 @@
 (function() {
-  var LightAction, _base, _ref, _ref1,
+  var LightAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
-  if ((_ref1 = (_base = window.Webbzeug).Actions) == null) {
+  if ((_base = window.Webbzeug).Actions == null) {
     _base.Actions = {};
   }
 
   window.Webbzeug.Actions.Light = LightAction = (function(_super) {
-
     __extends(LightAction, _super);
 
     function LightAction() {
-      return LightAction.__super__.constructor.apply(this, arguments);
+      _ref = LightAction.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     LightAction.prototype.type = 'light';
@@ -26,9 +26,9 @@
     LightAction.prototype.availableParameters = function() {
       return {
         /*
-              eyeX: { name: 'Eye X', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 },
-              eyeY: { name: 'Eye Y', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
-              eyeZ: { name: 'Eye Z', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
+        eyeX: { name: 'Eye X', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 },
+        eyeY: { name: 'Eye Y', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
+        eyeZ: { name: 'Eye Z', type: 'float', min: -1, max: 1, default: 0.5, scrollPrecision: 0.001 }
         */
 
         lightX: {

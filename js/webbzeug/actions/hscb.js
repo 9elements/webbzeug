@@ -1,22 +1,22 @@
 (function() {
-  var HSCBAction, _base, _ref, _ref1,
+  var HSCBAction, _base, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  if ((_ref = window.Webbzeug) == null) {
+  if (window.Webbzeug == null) {
     window.Webbzeug = {};
   }
 
-  if ((_ref1 = (_base = window.Webbzeug).Actions) == null) {
+  if ((_base = window.Webbzeug).Actions == null) {
     _base.Actions = {};
   }
 
   window.Webbzeug.Actions.HSCB = HSCBAction = (function(_super) {
-
     __extends(HSCBAction, _super);
 
     function HSCBAction() {
-      return HSCBAction.__super__.constructor.apply(this, arguments);
+      _ref = HSCBAction.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     HSCBAction.prototype.type = 'hscb';
@@ -77,13 +77,13 @@
     };
 
     HSCBAction.prototype.render = function(contexts) {
-      var b, brightness, contrast, g, hsv, i, imageData, index, j, r, rgb, _i, _j, _ref2;
+      var b, brightness, contrast, g, hsv, i, imageData, index, j, r, rgb, _i, _j, _ref1;
       HSCBAction.__super__.render.call(this);
       contrast = this.getParameter('contrast');
       contrast = contrast / 128;
       brightness = this.getParameter('brightness') - 127;
       imageData = contexts[0].getImageData(0, 0, this.app.getWidth(), this.app.getHeight());
-      for (i = _i = 0, _ref2 = imageData.data.length / 4; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
+      for (i = _i = 0, _ref1 = imageData.data.length / 4; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
         index = i << 2;
         r = imageData.data[index];
         g = imageData.data[index + 1];
