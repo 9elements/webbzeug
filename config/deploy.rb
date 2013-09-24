@@ -8,6 +8,8 @@ set :env,           "production" unless exists?(:env)
 set :deploy_to,     "/home/#{user}/#{env}"
 set :port,          23222
 
+set :normalize_asset_timestamps, false
+
 set :use_sudo,    false
 
 ssh_options[:forward_agent] = true
