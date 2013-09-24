@@ -92,6 +92,23 @@ strong {
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5); }
     .right-wrapper .save-link:hover, .right-wrapper .open-link:hover, .right-wrapper .export-link:hover {
       background: rgba(255, 255, 255, 0.5); }
+  .right-wrapper .hints {
+    font: normal 12px Verdana;
+    color: white;
+    padding-right: 60px;
+    line-height: 1.5; }
+    .right-wrapper .hints li {
+      display: inline-block;
+      margin: 14px 0 0 0; }
+    .right-wrapper .hints .cmd {
+      display: inline;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      -ms-border-radius: 3px;
+      -o-border-radius: 3px;
+      border-radius: 3px;
+      padding: 2px;
+      background-color: #666666; }
   .right-wrapper input#file {
     position: absolute;
     left: 52px;
