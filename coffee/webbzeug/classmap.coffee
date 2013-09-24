@@ -23,10 +23,6 @@ window.Webbzeug.ClassMap =
     name: 'Fractal'
     type: 'generative'
     class: Webbzeug.Actions.Fractal
-  perlin:
-    name: 'Perlin'
-    type: 'generative'
-    class: Webbzeug.Actions.Perlin
   pixels:
     name: 'Pixels'
     type: 'generative'
