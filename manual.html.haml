@@ -1,0 +1,269 @@
+!!! 5
+%html
+  %head
+    %title .webbzeug documentation
+
+    %meta{ :charset => "utf-8" }
+    %meta{ :'http-equiv' => "X-UA-Compatible", :content => "IE=edge,chrome=1" }
+    %meta{ :name => "description", :content => "" }
+    %meta{ :name => "viewport", :content => "width=device-width" }
+
+    %link{ :rel => "stylesheet", :href => "/css/application.css" }
+    %link{ :rel => "stylesheet", :href => "/css/colorpicker.css" }
+
+    %script{ :src => "/js/vendor/modernizr-2.6.1.min.js" }
+
+    %script{ :src => "http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" }
+    %script{ :src => "js/plugins.js" }
+
+    %script{ :src => "http://download-data-uri.appspot.com/js/download-data-uri.js" }
+
+    %script{ :src => "js/manual.js" }
+  %body
+    .sidebar
+      .sidebar-contents
+        .group General
+        %ul
+          %li
+            %a{ :href => '#introduction' } Introduction
+
+        .group Generative Actions
+        %ul
+          %li
+            %a{ :href => '#cell' } Cell
+          %li
+            %a{ :href => '#circle' } Circle
+          %li
+            %a{ :href => '#flat' } Flat
+          %li
+            %a{ :href => '#fractal' } Fractal
+          %li
+            %a{ :href => '#glowrect' } GlowRect
+          %li
+            %a{ :href => '#pixels' } Pixels
+          %li
+            %a{ :href => '#rect' } Rectangle
+
+        .group Processive Actions
+        %ul
+          %li
+            %a{ :href => '#blur' } Blur
+          %li
+            %a{ :href => '#combine' } Combine
+          %li
+            %a{ :href => '#hscb' } HSCB
+          %li
+            %a{ :href => '#invert' } Invert
+          %li
+            %a{ :href => '#light' } Light
+          %li
+            %a{ :href => '#mask' } Mask
+          %li
+            %a{ :href => '#mirror' } Mirror
+          %li
+            %a{ :href => '#move' } Move
+          %li
+            %a{ :href => '#normal' } Normal
+          %li
+            %a{ :href => '#repeat' } Repeat
+          %li
+            %a{ :href => '#rotozoom' } Rotozoom
+
+        .group Memory Actions
+        %ul
+          %li
+            %a{ :href => '#load' } Load
+          %li
+            %a{ :href => '#save' } Save
+
+  .content
+    %img.logo{ :src => '/images/logo-large.png', :alt => '.webbzeug - procedural graphics in your browser' }
+
+    %h2 General
+
+    %section
+      %a{ :name => 'introduction' }
+      %h3 Introduction
+
+      \.webbzeug is a web-based tool that allows you to create procedural textures by stacking and rendering actions. The idea is based on
+
+      %a{ :href => 'http://www.farb-rausch.de/prod.py?which=113', :target => '_blank' } farbrausch's werkkzeug tool.
+
+      Actions are seperated into three groups:
+      %strong Generative, Processive and Memory
+      actions. This manual explains all actions and how they should be used.
+
+      %br
+      %br
+
+      The source code is
+      %a{ :href => 'https://github.com/saschagehlich/webbzeug', :target => '_blank' } avaiable at Github.com.
+
+    %h2 Generative Actions
+
+    %section
+      %a{ :name => 'cell' }
+      %h3 Cell
+
+      The cell action generates cell textures based on the
+      %a{ :href => 'http://en.wikipedia.org/wiki/Voronoi_diagram', :target => '_blank' } Voronoi diagram
+      using the given cell size, type and seed. There are two types of cells: Balls and Mosaic. The generated texture is tileable. All inputs are overwritten.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/cell.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'circle' }
+      %h3 Circle
+
+      The circle action draws a circle in the given color with the given size and position. The circle is drawn on the first input, if given.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/circle.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'flat' }
+      %h3 Flat
+
+      The flat action fills the image with the given color. All inputs are overwritten.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/flat.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'fractal' }
+      %h3 Fractal
+
+      The fractal action fills the image with a fractal noise using the given seed and roughness. All inputs are overwritten.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/fractal.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'glowrect' }
+      %h3 GlowRect
+
+      The GlowRect action draws a rectangle with a glowing border using the given position, size and radius. The rectangle is drawn on the first input, if given.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/glowrect.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'pixels' }
+      %h3 Pixels
+
+      The pixels action fills the image with random grayscale pixels based on the given seed. All inputs are overwritten.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/pixels.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'rect' }
+      %h3 Rectangle
+
+      The rectangle action draws a rectangle in the given color with the given size and position. The rectangle is drawn on the first input, if given.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/rect.coffee' } View source on Github.com
+
+    %h2 Processive Actions
+
+    %section
+      %a{ :name => 'blur' }
+      %h3 Blur
+
+      The blur action blurs the input using the given strength and type. The blur action needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/blur.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'combine' }
+      %h3 Combine
+
+      The combine action combines two inputs using the given blend mode. Available blend modes are Darken, Lighten, Multiply, Add, Substract, Divide. The combine action needs exactly two inputs.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/combine.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'hscb' }
+      %h3 HSCB
+
+      The HSCB action changes the hue, saturation, contrast and brightness of the first input. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/hscb.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'invert' }
+      %h3 Invert
+
+      The invert action inverts all colors of the input. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/invert.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'light' }
+      %h3 Light
+
+      The light action uses two inputs to generate lighting. The first input is the image the light is applied on, the second input is the normal map. The light action needs exactly two inputs.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/light.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'mask' }
+      %h3 Mask
+
+      The mask action uses the first input as a mask to combine the second and third input. The first input should be a grayscale image. The mask action needs exactly three inputs.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/mask.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'mirror' }
+      %h3 Mirror
+
+      The mirror action mirrors the image vertically or horizontically. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/mirror.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'move' }
+      %h3 Move
+
+      The move action moves the input by the given x and y offset. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/move.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'normal' }
+      %h3 Normal
+
+      The normal action creates a normal map for the given input. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/normal.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'repeat' }
+      %h3 Repeat
+
+      The repeat action repeats the input using the given scrolling offset and blending method. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/repeat.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'rotozoom' }
+      %h3 Rotozoom
+
+      The rotozoom action rotates and zooms the input using the given parameters. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/rotozoom.coffee' } View source on Github.com
+
+
+    %h3 Memory Actinos
+
+    %section
+      %a{ :name => 'load' }
+      %h3 Load
+
+      The load action loads the input with the given ID. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/load.coffee' } View source on Github.com
+
+    %section
+      %a{ :name => 'save' }
+      %h3 Save
+
+      The save action saves the input with the given ID. It can later be loaded using the load action. It needs exactly one input.
+
+      %a.source{ :'data-file' => 'coffee/webbzeug/actions/save.coffee' } View source on Github.com

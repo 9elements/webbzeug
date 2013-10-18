@@ -1,0 +1,47 @@
+.colorpicker
+  z-index: 10
+
+.workspace-wrapper
+  .parameters
+    width: 250px
+    height: 300px
+    background: white
+    border-radius: 5px
+    padding: 15px
+    position: absolute
+
+    font: normal 11px Verdana
+
+    overflow-y: scroll
+
+    box-shadow: 0 0 0 3px rgba(black, 0.2) inset
+
+    display: none
+
+    z-index: 6
+
+    ul
+      li
+        +clearfix()
+        height: 30px
+        .label
+          width: 80px
+          float: left
+
+        input
+          float: left
+
+        .value
+          float: left
+          padding: 3px
+          font: normal 9px Verdana
+
+        .colorpicker-control
+          width: 16px
+          height: 16px
+
+          float: left
+          border-radius: 3px
+          border: 3px solid rgba(black, 0.3)
+
+          cursor: pointer

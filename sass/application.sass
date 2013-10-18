@@ -1,0 +1,106 @@
+@import "compass"
+@import "reset"
+
+body
+  background-color: #333
+  width: 100%
+
+strong
+  font-weight: bold
+
+*
+  -webkit-font-smoothing: antialiased
+
+.app-wrapper
+  width: 100%
+  padding: 20px 10px 0 10px
+  +clearfix()
+  overflow: visible
+
+.right-wrapper
+  float: right
+  width: 265px
+  height: 400px
+  position: relative
+
+  canvas
+    background: black
+    width: 256px
+    height: 256px
+    margin-top: 40px
+
+  .debug
+    font: normal 9px Verdana
+    color: white
+    text-transform: uppercase
+    padding: 5px
+    margin-bottom: 10px
+
+    height: 11px
+
+  .samples
+    margin-top: 20px
+
+  .save-link, .open-link, .export-link
+    padding: 5px 10px
+    font: normal 10px Verdana
+    color: white
+    text-decoration: none
+    text-transform: uppercase
+    background: rgba(white, 0.3)
+    border-radius: 2px
+    border: 1px solid rgba(white, 0.4)
+    text-shadow: 1px 1px 0 rgba(black, 0.5)
+
+    &:hover
+      background: rgba(white, 0.5)
+
+  .hints
+    font: normal 12px Verdana
+    color: white
+    padding-right: 60px
+    line-height: 1.5
+
+    li
+      display: inline-block
+      margin: 14px 0 0 0
+
+    .cmd
+      display: inline
+      +border-radius(3px)
+      padding: 2px
+      background-color: #666
+
+  input#file
+    position: absolute
+    left: 52px
+    top: 323px
+    width: 50px
+    height: 22px
+
+    overflow: hidden
+
+    opacity: 0
+
+ul.nav
+  float: left
+  margin-left: 20px
+  li
+    a
+      display: block
+      font: bold 13px 'Helvetica Neue', Helvetica, Arial
+      color: white
+      padding: 17px
+      border-left: 1px solid rgba(white, 0.1)
+      border-right: 1px solid rgba(white, 0.1)
+      text-decoration: none
+
+      &:hover
+        background: rgba(black, 0.3)
+
+
+@import "header"
+@import "navigation"
+@import "workspace"
+@import "parameters"
+@import "manual"

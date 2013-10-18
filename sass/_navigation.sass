@@ -1,0 +1,104 @@
+.navigation
+  +clearfix()
+  margin-bottom: 10px
+  overflow: visible
+  height: 30px
+  .type
+    font: bold 10px Verdana
+    color: white
+    text-shadow: 1px 1px 0 rgba(black, 0.5)
+    text-transform: uppercase
+
+    float: left
+    width: 85px
+    padding: 9px 25px 8px 10px
+
+    text-align: center
+
+    background: black
+    border-radius: 3px
+
+    box-shadow: 0 2px 0 rgba(white, 0.3) inset
+
+    margin-right: 10px
+
+    cursor: pointer
+
+    position: relative
+
+    .arrow
+      position: absolute
+      right: 10px
+      top: 12px
+
+    &.generative
+      background: #3e92f7
+      background: -moz-linear-gradient(top, #3e92f7 0%, #0458bd 100%)
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3e92f7), color-stop(100%,#0458bd))
+      background: -webkit-linear-gradient(top, #3e92f7 0%,#0458bd 100%)
+      background: -o-linear-gradient(top, #3e92f7 0%,#0458bd 100%)
+      background: -ms-linear-gradient(top, #3e92f7 0%,#0458bd 100%)
+      background: linear-gradient(to bottom, #3e92f7 0%,#0458bd 100%)
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3e92f7', endColorstr='#0458bd',GradientType=0 )
+
+      box-shadow: 0 2px 0 rgba(white, 0.3) inset, 0 3px 0 #123866
+
+    &.processive
+      background: #f73e3e
+      background: -moz-linear-gradient(top, #f73e3e 0%, #bd0404 100%)
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f73e3e), color-stop(100%,#bd0404))
+      background: -webkit-linear-gradient(top, #f73e3e 0%,#bd0404 100%)
+      background: -o-linear-gradient(top, #f73e3e 0%,#bd0404 100%)
+      background: -ms-linear-gradient(top, #f73e3e 0%,#bd0404 100%)
+      background: linear-gradient(to bottom, #f73e3e 0%,#bd0404 100%)
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f73e3e', endColorstr='#bd0404',GradientType=0 )
+
+      box-shadow: 0 2px 0 rgba(white, 0.3) inset, 0 3px 0 #831010
+
+    &.memory
+      background: #f7b43e
+      background: -moz-linear-gradient(top, #f7b43e 0%, #bd7a04 100%)
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7b43e), color-stop(100%,#bd7a04))
+      background: -webkit-linear-gradient(top, #f7b43e 0%,#bd7a04 100%)
+      background: -o-linear-gradient(top, #f7b43e 0%,#bd7a04 100%)
+      background: -ms-linear-gradient(top, #f7b43e 0%,#bd7a04 100%)
+      background: linear-gradient(to bottom, #f7b43e 0%,#bd7a04 100%)
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7b43e', endColorstr='#bd7a04',GradientType=0 )
+
+      box-shadow: 0 2px 0 rgba(white, 0.3) inset, 0 3px 0 #7f550d
+
+
+    .types
+      position: absolute
+      top: 26px
+      left: 0px
+      background: #e9e9e9
+      text-align: left
+
+      font: normal 10px Verdana
+      color: black
+      text-shadow: 1px 1px 0 white
+
+      border-bottom-left-radius: 3px
+      border-bottom-right-radius: 3px
+
+      width: 120px
+
+      display: none
+
+      z-index: 5
+
+      box-shadow: 0px 0px 0px 2px rgba(black, 0.2) inset
+
+      li
+        padding: 8px 10px
+        width: 100px
+        border-bottom: 1px solid rgba(black, 0.1)
+        border-top: 1px solid rgba(white, 0.5)
+        text-shadow: 1px 1px 0 rgba(white, 0.7)
+        &:hover
+          background: rgba(black, 0.1)
+
+    &:hover
+      .types
+        display: block
