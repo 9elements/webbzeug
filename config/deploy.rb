@@ -1,7 +1,7 @@
 set :application,   "webbzeug"
 set :domain,        "webbzeug.com"
 set :user,          "webbzeug"
-set :repository,    "gitolite@dev.9elements.de:webbzeug.git"
+set :repository,    "git@github.com:9elements/webbzeug.git"
 set :branch,        "master" unless exists?(:branch)
 set :deploy_server, "webbzeug.com" unless exists?(:deploy_server)
 set :env,           "production" unless exists?(:env)
