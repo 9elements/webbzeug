@@ -18,3 +18,6 @@ Tools / Actions
   - Light
   - Mirroring
 - Memory
+
+
+Released under MIT License
